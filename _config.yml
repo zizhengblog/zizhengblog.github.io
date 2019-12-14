@@ -1,34 +1,34 @@
 # Basic
-title: Robotkang
+title: JiangHuHiKe
 subtitle: 欢迎来到我的个人网站
 description: 科技、生活、音乐、人生
 # 头像里面的标题
-avatarTitle: RobotKang
+avatarTitle: JiangHuHiKe
 # 头像里面的描述
-avatarDesc: 机器人赛事
-url: "https://robotkang.cc"
+avatarDesc: Coder
+url: "https://JiangHuHiKe.github.io"
 
 # Comment
 comment:
     provider: duoshuo
     duoshuo:
-    short_name: robotkang
+    short_name: LC
 
 # Social
 social:
     weibo: 123456789
-    weixing: kang1390305137 
-    github: MengZheK
+    weixin: JiangHuHiKe 
+    github: JiangHuHiKe
     # twitter: 
-    mail: robotkang@foxmail.com
-    csdn: robotkang
+    mail: xxxx
+    csdn: JiangHuHiKe
 
 
 # 《----------------- 上面的信息修改成你自己的 ---------------------------》
 #
 #
 #  _post/ 下的文章更换成你自己的文章
-#  帮忙star一下，感谢~😆 地址： https://github.com/MengZheK/kangblog.github.io
+#  帮忙star一下，感谢~😆 地址： https://github.com/JiangHuHiKe/JiangHuHiKe.github.io
 #
 #
 # 《--------------- 下面的信息可以自行选择是否修改 ------------------------》
@@ -62,8 +62,8 @@ blog_button:
 nav:
     - {title: 所有文章, description: archive, url: '/archive'}   
     - {title: 标签, description: tags, url: '/tags'}   
-    - {title: 留言, description: liuyan, url: '/liuyan'}
-    - {title: 资源, description: ziyuan, url: '/ziyuan'}
+    # - {title: 留言, description: liuyan, url: '/liuyan'}
+    # - {title: 资源, description: ziyuan, url: '/ziyuan'}
     - {title: 关于我, description: about, url: '/about'}
 
           
