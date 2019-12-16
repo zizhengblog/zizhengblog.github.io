@@ -3,7 +3,7 @@ layout: post
 title: "theoryOfSignIniOS"
 date: 2019-12-15 
 description: "iOS的签名原理"
-tag: 加解密
+tag: 编码及加解密
 --- 
 
 <h6>
@@ -14,7 +14,7 @@ tag: 加解密
   </a>
 </h6>
 
-# iOS的签名原理
+
 
 - [参考文章：https://www.jianshu.com/p/22f4a8f6dd1c](https://www.jianshu.com/p/22f4a8f6dd1c)
 
