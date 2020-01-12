@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "NSObject的本质(三)"
+title: "NSObject的本质(三) 对象分类"
 date: 2018-05-03
 description: "NSObject的本质"
 tag: 底层原理
@@ -13,8 +13,6 @@ tag: 底层原理
   原文地址：https://jianghuhike.github.io/1853.html 
   </a>
 </h6>
-
-- [参考文章：字节范儿 の 内存对齐](https://juejin.im/post/5e0ae5a75188253a5536534a)
 
 
 
