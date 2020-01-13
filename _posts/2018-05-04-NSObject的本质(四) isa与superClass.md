@@ -65,9 +65,85 @@ endif
 <!-- ************************************************ -->
 ## <a id="content2"></a>superClass
 
+我们假设现在有三个类Student、Person、NSObject;其继承关系是Student:Person:NSObject;    
+
+当Student的instance对象要调用Person的对象方法时。
+
+<img src="/images/underlying/oc3.png" alt="img">
+
+<span style='color:red'>student->isa 找到 Student的class对象。</span>     
+<span style='color:red'>Student的class对象->superClass  找到  Person的class对象   找到要调用的方法</span>
+
+当Student的class对象要调用Person的类方法时。
+
+<img src="/images/underlying/oc4.png" alt="img">
+
+<span style='color:red'>student->isa 找到 Student的class对象 找到 Student的meta-class对象。</span>     
+<span style='color:red'>Student的meta-class对象->superClass  找到  Person的meta-class对象   找到要调用的方法</span>
+
+
 
 <!-- ************************************************ -->
 ## <a id="content3"></a>总结
+
+还是先来看一张图：
+
+<img src="/images/underlying/oc5.png" alt="img">
+
+红色箭头显示了实例方法调用轨迹。    
+绿色箭头显示了类方法调用轨迹。     
+
+给NSObject添加Test分类,并注释掉 +(void)test;方法的实现
+
+```objc
+#import <Foundation/Foundation.h>
+@interface NSObject (Test)
++ (void)test;
+@end
+
+
+@implementation NSObject (Test)
+- (void)test{
+    NSLog(@"+[NSObject test] - %p", self);
+}
+
+//+ (void)test{
+//    NSLog(@"-[NSObject test] - %p", self);
+//}
+@end
+```
+
+创建Person类,对test方法只提供声明，注释掉实现，我们来看下调用结果
+```objc
+@interface MJPerson : NSObject
+
++ (void)test;
+
+@end
+
+@implementation MJPerson
+//+ (void)test{
+//    NSLog(@"+[MJPerson test] - %p", self);
+//}
+@end
+```
+
+我们来调用看下结果，
+```objc
+NSLog(@"[MJPerson class] - %p", [MJPerson class]);
+NSLog(@"[NSObject class] - %p", [NSObject class]);
+[Person test];
+[NSObject test];
+```
+
+调用的打印结果如下：     
+[Person class] - 0x1000011e0      
+[NSObject class] - 0x7fff929c7140     
+-[NSObject test] - 0x1000011e0     
+-[NSObject test] - 0x7fff929c7140              
+
+从调用结果可以看出，类方法的调用轨迹是循着绿色箭头的轨迹走的。    
+
 
 
 
