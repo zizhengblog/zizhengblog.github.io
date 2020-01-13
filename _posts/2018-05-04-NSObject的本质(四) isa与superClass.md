@@ -57,7 +57,14 @@ elif __X86_64__
   define ISA_MASK  0x00007ffffffffff8ULL
 endif
 ```
+创建一个Person:NSObject类
+```objc
+Person * person = [[MJPerson alloc] init];
 
+//person->isa :0x001d8001000014c9
+//ISA_MASK    :0x0000000ffffffff8
+//Person      :0x00000001000014c8
+```
 
 
 
