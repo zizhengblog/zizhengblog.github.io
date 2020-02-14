@@ -134,6 +134,7 @@ Class内部结构中有个方法缓存cache_t,用<span style="color:red">散列�
 ## <a id="content2"></a>Class的数据查看
 
 
+- [参考文章：获取Class数据结构信息](https://jianghuhike.github.io/18710.html)
 
 
 
