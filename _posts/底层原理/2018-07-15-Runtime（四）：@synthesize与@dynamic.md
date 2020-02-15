@@ -176,6 +176,9 @@ struct Person_IMPL {
 ```
 我们看到编译器并没有给我们生成_age成员变量，也没有给我们生成set、get方法。
 
+<img src="/images/underlying/msgsend5.png" alt="img">
+
+
 我们可以通过运行时，在程序运行期间动态的添加这些成员变量、set、get方法。
 
 
