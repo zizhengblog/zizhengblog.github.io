@@ -21,6 +21,8 @@ tag: 底层原理
 - [class函数](#content1)   
 - [superclass函数](#content2)   
 - [isMemberOfClass函数](#content3)   
+- [isKindOfClass函数](#content4)   
+
 
 
 
@@ -137,8 +139,63 @@ NSLog(@"%d",[Person isMemberOfClass:[NSObject class]]);//0
 NSLog(@"%d",[Person isMemberOfClass:object_getClass([Person class])]);//1
 ```
 
+<!-- ************************************************ -->
+## <a id="content4"></a>isKindOfClass
+
+先看下源码实现
+
+```
+- (BOOL)isKindOfClass:(Class)cls {
+    for (Class tcls = [self class]; tcls; tcls = tcls->superclass) {
+        if (tcls == cls) return YES;
+    }
+    return NO;
+}
+
++ (BOOL)isKindOfClass:(Class)cls {
+    for (Class tcls = object_getClass((id)self); tcls; tcls = tcls->superclass) {
+        if (tcls == cls) return YES;
+    }
+    return NO;
+}
+```
+
+对象方法、类方法中都有一个for循环，一次比对不成功会继续与superclass比对，直到比对成功返回YES或者superclass为空时退出循环返回NO。
+
+```
+//Person:NSObject
+Person * person = [[Person alloc] init];
+
+//tcls:object_getClass((id)self):Person
+//cls:Person
+//Person == Person 打印结果为1
+NSLog(@"%d",[person isKindOfClass:[Person class]]);//1
 
 
+//tcls:object_getClass((id)self):Person
+//cls:NSObject
+//Person == NSObject 在循环内部Person->superclass NSObject
+//NSObjcet == NSObject 打印结果为1
+NSLog(@"%d",[person isKindOfClass:[NSObject class]]);//1
+
+
+//tcls:object_getClass((id)self):Meta-Person
+//cls:Person
+//Meta-Person != Person 在循环内部Meta-Person->superclass Meta-NSObject
+//Meta-NSObject != Person 在循环内部Meta-NSObject->superclass NSObject
+//NSObject != Person 在循环内部 NSObject->superclass 为 nil 循环结束。
+//打印结果为0
+NSLog(@"%d",[Person isKindOfClass:[Person class]]);//0
+
+
+//tcls:object_getClass((id)self):Meta-Person
+//cls:NSObject
+//Meta-Person != NSObject 在循环内部Meta-Person->superclass Meta-NSObject
+//Meta-NSObject != NSObject 在循环内部Meta-NSObject->superclass NSObject
+//NSObject == NSObject 在循环内部 返回YES 循环结束。
+//打印结果为1
+NSLog(@"%d",[Person isKindOfClass:[NSObject class]]);//1
+```
 
 
 
