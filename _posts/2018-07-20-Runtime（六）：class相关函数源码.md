@@ -197,6 +197,20 @@ NSLog(@"%d",[Person isKindOfClass:[Person class]]);//0
 NSLog(@"%d",[Person isKindOfClass:[NSObject class]]);//1
 ```
 
+分析下下面代码的打印结果
+```
+//0
+NSLog(@"%d",[NSObject isMemberOfClass:[NSObject class]]);
+
+//1
+NSLog(@"%d",[NSObject isKindOfClass:[NSObject class]]);
+
+//0
+NSLog(@"%d",[Person isMemberOfClass:[Person class]]);
+
+//0
+NSLog(@"%d",[Person isKindOfClass:[Person class]]);
+```
 
 
 
