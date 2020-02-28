@@ -14,7 +14,9 @@ tag: 底层原理
   </a>
 </h6>
 
-<!-- - [参考文章：iOS 使用dsym分析友盟错误日志](https://www.jianshu.com/p/adcf5ff5e5b2) -->
+- [参考文章：iOS实录14：浅谈iOS Crash（一）](https://www.jianshu.com/p/3261493e6d9e)
+- [参考文章：crash文件符号化攻略](https://www.jianshu.com/p/8cac0b87ade2)
+- [参考文章：Xcode崩溃日志分析工具symbolicatecrash用法](https://www.jianshu.com/p/e428501ff278)
 
 
 ## 目录
@@ -68,6 +70,8 @@ Exception Codes: -[NSNull integerValue]: unrecognized selector sent to instance 
 Crashed Thread: 0
 
 //4、线程回溯 （展示发生Crash线程的回溯信息，其他略）
+//发生Crash的线程的Crash调用栈，从上到下分别代表调用顺序，
+//最上面的一个表示抛出异常的位置，依次往下可以看到API的调用顺序。
 Thread 0 Crashed: 
 0  libsystem_kernel.dylib         0x00000001835c7014 __pthread_kill + 4
 1  libsystem_c.dylib              0x000000018353b400 abort + 140
@@ -85,6 +89,7 @@ Thread 0 Crashed:
 18 CoreFoundation                 0x00000001844d22b8 CFRunLoopRunSpecific + 436
 
 //5、进程状态（展示部分）
+//Crash时发生时刻，线程的状态，通常我们根据Crash栈即可获取到相关信息，这部分一般不用关心。
 Thread 0 crashed with ARM 64 Thread State:
      x0:  000000000000000000    x1: 000000000000000000    x2: 000000000000000000     x3: 0xffffffffffffffff
      x4:  0x0000000000000010    x5: 0x0000000000000020    x6: 000000000000000000     x7: 000000000000000000
@@ -93,6 +98,9 @@ Thread 0 crashed with ARM 64 Thread State:
     x16: 0x0000000000000148    x17: 000000000000000000   x18: 000000000000000000    x19: 0x0000000000000006
 
 //6、二进制映像 （展示部分）
+//Crash时刻App加载的所有的库.其中第一行是Crash发生时我们App可执行文件的信息，
+//可以看出为armv7，可执行文件的包得uuid为ff7a4009322b386ea3e8e9a3fde05be4，
+//解析Crash的时候dsym文件的uuid必须和这个一样才能完成Crash的符号化解析。
 Binary Images:
 0x100028000 - 0x1011dbfff +AppName arm64 <ff7a4009322b386ea3e8e9a3fde05be4> /var/containers/Bundle/Application/C7B90C8A-E269-4413-A011-552971D1ED39/AppName.app/AppName
 0x18368a000 - 0x183693fff  libsystem_pthread.dylib arm64 <258dc0c51499393bba7ba3e83dc5bfbb> /usr/lib/system/libsystem_pthread.dylib
