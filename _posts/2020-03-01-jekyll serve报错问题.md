@@ -14,13 +14,12 @@ tag: 工具
   </a>
 </h6>
 
-Mac 中配置 Jekyll
-https://www.jianshu.com/p/25111a6002ec
+
+- [参考文章：Mac 中配置 Jekyll](https://www.jianshu.com/p/25111a6002ec)
+
 
 
 ## 目录
-
-
 - [jekyll](#content1)   
 - [jekyll serve报错](#content2)   
 
