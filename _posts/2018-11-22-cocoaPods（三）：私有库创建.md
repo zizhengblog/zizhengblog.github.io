@@ -1,217 +1,190 @@
 ---
 layout: post
-title: "cocoaPods_Usage"
-date: 2018-06-20 
-description: "cocoaPods使用"
+title: "cocoaPods（三）：私有库创建"
+date: 2018-11-22 
+description: "cocoaPods（三）：私有库创建"
 tag: 工具
 --- 
 
 <h6>
   版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/18620.html">
-  原文地址：https://jianghuhike.github.io/18620.html 
+  <a target="_blank" href="https://jianghuhike.github.io/181122.html">
+  原文地址：https://jianghuhike.github.io/181122.html 
   </a>
 </h6>
 
 
 
 ## 目录
-* [ 相关概念](#content0)
-* [ 一、安装cocoaPods](#content1)
-* [ 二、使用cocoaPods](#content2)
-* [ 三、私有pod库](#content3)
-* [ 四、注意点](#content4)
+* [基本指令介绍](#content1)
+* [三方库集成](#content2)
 
 
 
-## <a id="content0"></a> 相关概念
-```
-ruby 
-是一种动态语言，类似python由一个日本人开发。
+<!-- ************************************************ -->
+## <a id="content1"></a> 基本指令介绍
 
-gem 
-是一种文件组织的包，一般的ruby的很多插件都有由这种各种的包提供
-你可以理解为开发ruby时的插件,像C++的库。
-
-
-CocoaPods
-是一个负责管理iOS项目中第三方开源库的工具。
-CocoaPods的项目源码在Github上管理。
-该项目开始于2011年8月12日，在这两年多的时间里，它持续保持活跃更新。
-开发iOS项目不可避免地要使用第三方开源库，CocoaPods的出现使得我们可以节省设置和更新第三方开源库的时间
-在我们有了CocoaPods这个工具之后，只需要将用到的第三方开源库放到一个名为Podfile的文件中，然后在命令行执行$ pod install命令。
-CocoaPods就会自动将这些第三方开源库的源码下载下来，并且为我的工程设置好相应的系统依赖和编译参数
-注：安装cocoaPods的安装需要使用ruby的gem，Mac下已经自带了ruby，只要使用ruby的gem命令就可以安装了。
-```
-
-
-## <a id="content1"></a> 一、安装cocoaPods
-
-### 1.1 安装前环境配置
-```
-查看ruby版本
-ruby -v
-
-查看gem版本
-gem -v
-
-查看gem源列表
-gem sources -l
-
-
-gem太老可能会有问题，所以安装之前最好升级一下gem 更新升级gem，国内需要切换源
-以下命令添加淘宝的源：（不建议继续使用） gem sources -a https://ruby.taobao.org/
-
-以下命令移除淘宝的源：
-gem sources --remove https://ruby.taobao.org/
-
-淘宝的源已经不更新维护了，现在使用ruby-china的源 gem source -a https://gems.ruby-china.org
- 
-验证是否替换成功 
-gem sources -l
-
-确保只显示一个
-***CURRENTSOURCES*** 
-https://gems.ruby-china.org        
- 
-更新gem
-sudo gem update --system
-```
-
-### 1.2  安装cocoaPods及仓库设置
-```
-安装cocoaPods
-sudo gem install -n /usr/local/bin cocoapods
-
-
-查看版本
-pod --version 
-
-
-设置pod仓库
-pod setup
-    这步其实是Cocoapods在将它的镜像索引下载到 ~/.cocoapods/repos目录下。
-    CocoaPods的所有项目的镜像索引Podspec文件都托管在https://github.com/CocoaPods/Specs。
-    Podspec文件是我们使用cocoaPods找到第三方库源码的索引文件，每个第三方库都有一个。
-    第一次执行pod setup时，CocoaPods会将这些podspec索引文件更新到本地的~/.cocoapods/目录下，这个索引文件比较大，有100M左右。
-    所以第一次更新时非常慢。为了提高下载速度可以使用下面两种方法：
-    第一种方法：
-    可以将文件托管地址从github替换为国内oschina这样会快很多。如下操作就可以将github替换为国内oschinapod 
-    pod repo remove master  //移除本地仓库master删除失败可以手动删除路径~/.cocoapods/repos/master
-    pod repo add master http://git.oschina.net/akuandev/Specs.git  //添加镜像索引
-    pod repo update    //更新本地repos仓库
-    第二种方法：
-    https://www.jianshu.com/p/0909d2c126a5
-    其它电脑 ~/.cocoapods/repos/ 下的master文件夹拷贝到自己电脑
-
-
-更新pod仓库
-pod repo update
-    或者手动删除后重新设置
-    pod repo remove master
-    pod setup
-```
-
-
-### 1.3 卸载cocoaPods
-- [参考文章：https://blog.csdn.net/qq_32666701/article/details/80607646](https://blog.csdn.net/qq_32666701/article/details/80607646)
-
-```
-卸载cocoapods
-sudo gem uninstall cocoapods
-
-查看本地安装过的cocoapods相关东西
-gem list --local | grep cocoapods
-
-然后使用命令逐个删除
-sudo gem uninstall cocoapods-core
-如果怕删不干净有残留的话可以找到 .cocopods 文件（隐藏文件）删掉就好
-```
-
-
-
-## <a id="content2"></a> 二、使用cocoaPods
-
-### 2.1 pod常用指令
 - [参考文章：https://www.cnblogs.com/chzheng/p/5949353.html](https://www.cnblogs.com/chzheng/p/5949353.html)
 
-```
-查看版本
-pod --version
+**一、版本查看及帮助**
 
+查看版本
+```
+pod --version
+```
 
 查看一级指令的帮助
+```
 pod  --help  
-查看install下边子指令的帮助
+```
+
+查看子指令的帮助
+```
 pod install -- help
+```
 
+**二、索引库相关**
 
-添加镜像索引 pod repo add master http://git.oschina.net/akuandev/Specs.git
+添加镜像索引
+```
+pod repo add master http://git.oschina.net/akuandev/Specs.git
+```
+
 移除本地索引仓库master
-pod repo remove master  
-设置仓库
-pod setup
-更新仓库
-pod repo update
+```
+pod repo remove master 
+```
 
+设置仓库
+```
+pod setup
+```
+
+更新仓库
+```
+pod repo update
+```
+
+**三、工程相关**
 
 初始化Podfile文件
+```
 pod init
+```
+
 搜索第三方库
+```
 pod search SDWebImage
+```
+
 集成第三方库
+```
 pod install
+```
+
+集成第三方库(不更新本地仓库)
+```
 pod install  --no-repo-update   //Skip running `pod repo update`
-注：执行install指令时不会执行pod repo unpate 即不会更新本地仓库
+#注：执行install指令时不会执行pod repo unpate 即不会更新本地仓库
+```
+
 
 更新集成的第三方库，不会受Podfile.lock文件的限制
+```
 pod update
-
 ```
 
-### 2.2 集成第三方库
+
+<!-- ************************************************ -->
+## <a id="content2"></a> 三方库集成
+
+
+**一、初始化podFile文件**
+
+1、cd到工程的根目录下,执行下面指令
 ```
-1.cd工程的根目录下初始化podFile文件
-    pod init    //该指令执行后会在当前目录下生成Podfile文件
+$ pod init //该指令执行后会在当前目录下生成Podfile文件
+```
 
-    $ pod init
-    $ cat Podfile
-    # Uncomment the next line to define a global platform for your project
-    # platform :ios, '9.0'
+2、查看Podfile文件
+```
+$ cat Podfile
 
-    target 'podTest' do
-    # Comment the next line if you don't want to use dynamic frameworks
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'podTest' do
+# Comment the next line if you don't want to use dynamic frameworks
+use_frameworks!
+
+# Pods for podTest
+end
+```
+
+
+
+**二、编辑Podfile文件**
+
+1、多个target中使用相同的Pods依赖库
+
+比如，名称为CocoaPodsTest的target和Second的target都需要使用Reachability、SBJson、AFNetworking三个Pods依赖库，可以使用link_with关键字来实现，将Podfile写成如下方式：
+
+```
+link_with 'CocoaPodsTest', 'Second'
+platform :ios
+pod 'Reachability',  '~> 3.0.0'
+pod 'SBJson’, ‘~> 4.0.0'
+platform :ios, '7.0'
+pod 'AFNetworking', '~> 2.0'
+```
+
+
+2、不同的target使用完全不同的Pods依赖库
+
+CocoaPodsTest这个target使用的是Reachability、SBJson、AFNetworking三个依赖库，但Second这个target只需要使用OpenUDID这一个依赖库，这时可以使用target关键字，Podfile的描述方式如下：
+
+```
+target :'CocoaPodsTest' do
+    platform :ios
+    pod 'Reachability',  '~> 3.0.0'
+    pod 'SBJson', '~> 4.0.0'
+    platform :ios, '7.0' #要求第三方库支持的iOS最低版本
+    pod 'AFNetworking', '~> 2.0'
+end
+
+target :'Second' do
+    pod 'OpenUDID', '~> 1.0.0'
+end
+```
+
+以do/end 开始和结尾
+
+
+1、在添加之前可以先搜索下要添加的三方库
+```
+pod search SDWebImage
+```
+
+2、编辑Podfile文件
+```
+target 'podTest' do
+
     use_frameworks!
 
-    # Pods for podTest
-    end
+    #用来设置所有第三方库所支持的iOS最低版本
+    platform :ios , '9.0'
 
+    #设置框架的名称和版本号
+    pod 'SDWebImage','~>3.7.5' 
 
-
-2.在Podfile文件添加第三方库如：
-
-    在添加之前可以先搜索下要添加的三方库
-    pod search SDWebImage
-
-    编辑Podfile文件
-        target 'podTest' do
-
-            use_frameworks!
-
-            #用来设置所有第三方库所支持的iOS最低版本
-            platform :ios , '9.0'
-
-            #设置框架的名称和版本号
-            pod 'SDWebImage','~>3.7.5' 
-
-            #'>1.0'    可以安装任何高于1.0的版本
-            #'>=1.0'   可以安装任何高于或等于1.0的版本
-            #'<1.0'    任何低于1.0的版本
-            #'<=1.0'   任何低于或等于1.0的版本
-            #'~>0.1'   任何高于或等于0.1的版本，但是不包含高于1.0的版本
-            #'~>0'     任何版本，相当于不指定版本，默认采用最新版本号
-        end
-
+    #'>1.0'    可以安装任何高于1.0的版本
+    #'>=1.0'   可以安装任何高于或等于1.0的版本
+    #'<1.0'    任何低于1.0的版本
+    #'<=1.0'   任何低于或等于1.0的版本
+    #'~>0.1'   任何高于或等于0.1的版本，但是不包含高于1.0的版本
+    #'~>0'     任何版本，相当于不指定版本，默认采用最新版本号
+end
+```
 
 3.安装第三方库 
     pod install //在工程的根目录下执行该指令集成第三方库
