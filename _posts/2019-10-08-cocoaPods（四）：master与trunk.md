@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "cocoaPods（四）：master与trunk"
-date: 2019-02-08 
+date: 2019-10-08 
 description: "cocoaPods（四）：master与trunk"
 tag: 工具
 --- 
 
 <h6>
   版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/1928.html">
-  原文地址：https://jianghuhike.github.io/1928.html 
+  <a target="_blank" href="https://jianghuhike.github.io/19108.html">
+  原文地址：https://jianghuhike.github.io/19108.html 
   </a>
 </h6>
 
@@ -23,19 +23,14 @@ tag: 工具
 ## <a id="content2"></a> master源trunk源
 
 
-master 与 trunk
-- [参考文章：https://zhaoxin.pro/15695124897584.html](https://zhaoxin.pro/15695124897584.html)
-```
-master源与trunk源的选择
-```
+- [参考文章：pod相关问题](https://www.jianshu.com/p/3a67446656c8)
+- [参考文章：脱离CocoaPods 1.8.0的trunk](https://zhaoxin.pro/15695124897584.html)
 
 
 <!-- ************************************************ -->
 ## <a id="content2"></a> 发布到CocoaPods
 
-
-iOS-将代码发布到CocoaPods(trunk方式)            
-<a>https://www.jianshu.com/p/2e7661bf3318</a>
+- [参考文章：iOS-将代码发布到CocoaPods](https://www.jianshu.com/p/2e7661bf3318)           
 
 
 
