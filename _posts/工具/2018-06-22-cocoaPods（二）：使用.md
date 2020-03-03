@@ -239,10 +239,15 @@ pod install //在工程的根目录下执行该指令集成第三方库
 
 **四、更新三方库**
 
+更新所有三方库
 ```
 pod update
 ```
 
+更新指定三方库
+```
+pod update LCCommon
+```
 
 
 
