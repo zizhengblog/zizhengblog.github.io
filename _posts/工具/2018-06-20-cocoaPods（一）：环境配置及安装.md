@@ -221,6 +221,14 @@ pod repo add master http://git.oschina.net/akuandev/Specs.git
 
 第二种方法：
 
+如果pod指令不好用或长时间没反应可以cd到 `~/.cocoapods/repos` 目录下 通过git指令clone master仓库
+
+```
+git clone https://github.com/CocoaPods/Specs.git master
+```
+
+第三种方法：
+
 将其它电脑 ~/.cocoapods/repos/ 下的master文件夹拷贝到自己电脑     
 - [参考文章：https://www.jianshu.com/p/0909d2c126a5](https://www.jianshu.com/p/0909d2c126a5)      
 
@@ -262,6 +270,8 @@ sudo gem uninstall cocoapods-core
 如果怕删不干净有残留的话可以找到 .cocopods 文件（隐藏文件）删掉就好
 
 **五、切换不同版本cocoapods**
+
+一种方案是安装不同版本的ruby，在不同的ruby下安装特定的cocoapods版本，通过切换ruby环境切换不同的cocoapods版本。
 
 Cocoapods 版本     
 <a>https://www.cnblogs.com/willbin/p/10947534.html</a>
