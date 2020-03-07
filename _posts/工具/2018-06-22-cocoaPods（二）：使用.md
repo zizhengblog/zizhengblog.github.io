@@ -211,6 +211,10 @@ pod 'AFNetworking', '~>0'       //高于0的版本，写这个限制和什么都
 ```
 pod search SDWebImage
 ```
+如果搜索失败可尝试删除search_index.json文件,然后再执行pod search
+```
+rm ~/Library/Caches/CocoaPods/search_index.json
+```
 
 2.安装第三方库 
 ```
