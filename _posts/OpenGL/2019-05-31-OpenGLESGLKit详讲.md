@@ -46,7 +46,7 @@ GLKViewController(扩展于标准的UIKit设计模式. ⽤于绘制视图内容�
 
 **三、使用GLKit视图呈现OpenGL ES内容**
 
- <img src="/images/OpenGL/opengles1.png">
+ <img src="/images/OpenGL/opengles9.png">
 
 
 
