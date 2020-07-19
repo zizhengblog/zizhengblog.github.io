@@ -55,6 +55,7 @@ void cout_cin_func(){
 <!-- ************************************************ -->
 ## <a id="content2"></a>函数重载
 
+```
  规则
 
  函数名相同
@@ -69,7 +70,6 @@ void cout_cin_func(){
 
  采用了name mangling或者叫name decoration技术，C++编译器默认会对符号名(变量名、函数名等)进行改编、修饰，有些地方翻译为“命名倾轧”，重载时会生成多个不同的函数名，不同编译器(MSVC、g++)有不同的生成规则，通过IDA打开可以看到
 
-```
 //overLoadFunc_i
 void overLoadFunc(int a){
     cout<<"overLoadFunc_int"<<endl;
@@ -239,5 +239,7 @@ void defaultParaFunc(void(*p)() = defaultParaTest){
 
 ----------
 >  行者常至，为者常成！
+
+
 
 
