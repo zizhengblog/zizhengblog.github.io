@@ -22,7 +22,9 @@ tag: C++
 * [内存空间布局](#content2)
 * [对象的内存](#content3)
 * [memset的使用](#content4)
-
+* [构造函数](#content5)
+* [默认情况下，成员变量的初始化](#content6)
+* [析构函数](#content7)
 
 
 
@@ -301,7 +303,187 @@ void memsetUsing(){
 
 ```
 
+<!-- ************************************************ -->
+## <a id="content5"></a>构造函数
 
+```
+/**
+ 构造函数(也叫构造器)，在对象创建的时候自动调用，一般用于完成对象的初始化工作
+ ◼特点
+ 函数名与类同名，无返回值(void都不能写)，可以有参数，可以重载，可以有多个构造函数 一旦自定义了构造函数，必须用其中一个自定义的构造函数来初始化对象
+ 
+ ◼注意
+ 通过malloc分配的对象不会调用构造函数
+ 
+ 
+ ◼ 一个广为流传的、很多教程\书籍都推崇的错误结论:
+ 错误理解：默认情况下，编译器会为每一个类生成空的无参的构造函数
+ 正确理解:在某些特定的情况下，编译器才会为类生成空的无参的构造函数
+ ✓ (哪些特定的情况?以后再提)
+ */
+
+
+class Person{
+public:
+    int age;
+    int height;
+    
+    
+    Person(){
+        cout<<"Person()"<<endl;
+    }
+    
+    Person(int age){
+        cout<<"Person(int age)"<<endl;
+        this->age = age;
+    }
+    
+    Person(int age,int height){
+        cout<<"Person(int age,int height)"<<endl;
+        this->age = age;
+        this->height = height;
+    }
+    
+    void display(){
+        cout<<"age is "<<age<<endl;
+        cout<<"height is "<<height<<endl;
+    }
+};
+
+
+void personConstructor(){
+    
+    Person person1;
+    person1.display();
+    
+    Person person2(10);
+    person2.display();
+    
+    Person person3(20,180);
+    person3.display();
+}
+
+
+// 全局区
+//Person g_person1; // Person()
+//Person g_person2(); // 这是一个函数声明，函数名叫g_person2，无参，返回值类型是Person
+//Person g_person3(10); // Person(int age)
+void personConstructor2(){
+    // 栈空间
+    Person person1; // Person()
+    Person person2(); // 函数声明，函数名叫person2，无参，返回值类型是Person
+    Person person3(20);  // Person(int age)
+
+    // 堆空间
+    Person *p1 = new Person; // Person()
+    Person *p2 = new Person(); // Person()
+    Person *p3 = new Person(30);  // Person(int age)
+}
+```
+
+<!-- ************************************************ -->
+## <a id="content6"></a>默认情况下，成员变量的初始化
+
+```
+class Person1{
+public:
+    int age;
+};
+
+
+
+// 全局区（成员变量初始化为0）
+Person1 g_person11;
+
+void memberInit1(){
+    //栈空间（成员变量不会被初始化）
+    Person1   p11;
+
+    Person1 * p12 = new Person1;        //成员变量不会被初始化
+    Person1 * p13 = new Person1();      //成员变量初始化为0
+
+    Person1 * p14 = new Person1[3];     //成员变量不会被初始化
+    Person1 * p15 = new Person1[3]();   //3个Person1对象的成员变量都初始化为0
+    Person1 * p16 = new Person1[3]{};   //3个Person1对象的成员变量都初始化为0
+}
+
+
+
+
+//如果自定义了构造函数，除了全局区，其他内存空间的成员变量默认都不会被初始化，需要开发人员手动初始化
+class Person2{
+public:
+    int age;
+
+    //构造函数
+    Person2(){
+        //可以通过这种方式将所有的成员变量的内存赋值为0
+        memset(this, 0, sizeof(Person2));
+    }
+
+};
+
+void memberInit2(){
+    Person2 person2_1;
+    cout<<"person2_1.age is "<<person2_1.age<<endl;
+
+    Person2 * person2_2 = new Person2;
+    cout<<"person2_2->age is "<<person2_2->age<<endl;
+
+}
+```
+
+
+<!-- ************************************************ -->
+## <a id="content7"></a>析构函数
+
+```
+/**
+ ◼ 析构函数(也叫析构器)，在对象销毁的时候自动调用，一般用于完成对象的清理工作
+ 
+ ◼特点
+ 函数名以~开头，与类同名，无返回值(void都不能写)，无参，不可以重载，有且只有一个析构函数
+ 
+ ◼注意
+ 通过malloc分配的对象free的时候不会调用构造函数
+ ◼ 构造函数、析构函数要声明为public，才能被外界正常使用
+ */
+
+class Person3{
+public:
+    int age;
+    
+    //对象创建完毕的时候调用
+    Person3(){
+        cout<<"Person3()"<<endl;
+    }
+    
+    //重载构造函数
+    Person3(int age){
+        cout<<"Person3(int age)"<<endl;
+    }
+    
+    //析构函数对象销毁(内存被回收)的时候调用
+    ~Person3(){
+        cout<<"~Person3()"<<endl;
+    }
+    
+    //析构函数不存在重载函数
+//    ~Person3(int age){
+//        cout<<"~Person3(int age)"<<endl;
+//    }
+};
+
+void deconstructor(){
+    
+    Person3 person;
+    
+    Person3 * p3 = new Person3();
+    
+    delete p3;
+}
+
+```
 
 
 ----------
