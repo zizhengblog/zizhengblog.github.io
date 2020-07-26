@@ -396,8 +396,9 @@ public:
 Person1 g_person11;
 
 void memberInit1(){
-    //栈空间（成员变量不会被初始化）
-    Person1   p11;
+    //栈空间
+    Person1   p11;                      //成员变量不会被初始化
+    Person1   p11_2 = Person1();        //成员变量初始化为0
 
     Person1 * p12 = new Person1;        //成员变量不会被初始化
     Person1 * p13 = new Person1();      //成员变量初始化为0
