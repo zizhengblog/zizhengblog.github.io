@@ -1,0 +1,454 @@
+---
+layout: post
+title: "1、AVFoundation（二）"
+date: 2019-08-03
+description: "AVFoundation（二）"
+tag: 音视频
+---
+
+
+<h6>版权声明：本文为博主原创文章，未经博主允许不得转载。</h6>
+
+
+
+
+
+
+
+
+## 目录
+
+* [点击聚焦方法的实现](#content1)
+* [点击曝光的方法实现](#content2)
+* [重新设置对焦&曝光](#content3)
+* [闪光灯](#content4)
+* [手电筒](#content5)
+* [拍摄静态图片](#content6)
+
+
+
+
+
+
+
+
+<!-- ************************************************ -->
+## <a id="content1"></a>点击聚焦方法的实现
+
+```
+- (BOOL)cameraSupportsTapToFocus {
+    
+    //询问激活中的摄像头是否支持兴趣点对焦
+    return [[self activeCamera]isFocusPointOfInterestSupported];
+}
+
+- (void)focusAtPoint:(CGPoint)point {
+    
+    AVCaptureDevice *device = [self activeCamera];
+    
+    //是否支持兴趣点对焦 & 是否自动对焦模式
+    if (device.isFocusPointOfInterestSupported && [device isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
+        
+        NSError *error;
+        //锁定设备准备配置，如果获得了锁
+        if ([device lockForConfiguration:&error]) {
+            
+            //将focusPointOfInterest属性设置CGPoint
+            device.focusPointOfInterest = point;
+            
+            //focusMode 设置为AVCaptureFocusModeAutoFocus
+            device.focusMode = AVCaptureFocusModeAutoFocus;
+            
+            //释放该锁定
+            [device unlockForConfiguration];
+        }else{
+            //错误时，则返回给错误处理代理
+            [self.delegate deviceConfigurationFailedWithError:error];
+        }
+        
+    }
+    
+}
+```
+
+
+<!-- ************************************************ -->
+## <a id="content2"></a>点击曝光的方法实现
+
+```
+- (BOOL)cameraSupportsTapToExpose {
+    
+    //询问设备是否支持对一个兴趣点进行曝光
+    return [[self activeCamera] isExposurePointOfInterestSupported];
+}
+
+static const NSString *THCameraAdjustingExposureContext;
+
+- (void)exposeAtPoint:(CGPoint)point {
+
+    
+    AVCaptureDevice *device = [self activeCamera];
+    
+    AVCaptureExposureMode exposureMode =AVCaptureExposureModeContinuousAutoExposure;
+    
+    //判断是否支持 AVCaptureExposureModeContinuousAutoExposure 模式
+    if (device.isExposurePointOfInterestSupported && [device isExposureModeSupported:exposureMode]) {
+        
+        [device isExposureModeSupported:exposureMode];
+        
+        NSError *error;
+        
+        //锁定设备准备配置
+        if ([device lockForConfiguration:&error])
+        {
+            //配置期望值
+            device.exposurePointOfInterest = point;
+            device.exposureMode = exposureMode;
+            
+            //判断设备是否支持锁定曝光的模式。
+            if ([device isExposureModeSupported:AVCaptureExposureModeLocked]) {
+                
+                //支持，则使用kvo确定设备的adjustingExposure属性的状态。
+                [device addObserver:self forKeyPath:@"adjustingExposure" options:NSKeyValueObservingOptionNew context:&THCameraAdjustingExposureContext];
+                
+            }
+            
+            //释放该锁定
+            [device unlockForConfiguration];
+            
+        }else
+        {
+            [self.delegate deviceConfigurationFailedWithError:error];
+        }
+        
+        
+    }
+    
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+
+    //判断context（上下文）是否为THCameraAdjustingExposureContext
+    if (context == &THCameraAdjustingExposureContext) {
+        
+        //获取device
+        AVCaptureDevice *device = (AVCaptureDevice *)object;
+        
+        //判断设备是否不再调整曝光等级，确认设备的exposureMode是否可以设置为AVCaptureExposureModeLocked
+        if(!device.isAdjustingExposure && [device isExposureModeSupported:AVCaptureExposureModeLocked])
+        {
+            //移除作为adjustingExposure 的self，就不会得到后续变更的通知
+            [object removeObserver:self forKeyPath:@"adjustingExposure" context:&THCameraAdjustingExposureContext];
+            
+            //异步方式调回主队列，
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSError *error;
+                if ([device lockForConfiguration:&error]) {
+                    
+                    //修改exposureMode
+                    device.exposureMode = AVCaptureExposureModeLocked;
+                    
+                    //释放该锁定
+                    [device unlockForConfiguration];
+                    
+                }else
+                {
+                    [self.delegate deviceConfigurationFailedWithError:error];
+                }
+            });
+            
+        }
+        
+    }else
+    {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+    
+    
+}
+```
+
+
+<!-- ************************************************ -->
+## <a id="content3"></a>重新设置对焦&曝光
+
+```
+- (void)resetFocusAndExposureModes {
+
+    
+    AVCaptureDevice *device = [self activeCamera];
+    
+    
+    
+    AVCaptureFocusMode focusMode = AVCaptureFocusModeContinuousAutoFocus;
+    
+    //获取对焦兴趣点 和 连续自动对焦模式 是否被支持
+    BOOL canResetFocus = [device isFocusPointOfInterestSupported]&& [device isFocusModeSupported:focusMode];
+    
+    AVCaptureExposureMode exposureMode = AVCaptureExposureModeContinuousAutoExposure;
+    
+    //确认曝光度可以被重设
+    BOOL canResetExposure = [device isFocusPointOfInterestSupported] && [device isExposureModeSupported:exposureMode];
+    
+    //回顾一下，捕捉设备空间左上角（0，0），右下角（1，1） 中心点则（0.5，0.5）
+    CGPoint centPoint = CGPointMake(0.5f, 0.5f);
+    
+    NSError *error;
+    
+    //锁定设备，准备配置
+    if ([device lockForConfiguration:&error]) {
+        
+        //焦点可设，则修改
+        if (canResetFocus) {
+            device.focusMode = focusMode;
+            device.focusPointOfInterest = centPoint;
+        }
+        
+        //曝光度可设，则设置为期望的曝光模式
+        if (canResetExposure) {
+            device.exposureMode = exposureMode;
+            device.exposurePointOfInterest = centPoint;
+            
+        }
+        
+        //释放锁定
+        [device unlockForConfiguration];
+        
+    }else
+    {
+        [self.delegate deviceConfigurationFailedWithError:error];
+    }
+    
+    
+    
+    
+}
+```
+
+
+<!-- ************************************************ -->
+## <a id="content4"></a>闪光灯
+
+```
+//判断是否有闪光灯
+- (BOOL)cameraHasFlash {
+
+    return [[self activeCamera]hasFlash];
+
+}
+```
+
+```
+//闪光灯模式
+- (AVCaptureFlashMode)flashMode {
+
+    
+    return [[self activeCamera]flashMode];
+}
+```
+
+```
+//设置闪光灯
+- (void)setFlashMode:(AVCaptureFlashMode)flashMode {
+
+    //获取会话
+    AVCaptureDevice *device = [self activeCamera];
+    
+    //判断是否支持闪光灯模式
+    if ([device isFlashModeSupported:flashMode]) {
+    
+        //如果支持，则锁定设备
+        NSError *error;
+        if ([device lockForConfiguration:&error]) {
+
+            //修改闪光灯模式
+            device.flashMode = flashMode;
+            //修改完成，解锁释放设备
+            [device unlockForConfiguration];
+            
+        }else
+        {
+            [self.delegate deviceConfigurationFailedWithError:error];
+        }
+        
+    }
+
+}
+```
+
+
+
+<!-- ************************************************ -->
+## <a id="content5"></a>手电筒
+
+```
+//是否支持手电筒
+- (BOOL)cameraHasTorch {
+
+    return [[self activeCamera]hasTorch];
+}
+```
+
+```
+//手电筒模式
+- (AVCaptureTorchMode)torchMode {
+
+    return [[self activeCamera]torchMode];
+}
+```
+
+
+```
+//设置是否打开手电筒
+- (void)setTorchMode:(AVCaptureTorchMode)torchMode {
+
+    
+    AVCaptureDevice *device = [self activeCamera];
+    
+    if ([device isTorchModeSupported:torchMode]) {
+        
+        NSError *error;
+        if ([device lockForConfiguration:&error]) {
+            
+            device.torchMode = torchMode;
+            [device unlockForConfiguration];
+        }else
+        {
+            [self.delegate deviceConfigurationFailedWithError:error];
+        }
+
+    }
+    
+}
+```
+
+<!-- ************************************************ -->
+## <a id="content6"></a>拍摄静态图片
+
+```
+/*
+    AVCaptureStillImageOutput 是AVCaptureOutput的子类。用于捕捉图片
+ */
+- (void)captureStillImage {
+    
+    //获取连接
+    AVCaptureConnection *connection = [self.imageOutput connectionWithMediaType:AVMediaTypeVideo];
+    
+    //程序只支持纵向，但是如果用户横向拍照时，需要调整结果照片的方向
+    //判断是否支持设置视频方向
+    if (connection.isVideoOrientationSupported) {
+        
+        //获取方向值
+        connection.videoOrientation = [self currentVideoOrientation];
+    }
+    
+    //定义一个handler 块，会返回1个图片的NSData数据
+    id handler = ^(CMSampleBufferRef sampleBuffer,NSError *error)
+                {
+                    if (sampleBuffer != NULL) {
+                        NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:sampleBuffer];
+                        UIImage *image = [[UIImage alloc]initWithData:imageData];
+                        
+                        //重点：捕捉图片成功后，将图片传递出去
+                        [self writeImageToAssetsLibrary:image];
+                    }else
+                    {
+                        NSLog(@"NULL sampleBuffer:%@",[error localizedDescription]);
+                    }
+                        
+                };
+    
+    //捕捉静态图片
+    [self.imageOutput captureStillImageAsynchronouslyFromConnection:connection completionHandler:handler];
+    
+    
+    
+}
+```
+
+```
+//获取方向值
+- (AVCaptureVideoOrientation)currentVideoOrientation {
+    
+    AVCaptureVideoOrientation orientation;
+    
+    //获取UIDevice 的 orientation
+    switch ([UIDevice currentDevice].orientation) {
+        case UIDeviceOrientationPortrait:
+            orientation = AVCaptureVideoOrientationPortrait;
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            orientation = AVCaptureVideoOrientationLandscapeLeft;
+            break;
+        case UIDeviceOrientationPortraitUpsideDown:
+            orientation = AVCaptureVideoOrientationPortraitUpsideDown;
+            break;
+        default:
+            orientation = AVCaptureVideoOrientationLandscapeRight;
+            break;
+    }
+    
+    return orientation;
+
+    return 0;
+}
+```
+
+
+```
+/*
+    Assets Library 框架 
+    用来让开发者通过代码方式访问iOS photo
+    注意：会访问到相册，需要修改plist 权限。否则会导致项目崩溃
+ */
+
+- (void)writeImageToAssetsLibrary:(UIImage *)image {
+
+    //创建ALAssetsLibrary  实例
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
+    
+    //参数1:图片（参数为CGImageRef 所以image.CGImage）
+    //参数2:方向参数 转为NSUInteger
+    //参数3:写入成功、失败处理
+    [library writeImageToSavedPhotosAlbum:image.CGImage
+                             orientation:(NSUInteger)image.imageOrientation
+                         completionBlock:^(NSURL *assetURL, NSError *error) {
+                             //成功后，发送捕捉图片通知。用于绘制程序的左下角的缩略图
+                             if (!error)
+                             {
+                                 [self postThumbnailNotifification:image];
+                             }else
+                             {
+                                 //失败打印错误信息
+                                 id message = [error localizedDescription];
+                                 NSLog(@"%@",message);
+                             }
+                         }];
+}
+```
+
+```
+//发送缩略图通知
+- (void)postThumbnailNotifification:(UIImage *)image {
+    
+    //回到主队列
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //发送请求
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc postNotificationName:THThumbnailCreatedNotification object:image];
+    });
+}
+
+```
+
+
+
+
+
+----------
+>  行者常至，为者常成！
+
+

@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "1、AVFoundation"
+title: "1、AVFoundation（一）"
 date: 2019-08-01
-description: "AVFoundation"
+description: "AVFoundation（一）"
 tag: 音视频
 ---
 
