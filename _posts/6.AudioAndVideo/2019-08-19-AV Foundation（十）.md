@@ -404,10 +404,6 @@ didOutputMetadataObjects:(NSArray *)metadataObjects
     
     //将元数据 传递给 THPreviewView.m   将元数据转换为layer
     [self.faceDetectionDelegate didDetectFaces:metadataObjects];
-    
-    
-    
-
 }
 
 @end
