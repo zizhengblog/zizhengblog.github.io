@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "9、AV Foundation之视频捕捉-二维码"
+title: "9、AV Foundation之视频捕捉-二维码识别"
 date: 2019-08-17
 description: ""
 tag: 音视频
