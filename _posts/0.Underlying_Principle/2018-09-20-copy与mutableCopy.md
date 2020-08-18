@@ -129,7 +129,7 @@ self.array = 0x1c6573400
 
 **二、copy与strong**
 
-使用strong时
+使用strong时，地址相同
 
 ```objc
 @interface ViewController ()
@@ -152,7 +152,7 @@ array = 0x283efa820
 self.array = 0x283efa820
 ```
 
-使用copy时 地址相同
+使用copy时 地址不同
 ```objc
 @interface ViewController ()
 @property (nonatomic,   copy) NSArray * array;
