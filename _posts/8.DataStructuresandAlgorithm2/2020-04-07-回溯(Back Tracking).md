@@ -29,7 +29,7 @@ tag: 数据结构与算法（二）
 每一步都选择一条路出发，能进则进，不能进<span style="color:red;font-weight:bold">则退回上一步（回溯）</span>，换一条路再试    
 树、图的深度优先搜索（DFS）、八皇后、走迷宫都是典型的回溯应用
 
-<img src="/images/DataStructurs2/backtracking0.png" alt="img">
+<img src="/images/DataStructurs2/backtracking1.png" alt="img">
 
 <span style="font-weight:bold">不难看出来，回溯很适合使用递归</span>
 
