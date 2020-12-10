@@ -289,20 +289,18 @@ class Person{
 <!-- ************************************************ -->
 ## <a id="content5"></a>拷贝构造函数
 
-```
-/**
- ◼ 拷贝构造函数是构造函数的一种
- ◼ 当利用已存在的对象创建一个新对象时(类似于拷贝)，就会调用新对象的拷贝构造函数进行初始化
- ◼ 拷贝构造函数的格式是固定的，接收一个const引用作为参数
- */
 
+拷贝构造函数是构造函数的一种      
+当利用已存在的对象创建一个新对象时(类似于拷贝)，就会调用新对象的拷贝构造函数进行初始化      
+拷贝构造函数的格式是固定的，接收一个const引用作为参数      
+ 
+
+```
 class Person3{
 public:
     int m_age;
     int m_height;
-    Person3(){
-        cout<<"Person3()"<<endl;
-    }
+    Person3(){cout<<"Person3()"<<endl;}
 
     //与构造函数构成重载
     //（如果不实现拷贝构造函数，也会默认进行拷贝）,系统的拷贝都是浅拷贝
@@ -316,9 +314,7 @@ class Student3:public Person3{
 public:
     int m_score;
     
-    Student3(){
-        cout<<"Student3()"<<endl;
-    }
+    Student3(){cout<<"Student3()"<<endl;}
     
     //Person3(student) 调用父类的拷贝构造函数
     //Person3(student) 引用的本质是指针，这里是父类指针指向子类对象
@@ -335,21 +331,18 @@ void copyConstructorUsing(){
     
     
     //调用构造函数(下面两种写法等价)
-//    Person3 p1_1;
+    //Person3 p1_1;
     Person3 p1_1 = Person3();
     
     //调用拷贝构造函数（利用已有对象初始化对象）(下面三种写法等价)
-//    Person3 p1_2(p1_1);
-//    Person3 p1_2 = Person3(p1_1);
+    //Person3 p1_2(p1_1);
+    //Person3 p1_2 = Person3(p1_1);
     Person3 p1_2 = p1_1;
     
     //调用构造函数
     Person3 * p1_3 = new Person3();
-    
     //调用拷贝构造函数（利用已有对象初始化对象）
     Person3 * p1_4 = new Person3(p1_1);
-
-    
     cout<<"-----------1-----------"<<endl;
 
     
@@ -358,57 +351,47 @@ void copyConstructorUsing(){
     //调用构造函数
     Person3 person2_1;
     Person3 person2_2;
-    
     //因为person2_1与person2_2都已经创建完成，这里是赋值操作
     person2_1 = person2_2;
-    
-     cout<<"-----------2-----------"<<endl;
+    cout<<"-----------2-----------"<<endl;
 
     
     //调用构造函数
     Student3 stu;
-    
     //以下三种写法等价，调用拷贝构造函数
     Student3 stu1 = stu;
     Student3 stu2(stu);
     Student3 stu3 = Student3(stu);
-    
-    
     cout<<"-----------3-----------"<<endl;
     
+
     //调用构造函数
     Person3 person4_1;
     
     //没有产生新的对象，所以不会调用构造函数
     Person3 &person4_2 = person4_1;
-    
     cout<<"-----------4-----------"<<endl;
-
 }
 ```
 
 <!-- ************************************************ -->
 ## <a id="content6"></a>深拷贝、浅拷贝
 
-```
-/**
- ◼编译器默认的提供的拷贝是浅拷贝(shallow copy)
- 将一个对象中所有成员变量的值拷贝到另一个对象
- 如果某个成员变量是个指针，只会拷贝指针中存储的地址值，并不会拷贝指针指向的内存空间
- 可能会导致堆空间多次free的问题
- 
- ◼如果需要实现深拷贝(deep copy)，就需要自定义拷贝构造函数
- 将指针类型的成员变量所指向的内存空间，拷贝到新的内存空间
- */
+编译器默认的提供的拷贝是浅拷贝(shallow copy)     
+将一个对象中所有成员变量的值拷贝到另一个对象     
+如果某个成员变量是个指针，只会拷贝指针中存储的地址值，并不会拷贝指针指向的内存空间     
+可能会导致堆空间多次free的问题     
 
+如果需要实现深拷贝(deep copy)，就需要自定义拷贝构造函数     
+将指针类型的成员变量所指向的内存空间，拷贝到新的内存空间     
+
+```
 class Truck{
 private:
     int m_price;
     char * m_name;
     void copyName(const char* name){
-        if (name == nullptr) {
-            return;
-        }
+        if (name == nullptr) return;
         
         m_name = new char[strlen(name)+1];
         strcpy(m_name, name);
@@ -421,27 +404,18 @@ public:
 //        }
 //        m_name = new char [strlen(name)+1];
 //        strcpy(m_name, name);
-        
         copyName(name);
     }
     
     //自定义拷贝构造函数的意义是：完成深拷贝
-    Truck(const Truck &truck){
+    Truck(const Truck &truck):m_price(truck.m_price){
         //为什么要用引用
         //如果不是引用，const Truck truck = otherTruck;//调用拷贝构造函数，发生递归调用
         
         //为什么用const修饰
         //const修饰参数的目的一般是保护变量，只允许内部使用，不允许内部修改
-        
-//        if (truck.m_name == nullptr) {
-//            return;
-//        }
-//
-//        m_name = new char[strlen(truck.m_name)+1];
-//        strcpy(m_name, truck.m_name);
-        
+                
         copyName(truck.m_name);
-        
     }
     
     ~Truck(){
