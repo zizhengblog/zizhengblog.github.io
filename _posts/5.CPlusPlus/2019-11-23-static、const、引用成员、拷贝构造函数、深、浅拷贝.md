@@ -30,29 +30,25 @@ tag: C++
 <!-- ************************************************ -->
 ## <a id="content1"></a>静态成员
 
+静态成员:被static修饰的成员变量\函数       
+可以通过对象(对象.静态成员)、对象指针(对象指针->静态成员)、类访问(类名::静态成员)       
+ 
+静态成员变量       
+存储在数据段(全局区，类似于全局变量)，整个程序运行过程中只有一份内存       
+对比全局变量，它可以设定访问权限(public、protected、private)，达到局部共享的目的       
+必须初始化，必须在类外面初始化，初始化时不能带static，如果类的声明和实现分离(在实现.cpp中初始化)       
+ 
+静态成员函数       
+内部不能使用this指针(this指针只能用在非静态成员函数内部)       
+不能是虚函数(虚函数只能是非静态成员函数)       
+内部不能访问非静态成员变量\函数，只能访问静态成员变量\函数       
+非静态成员函数内部可以访问静态成员变量\函数       
+构造函数、析构函数不能是静态       
+当声明和实现分离时,实现部分不能带static       
+
+静态成员变量和静态函数可以通过类名，通过类名访问时有可能对象还未创建，所以所有与对象相关的都不能使用static修饰
+
 ```
-/**
- ◼ 静态成员:被static修饰的成员变量\函数
- 可以通过对象(对象.静态成员)、对象指针(对象指针->静态成员)、类访问(类名::静态成员)
- 
- ◼ 静态成员变量
- 存储在数据段(全局区，类似于全局变量)，整个程序运行过程中只有一份内存
- 对比全局变量，它可以设定访问权限(public、protected、private)，达到局部共享的目的
- 必须初始化，必须在类外面初始化，初始化时不能带static，如果类的声明和实现分离(在实现.cpp中初始化)
- 
- ◼ 静态成员函数
- 内部不能使用this指针(this指针只能用在非静态成员函数内部)
- 不能是虚函数(虚函数只能是非静态成员函数)
- 内部不能访问非静态成员变量\函数，只能访问静态成员变量\函数
- 非静态成员函数内部可以访问静态成员变量\函数
- 构造函数、析构函数不能是静态
- 当声明和实现分离时,实现部分不能带static
- */
-
-/**
- 静态成员变量和静态函数可以通过类名，通过类名访问时有可能对象还未创建，所以所有与对象相关的都不能使用static修饰
- */
-
 class Car{
 private:
     int m_price;
@@ -101,19 +97,18 @@ void staticMemberUsing(){
 <!-- ************************************************ -->
 ## <a id="content2"></a>静态成员经典应用 - 单例模式
 
+单例模式：     
+在程序运行过程中，可能会希望某些类的实例对象永远只有一个     
+
+1.把构造函数私有化     
+2.定义一个私有的静态成员变量指针，用于指向单例对象     
+3.提供一个公共的返回单例对象的静态成员函数     
+
+C++：静态成员函数    
+Java、OC：类方法     
+
+
 ```
-/*
-单例模式：
-在程序运行过程中，可能会希望某些类的实例对象永远只有一个
-
-1.把构造函数私有化
-2.定义一个私有的静态成员变量指针，用于指向单例对象
-3.提供一个公共的返回单例对象的静态成员函数
-*/
-
-// C++：静态成员函数
-// Java、OC：类方法
-
 class Rocket{
 private:
     //构造函数和析构函数私有化禁止外部调用
@@ -157,13 +152,8 @@ void shareInstanceUsing(){
     Rocket * rocket4 = Rocket::shareRocket();
     Rocket * rocket5 = Rocket::shareRocket();
 
-
     cout<<"rocket4 is "<<rocket4<<endl;
     cout<<"rocket5 is "<<rocket5<<endl;
-
-
-    
-
 }
 ```
 
@@ -172,53 +162,41 @@ void shareInstanceUsing(){
 <!-- ************************************************ -->
 ## <a id="content3"></a>const成员
 
+ const成员:被const修饰的成员变量、非静态成员函数      
+ 
+ const成员变量      
+ 必须初始化(类内部初始化)，可以在声明的时候直接初始化赋值      
+ 非static的const成员变量还可以在初始化列表中初始化      
+ 
+ const成员函数(非静态)      
+ const关键字写在参数列表后面，函数的声明和实现都必须带const      
+ 内部不能修改非static成员变量      
+ 内部只能调用const成员函数、static成员函数      
+ 非const成员函数可以调用const成员函数      
+ const成员函数和非const成员函数构成重载      
+ 非const对象(指针)优先调用非const成员函数      
+ const对象(指针)只能调用const成员函数、static成员函数      
+
+
 ```
-
-/**
- ◼ const成员:被const修饰的成员变量、非静态成员函数
- 
- ◼ const成员变量
- 必须初始化(类内部初始化)，可以在声明的时候直接初始化赋值
- 非static的const成员变量还可以在初始化列表中初始化
- 
- ◼ const成员函数(非静态)
- const关键字写在参数列表后面，函数的声明和实现都必须带const
- 内部不能修改非static成员变量
- 内部只能调用const成员函数、static成员函数
- 非const成员函数可以调用const成员函数
- const成员函数和非const成员函数构成重载
- 非const对象(指针)优先调用非const成员函数
- const对象(指针)只能调用const成员函数、static成员函数
- */
-
 class Car{
 public:
+
     int m_price;
     
     static int ms_size;
     
-    //const 成员变量必须初始化,在类内部进行初始化
+    //const成员变量必须初始化,在类内部进行初始化
     const int mc_speed = 0;
     
     static const int msc_peple;
     
-    
-    Car():m_price(0){
-        
-    }
+    Car():m_price(0){}
     
     //test 与 const修饰的test函数 构成重载
-    void test(){
-        cout<<"test()"<<endl;
-    }
-    
-    void test() const{
-        cout<<"test()const"<<endl;
-    }
-    
-    static void testS(){
-        
-    }
+    void test(){cout<<"test()"<<endl;}
+    void test() const{cout<<"test()const"<<endl;}
+    static void testS(){}
     
     
     
@@ -240,12 +218,11 @@ public:
     
     void test1()const{
         //不可以访问
-//        this->m_price = 1;
+        //this->m_price = 1;
         
         this->ms_size = 2;
         this->mc_speed;
         this->msc_peple;
-        
         
         test();//优先调用const修饰的函数
         testS();
@@ -254,13 +231,13 @@ public:
     static void testS1(){
         
         //不可访问
-//        m_price = 1;
+        //m_price = 1;
         
         //可以访问
         ms_size = 10;
         
         //不可访问
-//        mc_speed;
+        //mc_speed;
         
         //可以访问
         msc_peple;
@@ -287,7 +264,6 @@ void constUsing(){
     
     const Car car2;
     car2.test();//只能调用const修饰的test函数
-
 }
 
 ```
@@ -295,22 +271,17 @@ void constUsing(){
 <!-- ************************************************ -->
 ## <a id="content4"></a>引用类型成员
 
-```
-/**
- ◼ 引用类型成员变量必须初始化(不考虑static情况)
- 在声明的时候直接初始化
- 通过初始化列表初始化
- */
+引用类型成员变量必须初始化(不考虑static情况)     
+在声明的时候直接初始化     
+通过初始化列表初始化     
 
+```
 class Person{
     int m_age;
     int & m_height = m_age;
     
-    Person(int &height):m_height(height){
-        
-    }
+    Person(int &height):m_height(height){}
 };
-
 ```
 
 
