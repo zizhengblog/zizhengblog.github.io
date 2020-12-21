@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "cocoaPods（四）：master与trunk"
-date: 2019-10-08 
+date: 2018-05-23 
 description: "cocoaPods（四）：master与trunk"
-tag: 工具
+tag: CocoaPods
 --- 
 
 <h6>

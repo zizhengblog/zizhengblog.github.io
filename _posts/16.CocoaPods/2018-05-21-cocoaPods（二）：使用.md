@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "cocoaPods（二）：使用"
-date: 2018-06-22 
+date: 2018-05-21
 description: "cocoaPods（二）：使用"
-tag: 工具
+tag: CocoaPods
 --- 
 
 <h6>

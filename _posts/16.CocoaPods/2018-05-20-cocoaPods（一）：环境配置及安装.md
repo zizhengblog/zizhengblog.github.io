@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "cocoaPods（一）：环境配置及安装"
-date: 2018-06-20 
+date: 2018-05-20 
 description: "cocoaPods（一）：环境配置及安装"
-tag: 工具
+tag: CocoaPods
 --- 
 
 <h6>

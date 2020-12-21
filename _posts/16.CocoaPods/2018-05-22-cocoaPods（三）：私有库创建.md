@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "cocoaPods（三）：私有库创建"
-date: 2018-11-22 
+date: 2018-05-22 
 description: "cocoaPods（三）：私有库创建"
-tag: 工具
+tag: CocoaPods
 --- 
 
 <h6>
