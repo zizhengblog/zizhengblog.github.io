@@ -78,17 +78,17 @@ jekyll serve
 ```
 $ jekyll serve
 Traceback (most recent call last):
-        10: from /Users/LKlixiaoyi/.rvm/gems/ruby-2.6.0/bin/jekyll:23:in `<main>'
-         9: from /Users/LKlixiaoyi/.rvm/gems/ruby-2.6.0/bin/jekyll:23:in `load'
-         8: from /Users/LKlixiaoyi/.rvm/gems/ruby-2.6.0/gems/jekyll-4.0.0/exe/jekyll:11:in `<top (required)>'
-         7: from /Users/LKlixiaoyi/.rvm/gems/ruby-2.6.0/gems/jekyll-4.0.0/lib/jekyll/plugin_manager.rb:52:in `require_from_bundler'
-         6: from /Users/LKlixiaoyi/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler.rb:107:in `setup'
-         5: from /Users/LKlixiaoyi/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler/runtime.rb:26:in `setup'
-         4: from /Users/LKlixiaoyi/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler/runtime.rb:26:in `map'
-         3: from /Users/LKlixiaoyi/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/forwardable.rb:230:in `each'
-         2: from /Users/LKlixiaoyi/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/forwardable.rb:230:in `each'
-         1: from /Users/LKlixiaoyi/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler/runtime.rb:31:in `block in setup'
-/Users/LKlixiaoyi/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler/runtime.rb:319:in `check_for_activated_spec!': You have already activated public_suffix 4.0.3, but your Gemfile requires public_suffix 3.0.3. Prepending `bundle exec` to your command may solve this. (Gem::LoadError)
+        10: from /Users/LKLC/.rvm/gems/ruby-2.6.0/bin/jekyll:23:in `<main>'
+         9: from /Users/LKLC/.rvm/gems/ruby-2.6.0/bin/jekyll:23:in `load'
+         8: from /Users/LKLC/.rvm/gems/ruby-2.6.0/gems/jekyll-4.0.0/exe/jekyll:11:in `<top (required)>'
+         7: from /Users/LKLC/.rvm/gems/ruby-2.6.0/gems/jekyll-4.0.0/lib/jekyll/plugin_manager.rb:52:in `require_from_bundler'
+         6: from /Users/LKLC/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler.rb:107:in `setup'
+         5: from /Users/LKLC/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler/runtime.rb:26:in `setup'
+         4: from /Users/LKLC/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler/runtime.rb:26:in `map'
+         3: from /Users/LKLC/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/forwardable.rb:230:in `each'
+         2: from /Users/LKLC/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/forwardable.rb:230:in `each'
+         1: from /Users/LKLC/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler/runtime.rb:31:in `block in setup'
+/Users/LKLC/.rvm/rubies/ruby-2.6.0/lib/ruby/2.6.0/bundler/runtime.rb:319:in `check_for_activated_spec!': You have already activated public_suffix 4.0.3, but your Gemfile requires public_suffix 3.0.3. Prepending `bundle exec` to your command may solve this. (Gem::LoadError)
 ```
 
 但给出了提示       
