@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "9、Git与GitHub简单同步"
-date: 2019-01-09
+title: "10、Git与GitHub简单同步"
+date: 2019-01-10
 tag: Git
 ---   
 
@@ -26,6 +26,14 @@ tag: Git
 ## <a id="content2"></a>配置SSH
 
 [参考这个链接：https://docs.github.com/cn/free-pro-team@latest/github/authenticating-to-github/connecting-to-github-with-ssh](https://docs.github.com/cn/free-pro-team@latest/github/authenticating-to-github/connecting-to-github-with-ssh)
+
+查看本地的公私钥    
+```
+localhost:.ssh LC$ cd ~/.ssh
+localhost:.ssh LC$ ls
+id_ed25519	id_ed25519.pub	known_hosts
+localhost:.ssh LC$ 
+```
 
 <!-- ************************************************ -->
 ## <a id="content3"></a>创建github仓库
