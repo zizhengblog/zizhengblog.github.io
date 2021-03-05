@@ -200,21 +200,38 @@ class CardWatchCenterFactory: NSObject {
 使用该工厂，通过传递类型信息来获取实体类的对象。
 
 ```swift
-    //let type = CardWatchCenterFactory.CenterType.CenterTypeB1
-    let type = CardWatchCenterFactory.CenterType.CenterTypeB2
-
+//我们代码内部使用CardWatchCenter实例处理事务
+//当我们新增加一个产品时，只需要创建一个产品类，并在工厂类内增加类型和创建即可，下面代码不需要改动
+func cardWatchCenterEvent(_ center : CardWatchCenter){
     
-    let center : CardWatchCenter = CardWatchCenterFactory().createCenter(type: type)
-    print(center.clocks)
-    print(center.heartRate)
-    print(center.step)
+    let clocks = center.clocks
+    print(clocks)
+
+    let heartRate = center.heartRate
+    print(heartRate)
+    
+    let step = center.step
+    print(step)
+    
     center.connect(uuid: "xxxx-yyyyy-ttttt")
     center.disConnect()
+}
+
+
+cardWatchCenterEvent(CardWatchCenterFactory().createCenter(type: .CenterTypeB1))
+print("----------")
+cardWatchCenterEvent(CardWatchCenterFactory().createCenter(type: .CenterTypeB2))
 ```
 
 **五、打印信息**
 
 ```swift
+[(hour: 9, minute: 0, second: 0), (hour: 22, minute: 0, second: 0)]
+80
+100
+B1Center : connet device uuid xxxx-yyyyy-ttttt
+B1Center : disconnect current device
+----------
 [(hour: 9, minute: 1, second: 1), (hour: 22, minute: 1, second: 1)]
 81
 101
