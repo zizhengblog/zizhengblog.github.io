@@ -246,7 +246,7 @@ Samsung washingMachine wash ...
 
 优点：
 
-抽象工厂在增加一个产品族工厂时很容易，扩展性也很好，比如我们再增加一个格力工厂，格力工厂可以生产格力电视、格力冰箱、格力洗衣机。当我们需要使用这些产品时，直接将该产品族(GeliTelevison,GeliFridge,GeliWashingMachine)应用于我们的代码即可，不要原有代码进行改动。
+抽象工厂在增加一个产品族工厂时很容易，扩展性也很好，比如我们再增加一个格力工厂，格力工厂可以生产格力电视、格力冰箱、格力洗衣机。当我们需要使用这些产品时，直接将该产品族(GeliTelevison,GeliFridge,GeliWashingMachine)应用于我们的代码即可，不需要原有代码进行改动。
 
 缺点：
 
