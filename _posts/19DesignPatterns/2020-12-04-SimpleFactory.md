@@ -48,6 +48,8 @@ tag: 设计模式
 <!-- ************************************************ -->
 ## <a id="content2"></a>简单工厂模式实现
 
+<img src="/images/DesignPatterns/simpleFactory.png" alt="img">
+
 
 
 **一、创建一个接口**
