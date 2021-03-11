@@ -528,7 +528,7 @@ img::-moz-selection {
     font-size: 0.8em;/*自留地*/
     font-weight: lighter;
     letter-spacing: 3px;
-    color:#FF0000;
+    color:white;
     -webkit-font-smoothing: antialiased; }
 
   .panel-cover {
