@@ -7,12 +7,7 @@ tag: 底层原理
 ---
 
 
-<h6>
-  版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/181002.html">
-  原文地址：https://jianghuhike.github.io/181002.html 
-  </a>
-</h6>
+
 
 - [参考文章：iOS 使用dSYM分析友盟错误日志](https://www.jianshu.com/p/adcf5ff5e5b2)
 - [参考文章：iOS crash解析](https://www.jianshu.com/p/5e2455bdba38)

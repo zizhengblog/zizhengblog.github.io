@@ -5,7 +5,7 @@ date: 2019-05-31
 description: "OpenGLES GLKit 详讲"
 tag: OpenGL
 ---
-<h6>版权声明：本文为博主原创文章，转载请注明出处。</h6>
+ 
 
 
 <!-- - [参考文章：OpenGL ES初探（上）](https://www.jianshu.com/p/f58fff6d0ba0) -->

@@ -6,12 +6,7 @@ description: "cocoaPods（三）：私有库创建"
 tag: CocoaPods
 --- 
 
-<h6>
-  版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/181122.html">
-  原文地址：https://jianghuhike.github.io/181122.html 
-  </a>
-</h6>
+
 
 
 

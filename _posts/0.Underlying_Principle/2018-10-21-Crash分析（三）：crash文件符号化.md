@@ -7,12 +7,7 @@ tag: 底层原理
 ---
 
 
-<h6>
-  版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/181021.html">
-  原文地址：https://jianghuhike.github.io/181021.html 
-  </a>
-</h6>
+
 
 - [参考文章：iOS实录14：浅谈iOS Crash（一）](https://www.jianshu.com/p/3261493e6d9e)
 - [参考文章：crash文件符号化攻略](https://www.jianshu.com/p/8cac0b87ade2)

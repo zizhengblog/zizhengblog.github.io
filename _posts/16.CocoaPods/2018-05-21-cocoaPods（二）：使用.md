@@ -6,12 +6,7 @@ description: "cocoaPods（二）：使用"
 tag: CocoaPods
 --- 
 
-<h6>
-  版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/18622.html">
-  原文地址：https://jianghuhike.github.io/18622.html 
-  </a>
-</h6>
+
 
 - [参考文章：Cocoapods三重奏 （一）安装和使用](hhttps://www.jianshu.com/p/430a78995556)
 

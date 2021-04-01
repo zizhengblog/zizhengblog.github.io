@@ -6,11 +6,8 @@ tag: 其它
 ---
 
 
-<h6><img src="https://robotkang-1257995526.cos.ap-chengdu.myqcloud.com/icon/copyright.png" alt="copyright" style="display:inline;margin-bottom: -5px;" width="20" height="20"> 版权声明：本文为博主原创文章，未经博主允许不得转载。
-<a target="_blank" href="https://robotkang.cc/1733.html">原文地址：https://robotkang.cc/1733.html</a>
-</h6>
 
-*本博客的搭建真是历经了千辛万苦、一步一坑啊。*
+
 
 ### 参考博客
 

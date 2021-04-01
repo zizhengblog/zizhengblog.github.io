@@ -7,12 +7,6 @@ tag: 其它
 ---
 
 
-<h6>
-  版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/2031.html">
-  原文地址：https://jianghuhike.github.io/2031.html 
-  </a>
-</h6>
 
 
 - [参考文章：Mac 中配置 Jekyll](https://www.jianshu.com/p/25111a6002ec)

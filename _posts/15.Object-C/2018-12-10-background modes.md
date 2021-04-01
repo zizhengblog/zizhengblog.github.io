@@ -6,12 +6,7 @@ description: "background modes"
 tag: Object-C
 --- 
 
-<h6>
-  版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/181210.html">
-  原文地址：https://jianghuhike.github.io/181210.html 
-  </a>
-</h6>
+
 
 
 

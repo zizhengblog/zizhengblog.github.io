@@ -7,13 +7,7 @@ tag: 编码及加解密
 ---
 
 
-<h6>
-  <img src="https://robotkang-1257995526.cos.ap-chengdu.myqcloud.com/icon/copyright.png" alt="copyright" style="display:inline;margin-bottom: -5px;" width="20" height="20"> 版权声明：本文为博主原创文章，未经博主允许不得转载。
 
-  <a target="_blank" href="https://jianghuhike.github.io/18116.html">
-  原文地址：https://jianghuhike.github.io/18116.html 
-  </a>
-</h6>
 
 - [参考文章：百度百科ASCII](https://baike.baidu.com/item/ASCII/309296?fr=aladdin)
 - [参考文章：Unicode](https://blog.csdn.net/weixin_36564655/article/details/79636372)

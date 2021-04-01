@@ -7,7 +7,7 @@ tag: 音视频
 ---
 
 
-<h6>版权声明：本文为博主原创文章，未经博主允许不得转载。</h6>
+
 
 
 - [文章摘抄自：https://www.jianshu.com/p/67c32aece62d，用于记录学习](https://www.jianshu.com/p/67c32aece62d)

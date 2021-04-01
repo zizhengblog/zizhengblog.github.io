@@ -6,12 +6,7 @@ description: "LLVM（三）：clang、xcrun命令"
 tag: LLVM
 --- 
 
-<h6>
-  版权声明：本文为博主原创文章，未经博主允许不得转载。
-  <a target="_blank" href="https://jianghuhike.github.io/19315.html">
-  原文地址：https://jianghuhike.github.io/19315.html 
-  </a>
-</h6>
+
 
 - [参考文章：iOS编译命令 clang xcrun](https://www.jianshu.com/p/80240af0bac6)
 
