@@ -79,7 +79,7 @@ Person * person = [[MJPerson alloc] init];
 
 <img src="/images/underlying/oc4.png" alt="img">
 
-<span style='color:red'>student->isa 找到 Student的class对象 找到 Student的meta-class对象。</span>     
+<span style='color:red'>Student->isa 找到 Student的meta-class对象。</span>     
 <span style='color:red'>Student的meta-class对象->superClass  找到  Person的meta-class对象   找到要调用的方法</span>
 
 
