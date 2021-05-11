@@ -93,11 +93,11 @@ Person.m文件
 `@synthesize age=_age,height=_height;`      
 这是个是默认属性平时开发时不用我们自己书写。     
 
-在开发时有时我们会遇见同时重载set、get方法会报错，只重载其中一个就没问题。
+在开发时有时我们会遇见同时重写set、get方法会报错，只重写其中一个就没问题。
 
 <img src="/images/underlying/msgsend4.png" alt="img">
 
-猜测：当我们同时重载了set、get方法时，编译器会认为我们要手动实现set、get，就不会自动给我们生成这些方法，包括成员变量。所以就会报错：<span style="color:red">Use of undeclared identifier '_age';</span>
+猜测：当我们同时重写了set、get方法时，编译器会认为我们要手动实现set、get，就不会自动给我们生成这些方法，包括成员变量。所以就会报错：<span style="color:red">Use of undeclared identifier '_age';</span>
 
 如何解决这个问题呢？    
 一种方式是：自己手写一个成员变量_age;    
@@ -107,7 +107,7 @@ Person.m文件
 }
 @property (nonatomic, assign) int age;
 ```
-还有一种方式是：使用@synthesize明确告诉编译器要生成成员变量、set、get方法。当然set、get方法已经手动实现，那么它会生成成员变量。这样同时重载set、get就不会报错了。
+还有一种方式是：使用@synthesize明确告诉编译器要生成成员变量、set、get方法。当然set、get方法已经手动实现，那么它会生成成员变量。这样同时重写set、get就不会报错了。
 
 ```objc
 @interface Person : NSObject
