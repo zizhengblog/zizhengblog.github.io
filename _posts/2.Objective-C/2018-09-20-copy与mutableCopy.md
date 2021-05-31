@@ -118,7 +118,7 @@ self.array = 0x1c6573400
 ```
 虽然array是可变数组，但执行完copy后变为了不可变数组，所以调用addObject:方法程序会报unrecognized selector to instance xxxx的错误。
 
-<span style="color:red">所以copy一般不要修饰可变对象，比如NSMutableString、 NSMutableArray、 NSMutableDictionary</span>
+<span style="color:red">所以copy不要修饰可变对象，比如NSMutableString、 NSMutableArray、 NSMutableDictionary</span>
 
 
 **二、copy与strong**

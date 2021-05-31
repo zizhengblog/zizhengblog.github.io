@@ -33,11 +33,13 @@ tag: Objective-C
 **Active**    
 当前应用正在前台运行，并且接收事件。这是应用正在前台运行时所处的正常状态
 
+**Background**    
+应用处在后台，并且还在执行代码。一般的应用，都只会在这个状态短暂停留（最多十分钟），然后就会被系统强制进入 Suspended 状态。而 iOS 为了在某些情况下提供更好的体验，提供了一些选项，只要满足这些选项的条件，就可以在后台运行很长的一段时间，下面我们将重点讨论可以使应用在后台长时间运行的方法
+
 **Suspended**    
 应用处在后台，并且已停止执行代码。系统自动的将应用移入此状态，且在此举之前不会对应用做任何通知。当处在此状态时，应用依然驻留内存但不执行任何程序代码。当系统发生低内存告警时，系统将会将处于 Suspended 状态的应用清除出内存以为正在前台运行的应用提供足够的内存。
 
-**Background**    
-应用处在后台，并且还在执行代码。一般的应用，都只会在这个状态短暂停留（最多十分钟），然后就会被系统强制进入 Suspended 状态。而 iOS 为了在某些情况下提供更好的体验，提供了一些选项，只要满足这些选项的条件，就可以在后台运行很长的一段时间，下面我们将重点讨论可以使应用在后台长时间运行的方法
+
 
 <img src="/images/objectC/objc6.png" alt="img">
 
@@ -46,6 +48,7 @@ tag: Objective-C
 <!-- ************************************************ -->
 ## <a id="content2"></a>background modes
 
+Capabilities 下添加 Background modes     
 如下图：info.plist文件中会自动生成Required Background Modes键，其值为App communicates using CoreBluetooth
 
 <img src="/images/objectC/objc7.png" alt="img">
