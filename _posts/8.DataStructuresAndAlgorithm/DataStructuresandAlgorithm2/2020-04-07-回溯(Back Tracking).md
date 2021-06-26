@@ -84,16 +84,28 @@ tag: 数据结构与算法
 -(void)placeQueens:(int)n;
 @end
 ```
+
 ```
 #import "LCQueens.h"
 
 @interface LCQueens()
 @property(nonatomic,assign)int ways;
-@property(nonatomic,strong)NSMutableArray<NSNumber*>* cols;//索引作为行号，元素作为列号
+
+/**用一个数组表示每行皇后放置的位置,索引代表行，值代表每行皇后放置的位置*/
+@property(nonatomic,strong)NSMutableArray<NSNumber*>* cols;
 @end
 
 @implementation LCQueens
-
+/**
+ 0 1 2 3
+ 1 3 0 2
+ 4皇后问题:每个皇后放置的位置如下
+ 
+ 0行:1位置
+ 1行:3位置
+ 2行:0位置
+ 3行:2位置
+ */
 - (NSMutableArray<NSNumber *> *)cols{
     if (_cols == nil) {
         _cols = [NSMutableArray array];
@@ -123,14 +135,15 @@ tag: 数据结构与算法
 -(void)__place:(int)row{
     
     //最后一行已经摆完，摆放成功
-    if (row == self.cols.count) {
+    NSUInteger rowCount = self.cols.count;
+    if (row == rowCount) {
         self.ways++;
         [self __show];
         return;
     }
     
-    //n = self.cols.count
-    for (int col = 0; col < self.cols.count; col++) {
+    NSUInteger colCount = self.cols.count;
+    for (int col = 0; col <colCount; col++) {
         //row:col 是否可以放置
         if ([self __isValidRow:row col:col]) {
             //放置成功
@@ -139,7 +152,12 @@ tag: 数据结构与算法
             //放置下一行
             [self __place:row+1];
             
-            //来到此处：下一行未放置成功
+            /**
+             来到此处：
+                下一行未放置成功
+                已经成功放置到最后一行成功放回了
+             */
+           
         }else{
             //来到此处：该行该位置不可放置
         }
@@ -189,7 +207,6 @@ tag: 数据结构与算法
 
 
 @end
-
 ```
 
 **二、实现思路二**
