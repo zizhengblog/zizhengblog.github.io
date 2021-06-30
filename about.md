@@ -44,7 +44,7 @@ date: 2018-01-20
 		</td>
 		<td style="width:50%;border-color:white;font-weight:bold;font-size:14px;">
 			<!--右侧内容-->
-			技术博客：<a href="https://jianghuhike.github.io">https://jianghuhike.github.io</a>
+			技术博客：<a href="https://jianghuhike.github.io" style="color:orange">https://jianghuhike.github.io</a>
 		</td>
 	</tr>
 	<tr>
@@ -81,18 +81,10 @@ Git使用禁忌
 
 **三、熟悉网络协议**
 
-应用层
-	http、https
-
-传输层
-	UDP、TCP
-
-网络层
-	IPv4
-
-链路层
-	以太网帧
-	PPP协议	
+应用层：http、https     
+传输层：UDP、TCP     
+网络层：IPv4    
+链路层：以太网帧、PPP协议	  
 
 
 
