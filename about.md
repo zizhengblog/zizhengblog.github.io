@@ -34,7 +34,7 @@ date: 2018-01-20
 		</td>
 		<td style="width:50%;border-color:white;font-weight:bold;font-size:14px;">
 			<!--右侧内容-->
-			学历：本科
+			学历：河北理工大学 本科
 		</td>
 	</tr>
 	<tr>
@@ -81,25 +81,25 @@ Git使用禁忌。
 
 **三、熟悉常用网络协议**
 
-应用层：http、https。     
+应用层：HTTP、HTTPS。     
 传输层：UDP、TCP。     
-网络层：IPv4。    
+网络层：熟悉IPv4，了解IPv6。    
 链路层：以太网帧、PPP协议。	  
 
 
 **四、Objective-C**
 
-熟悉NSObject的本质，isa指针。
-熟悉内存分布，内存管理机制，自动释放池，所有权修饰符，深浅拷贝。
-熟悉Block的应用及Block的本质。
-熟悉Runtime应用及底层原理。
-熟悉Runloop应用及底层原理。
-熟悉KVC与KVO的使用及底层逻辑。
-了解并熟练使用GCD,NSOperation操作多线程，处理耗时任务及线程同步。
-了解并熟练使用各种摘要算法，对称加密算法，公钥加密算法，混合密码系统。
-熟悉cocoaPods的常规使用，私有库的创建及更新。
-复杂界面搭建，xib、storyboard、autolayout、Masonry的熟练使用。
-具有完整的iOS APP开发经验，熟悉iOS签名验签逻辑，App Store发布流程。
+熟悉NSObject的本质，isa指针。    
+熟悉内存分布，内存管理机制，自动释放池，所有权修饰符，深浅拷贝。    
+熟悉Block的应用及Block的本质。    
+熟悉Runtime应用及底层原理。    
+熟悉Runloop应用及底层原理。    
+熟悉KVC与KVO的使用及底层逻辑。    
+了解并熟练使用GCD,NSOperation操作多线程，处理耗时任务及线程同步。    
+了解并熟练使用各种摘要算法，对称加密算法，公钥加密算法，混合密码系统。     
+熟悉cocoaPods的常规使用，私有库的创建及更新。     
+复杂界面搭建，xib、storyboard、autolayout、Masonry的熟练使用。     
+具有完整的iOS APP开发经验，熟悉iOS签名验签逻辑，App Store发布流程。      
 
 
 
