@@ -118,6 +118,28 @@ class RedDecoratorShape: DecoratorShape {
 }
 ```
 
+
+ShadowDecoratorShape.swift
+```swift
+class ShadowDecoratorShape: DecoratorShape {
+    var shape: Shape
+
+    required init(shape: Shape) {
+        self.shape = shape
+    }
+    
+    func draw() {
+        shape.draw()
+        setShadow()
+    }
+    
+    private func setShadow() {
+        //对shape添加阴影
+        print("set a shadow ...")
+    }
+}
+```
+
 **五 调用**
 
 ```swift
@@ -128,11 +150,15 @@ func test1() {
     let circleDecorator = RedDecoratorShape(shape: circle)
     circleDecorator.draw()
     
+    print("-------------------")
     
     let rect = Rectangle()
     rect.draw()
     let rectDecorator = RedDecoratorShape(shape: rect)
     rectDecorator.draw()
+    
+    let shadowDecorator = ShadowDecoratorShape(shape: rectDecorator);
+    shadowDecorator.draw();
 }
 ```
 
@@ -142,9 +168,13 @@ func test1() {
 draw a circle ...
 draw a circle ...
 set a red border ...
+-------------------
 draw a rectangle ...
 draw a rectangle ...
 set a red border ...
+draw a rectangle ...
+set a red border ...
+set a shadow ...
 ```
 
 
