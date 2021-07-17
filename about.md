@@ -10,7 +10,7 @@ date: 2018-01-20
 	<tr>
 		<td style="width:50%;border-color:white;font-weight:bold;font-size:14px;">
 			<!--左侧内容-->
-			姓名：李晓义
+			姓名：李**
 		</td>
 		<td style="width:50%;border-color:white;font-weight:bold;font-size:14px;">
 			<!--右侧内容-->
@@ -40,7 +40,7 @@ date: 2018-01-20
 	<tr>
 		<td style="width:50%;border-color:white;font-weight:bold;font-size:14px;">
 			<!--左侧内容-->
-			邮箱：lixiaoyi911@163.com
+			邮箱：lixiao****@163.com
 		</td>
 		<td style="width:50%;border-color:white;font-weight:bold;font-size:14px;">
 			<!--右侧内容-->
@@ -121,9 +121,9 @@ Git使用禁忌。
 
 
 
-<h3>项目经历</h3>
+<h3>主要项目经历</h3>
 
-**拉卡拉穿戴 项目**
+**一、拉卡拉穿戴 项目**
 
 该项目是拉卡拉手环的官方APP，为智能穿戴设备提供固件更新，数据记录及查看等。
 
@@ -137,7 +137,7 @@ APP内心率，睡眠，运动展示页面的创建开发，我的模块创建�
 
 负责 App Store 的上线发布。
 
-**LKLOTASDK 项目**
+**二、LKLOTASDK 项目**
 
 该项目是为配合拉卡拉手环多渠道销售而成立的一个项目，目的是给第三方提供SDK，使其APP具有连接定制手环的能力,目前服务于广发银行，京东金融。
 
@@ -147,7 +147,7 @@ APP内心率，睡眠，运动展示页面的创建开发，我的模块创建�
 
 负责各城市一卡通空发，空圈接口的定义及实现。
 
-**收款宝Max 项目**
+**三、收款宝Max 项目**
 
 该项目是为小微商户服务的平台，提供开通商户、认证服务、收款服务。
 
@@ -166,6 +166,5 @@ APP内心率，睡眠，运动展示页面的创建开发，我的模块创建�
 
 <h3>工作背景</h3>
 
-
-
+...
 
