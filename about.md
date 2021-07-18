@@ -67,7 +67,7 @@ date: 2018-01-20
 Git环境配置，目录结构，仓库状态，相关对象。    
 Git分支的创建，销毁，合并。    
 Git的常用操作fetch、merge、pull、push、reset等相关操作。    
-Git使用禁忌。    
+Git在多人开发时的使用注意。    
 
 
 
@@ -94,7 +94,7 @@ Git使用禁忌。
 代码的重构与优化。     
 
 
-**五、Objective-C / Swift / C / C++**
+**五、Objective-C / Swift / C++ / C**
 
 具有完整的iOS APP开发经验，熟悉iOS签名验签逻辑，App Store发布流程。               
 熟悉项目常用架构设计，MVC，MVP。熟悉常用设计模式。         
@@ -113,7 +113,7 @@ Git使用禁忌。
 数据本地化存储，数据的归档解档，SQLite，FMDB的熟练使用。    
 复杂界面搭建，xib、storyboard、autolayout、Masonry的熟练使用。     
 
-熟练使用Swift语言开发。    
+熟练使用Swift语言进行开发。    
 了解C++语言，顺畅阅读C++代码，可进行C++代码的编写。    
 了解C语言，顺畅阅读C代码，熟悉C语言指针。    
 了解HTML，CSS，JS，Vue可进行web开发。    
