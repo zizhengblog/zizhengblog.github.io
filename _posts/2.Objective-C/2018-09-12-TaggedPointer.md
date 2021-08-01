@@ -7,21 +7,15 @@ tag: Objective-C
 ---
 
 
-
-
-
-
 ## 目录
 - [TaggedPointer](#content1)   
 - [NSNumber](#content2)   
 - [NSString](#content3)   
-
-
-
+- [源码](#content4)   
 
 
 <!-- ************************************************ -->
-## <a id="content1"></a>TaggedPointer
+## <a id="content1">TaggedPointer</a>
 
 从64bit开始，iOS引⼊了Tagged Pointer技术，用于优化 NSNumber、NSDate、NSString等小对象的存储。
 在没有使⽤用Tagged Pointer之前， NSNumber等对象需要动态分配内存、维护引⽤计数等，NSNumber指针存储的是堆
@@ -47,7 +41,7 @@ objc_msgSend能识别Tagged Pointer，⽐如NSNumber的intValue方法，直接�
 
 
 <!-- ************************************************ -->
-## <a id="content2"></a>NSNumber
+## <a id="content2">NSNumber</a>
 
 
 ```objc
@@ -68,7 +62,7 @@ number3数值较大需要在堆上动态分配空间。变量number3内存储的
 
 
 <!-- ************************************************ -->
-## <a id="content3"></a>NSString
+## <a id="content3">NSString</a>
 
 ```objc
 NSString * name1 = [NSString stringWithFormat:@"abc"];
@@ -138,6 +132,10 @@ NSTaggedPointerString
 __NSCFString
 ```
 
+<!-- ************************************************ -->
+## <a id="content4">源码</a>
+
+可以在源码内搜索 _objc_makeTaggedPointer 查看taggedPointer相关代码
 
 
 ----------
