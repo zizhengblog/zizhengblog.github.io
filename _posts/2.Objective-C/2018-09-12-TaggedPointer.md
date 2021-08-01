@@ -27,13 +27,19 @@ tag: Objective-C
 在没有使⽤用Tagged Pointer之前， NSNumber等对象需要动态分配内存、维护引⽤计数等，NSNumber指针存储的是堆
 中NSNumber对象的地址值
 
-使用Tagged Pointer之后，NSNumber指针里⾯存储的数据变成了:Tag + Data，也就是将数据直接存储在了指针中。
+使用Tagged Pointer之后，NSNumber指针里⾯存储的数据变成了:Tag + Data，也就是将数据直接存储在了变量中。
 
-当指针不够存储数据时，才会使用动态分配内存的方式来存储数据
+当变量不够存储数据时，才会使用动态分配内存的方式来存储数据
 
 objc_msgSend能识别Tagged Pointer，⽐如NSNumber的intValue方法，直接从指针提取数据，节省了了以前的调用开销
 
-如何判断⼀个指针是否为Tagged Pointer?    
+1 Tagged Pointer专⻔用来存储小的对象，例如NSNumber和NSDate
+
+2 Tagged Pointer指针的值不再是地址了，而是真正的值。所以，实际上它不再 是一个对象了，它只是一个披着对象皮的普通变量而已。所以，它的内存并不存储 在堆中，也不需要malloc和free
+
+3 在内存读取上有着3倍的效率，创建时比以前快106倍。
+
+4 如何判断⼀个指针是否为Tagged Pointer?    
 - iOS平台，最高有效位是1(第64bit)    
 - Mac平台，最低有效位是1    
 
@@ -131,6 +137,8 @@ NSLog(@"%@",[self.name class]);
 NSTaggedPointerString
 __NSCFString
 ```
+
+
 
 ----------
 >  行者常至，为者常成！
