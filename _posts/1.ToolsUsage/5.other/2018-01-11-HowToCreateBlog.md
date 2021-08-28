@@ -55,6 +55,10 @@ tag: 其它
 
 - 参考：<a href="http://blog.csdn.net/rainloving/article/details/45745491">Windows 上安装 Jekyll</a>。安装好Jekyll后。打开github客户端，登录。将之前建立的仓库clone到本地。例如我的：dearLilian.github.io， clone到d://lilian/下。就会看到d://lilian/下出现了一个名为dearLilian.github.io的文件夹。
 
+### Mac上安装Jekyll
+
+- 参考：<a href="https://segmentfault.com/a/1190000021904073">Mac 上安装 Jekyll</a>。
+
 ### 网站评论与统计
 
 - 首先是网站统计，你需要在<a href="http://tongji.baidu.com/web/register">百度统计</a>和<a href="https://www.google.com/analytics/">Google Analytics</a>注册账号，并提取相应的id（详细操作请baidu or google）例如我的baidu id为e572ae9801b3a18891f123796b889f77，google id为UA-88738012-1，后面会使用。
