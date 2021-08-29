@@ -27,69 +27,62 @@ tag: CocoaPods
 
 **一、版本查看及帮助**
 
-查看版本
+
 ```
+#1 查看版本
 pod --version
-```
 
-查看一级指令的帮助
-```
+
+#2 查看一级指令的帮助
 pod  --help  
-```
 
-查看子指令的帮助
-```
+
+#3 查看子指令的帮助
 pod install -- help
 ```
 
 **二、索引库相关**
 
-添加镜像索引
+
 ```
+#1 添加镜像索引
 pod repo add master http://git.oschina.net/akuandev/Specs.git
-```
 
-移除本地索引仓库master
-```
+
+#2 移除本地索引仓库master
 pod repo remove master 
-```
 
-设置仓库
-```
+
+#3 设置仓库
 pod setup
-```
 
-更新仓库
-```
+
+#4 更新仓库
 pod repo update
 ```
 
 **三、工程相关**
 
-初始化Podfile文件
+
 ```
+#1 初始化Podfile文件
 pod init
-```
 
-搜索第三方库
-```
+
+#2 搜索第三方库
 pod search SDWebImage
-```
 
-集成第三方库
-```
+
+#3 集成第三方库
 pod install
-```
 
-集成第三方库(不更新本地仓库)
-```
+
+#4 集成第三方库(不更新本地仓库)
 pod install  --no-repo-update   //Skip running `pod repo update`
 #注：执行install指令时不会执行pod repo unpate 即不会更新本地仓库
-```
 
 
-更新集成的第三方库，不会受Podfile.lock文件的限制
-```
+#5 更新集成的第三方库，不会受Podfile.lock文件的限制
 pod update
 ```
 
@@ -100,47 +93,38 @@ pod update
 
 **一、初始化podFile文件**
 
-1、cd到工程的根目录下,执行下面指令
+
 ```
-$ pod init //该指令执行后会在当前目录下生成Podfile文件
-```
+#1 cd到工程的根目录下,执行下面指令
+#  该指令执行后会在当前目录下生成Podfile文件
+pod init 
 
-2、查看Podfile文件
-```
-$ cat Podfile
 
-# Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
-
-target 'podTest' do
-# Comment the next line if you don't want to use dynamic frameworks
-use_frameworks!
-
-# Pods for podTest
-end
+#2 查看Podfile文件
+cat Podfile
 ```
 
 
 
 **二、编辑Podfile文件**
 
-1、多个target中使用相同的Pods依赖库
-
-比如，名称为CocoaPodsTest的target和Second的target都需要使用Reachability、SBJson、AFNetworking三个Pods依赖库，可以使用link_with关键字来实现，将Podfile写成如下方式：
+1、多个target中使用相同的Pods依赖库    
+比如，名称为CocoaPodsTest的target和Second的target都需要使用Reachability、SBJson、AFNetworking三个Pods依赖库     
+可以使用link_with关键字来实现，将Podfile写成如下方式：
 
 ```
 link_with 'CocoaPodsTest', 'Second'
-platform :ios
+platform :ios, '7.0'
 pod 'Reachability',  '~> 3.0.0'
 pod 'SBJson’, ‘~> 4.0.0'
-platform :ios, '7.0'
 pod 'AFNetworking', '~> 2.0'
 ```
 
 
-2、不同的target使用完全不同的Pods依赖库
-
-CocoaPodsTest这个target使用的是Reachability、SBJson、AFNetworking三个依赖库，但Second这个target只需要使用OpenUDID这一个依赖库，这时可以使用target关键字，Podfile的描述方式如下：
+2、不同的target使用完全不同的Pods依赖库      
+CocoaPodsTest这个target使用的是Reachability、SBJson、AFNetworking三个依赖库    
+Second这个target只需要使用OpenUDID这一个依赖库     
+这时可以使用target关键字，Podfile的描述方式如下,以do/end 开始和结尾
 
 ```
 target :'CocoaPodsTest' do
@@ -156,7 +140,7 @@ target :'Second' do
 end
 ```
 
-以do/end 开始和结尾
+
 
 3、使用现有xcworkspace集成第三方库
 - [参考文章：https://www.jianshu.com/p/e3cfae830985](https://www.jianshu.com/p/e3cfae830985)
@@ -202,49 +186,57 @@ pod 'AFNetworking', '~>0'       //高于0的版本，写这个限制和什么都
 
 **三、安装三方库**
 
-1、在添加之前可以先搜索下要添加的三方库
+
 ```
+#1 在添加之前可以先搜索下要添加的三方库
 pod search SDWebImage
-```
-如果搜索失败可尝试删除search_index.json文件,然后再执行pod search
-```
+
+
+#2 如果搜索失败可尝试删除search_index.json文件,然后再执行pod search
 rm ~/Library/Caches/CocoaPods/search_index.json
+
+
+#3 安装第三方库 
+#  在工程的根目录下执行该指令集成第三方库
+pod install 
+
+
+#4 重新打开工程
+#  关闭xcode,在当前工程目录下打开 pod**.xcworkspace
 ```
 
-2.安装第三方库 
-```
-pod install //在工程的根目录下执行该指令集成第三方库
-```
-注：执行完会在当前文件夹下生成 Podfile.lock Pods pod**.xcworkspace
+关于pod install 的说明
 
-其中Podfile.lock 是在pod install时根据Podfile文件 锁定的安装版本 
-再次执行pod install时会保持这个锁定的版本不变，目的是保证不同的开发人员使用的三方库版本相同，所以提交共享库时一定要提交Podfile.lock文件
+1 执行结果     
+执行完会在当前文件夹下生成 Podfile.lock文件 Pods文件夹 pod**.xcworkspace文件        
+其中Podfile.lock 是在pod install时根据Podfile文件 锁定的安装版本          
+再次执行pod install时会保持这个锁定的版本不变，目的是保证不同的开发人员使用的三方库版本相同     
+所以提交共享库时一定要提交Podfile.lock文件         
 
-使用pod install命令安装框架后的大致过程：
 
-01分析依赖:该步骤会分析Podfile,查看不同类库之间的依赖情况。如果有多个类库依赖于同一个类库，但是依赖于不同的版本，那么cocoaPods会自动设置一个兼容的版本。
-
-02 下载依赖:根据分析依赖的结果，下载指定版本的类库到本地项目中。
-
-03 生成Pods项目：创建一个Pods项目专门用来编译和管理第三方框架，CocoaPods会将所需的框架，库等内容添加到项目中，并且进行相应的配置。
-
-04 整合Pods项目：将Pods和项目整合到一个工作空间中，并且设置文件链接。
+2 使用pod install命令安装框架后的大致过程：         
+2.1 分析依赖       
+该步骤会分析Podfile,查看不同类库之间的依赖情况。如果有多个类库依赖于同一个类库，但是依赖于不同的版本，那么cocoaPods会自动设置一个兼容的版本。     
+2.2 下载依赖:        
+根据分析依赖的结果，下载指定版本的类库到本地项目中。       
+2.3 生成Pods项目：    
+创建一个Pods项目专门用来编译和管理第三方框架,CocoaPods会将所需的框架，库等内容添加到项目中，并且进行相应的配置。       
+2.4 整合Pods项目：    
+将Pods和项目整合到一个工作空间中，并且设置文件链接。    
     
-4.重新打开工程
-```
-关闭xcode,在当前工程目录下打开 pod**.xcworkspace
-```
+
+
 
 
 **四、更新三方库**
 
-更新所有三方库
-```
-pod update
-```
 
-更新指定三方库
 ```
+#1 更新所有三方库
+pod update
+
+
+#2 更新指定三方库
 pod update LCCommon
 ```
 
@@ -256,25 +248,22 @@ pod update LCCommon
 
 ```
 pod install
-``` 
 第一次执行会生成Podfile.lock文件 内会锁定的下载的版本 当再次执行pod install时 会按照Podfile.lock内锁定的版本下载
 podfile内新增加三方库时 使用pod install 不影响Podfile.lock内锁定的版本
 
 
-```
 pod update 
-```
 不受Podfile.lock文件影响 只按podfile文件内规定的版本进行下载三方库     
 pod update 更新所有第三方库     
 pod update AFNetworking 更新指定的第三方库      
 
-```
 
 pod outdated
+每当你运行pod outdated命令时，CocoaPods会列出所有在Podfile.lock中的有新版本的pod库。
+这意味着当你对这些pod使用pod update PODNAME时，他们会更新
+只要新版本仍然遵守你在Podfile中做的类似于pod 'MyPod', '~>x.y'这样的限制
+
 ```
-每当你运行pod outdated命令时，CocoaPods会列出所有在Podfile.lock中的有新版本的pod库。这意味着当你对这些pod使用pod update PODNAME时，他们会更新（只要新版本仍然遵守你在Podfile中做的类似于pod 'MyPod', '~>x.y'这样的限制
-
-
 
 <!-- ************************************************ -->
 ## <a id="content3"></a> 三方库删除
