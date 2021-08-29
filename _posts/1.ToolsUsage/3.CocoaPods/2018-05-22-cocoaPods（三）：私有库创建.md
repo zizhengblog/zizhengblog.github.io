@@ -22,42 +22,38 @@ tag: CocoaPods
 
 
 <!-- ************************************************ -->
-## <a id="content1"></a>私有pod库创建
+## <a id="content1">私有pod库创建</a>
 
 - [参考文章：https://www.jianshu.com/p/36953a48937d](https://www.jianshu.com/p/36953a48937d)
 - [参考文章：https://cloud.tencent.com/developer/article/1336311](https://cloud.tencent.com/developer/article/1336311)
 
 
 
-1、github创建一个仓库 用来存储工程文件  
+  
 ```   
+#1 github创建一个仓库 用来存储工程文件
 https://github.com/JiangHuHiKe/LCCommon.git
-```
 
 
-2、创建pod私有库的项目工程
-```       
+#2 创建pod私有库的项目工程      
 在合适的目录下执行 pod lib create 命令 按提示输入需要的内容
-#创建名字叫LCCommon的私有库项目
-$ pod lib create LCCommon   
-```
+创建名字叫LCCommon的私有库项目
+pod lib create LCCommon   
 
-3、添加文件并更新   
-```
+
+#3 添加文件并更新   
 在目录 ../LCCommon/LCCommon/Classes下 删除"ReplaceMe.m"文件
 在目录 ../LCCommon/LCCommon/Classes下 添加LCCategory文件夹，内包含UIColor+Category.h UIColor+Category.m文件
 在目录 ../LCCommon/Example下执行 pod install  更新Example项目中的pod 出现提示成功字样 该步完成
-```
 
-4、修改podspec文件并验证   
-```
+
+#4 修改podspec文件并验证   
 打开../LCCommon/Example 中的.workspace文件 打开工程    
 找到LCCommon.podspec文件 进行修改   
 在目录 ../LCCommon下执行pod lib lint 进行验证 出现成功字样 该步完成
-```   
+   
     
-5、将本地项目文件上传到远程私有库中 并 校验spec
-```
+#5 将本地项目文件上传到远程私有库中 并 校验spec
 在目录../LCCommon下执行：
 $ git remote add origin https://github.com/JiangHuHiKe/LCCommon.git
 $ git add .
@@ -74,22 +70,20 @@ pod spec lint
  
  
 <!-- ************************************************ -->
-## <a id="content2"></a> 私有pod库索引库创建
+## <a id="content2">私有pod库索引库创建</a> 
 
- 
-1、github创建一个仓库 用来作为索引库
+
 ```
+#1 github创建一个仓库 用来作为索引库
 https://github.com/JiangHuHiKe/LCCommonSpec.git
-```
 
-2、将索引库克隆到 ~/.cocoaPods/repos目录下
-```
+
+#2 将索引库克隆到 ~/.cocoaPods/repos目录下
 在目录../LCCommon下执行：
 pod repo add LCCommonSpec https://github.com/JiangHuHiKe/LCCommonSpec.git
-```
 
-3、建立关联
-```
+
+#3 建立关联
 在目录../LCCommon下执行：
 pod repo push LCCommonSpec LCCommon.podspec 
 ```
@@ -97,25 +91,23 @@ pod repo push LCCommonSpec LCCommon.podspec
 
 
 <!-- ************************************************ -->
-## <a id="content3"></a> 私有库使用
+## <a id="content3">私有库使用</a> 
 
-开始集成前可先搜索
+
 ```
+#1 开始集成前可先搜索
 pod search LCCommon
-```
 
-更新索引库
-```
+
+#2 更新索引库
 pod repo update LCCommonSpec
-```
 
-1、新建工程的根目录下执行
-```
+
+#3 新建工程的根目录下执行
 pod init
-```
 
-2、修改Podfile文件如下
-```
+
+#4 修改Podfile文件如下
 source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/JiangHuHiKe/LCCommonSpec.git'
 target 'podUsageTest' do
@@ -124,34 +116,31 @@ platform :ios, '9.0'
 pod 'MJExtension'
 pod 'LCCommon'
 end
-```
 
-3、集成
-```
+
+#5 集成
 pod install
 ```
 
 
 
 <!-- ************************************************ -->
-## <a id="content4"></a> 私有库更新
+## <a id="content4">私有库更新</a> 
 
 
-1、添加文件并更新
+
 ```
+#1 添加文件并更新
 添加完成后
 在目录 ../LCCommon/Example下执行 pod install  更新Example项目中的pod 出现提示成功字样 该步完成
-```
+
     
-2、修改 LCCommon.podspec文件
-```
+#2 修改 LCCommon.podspec文件
 找到LCCommon.podspec文件 进行修改 s.version的值
 在目录 ../LCCommon下执行pod lib lint 进行验证 出现成功字样 该步完成
-```
 
 
-3、推送到远程并更新tag
-```
+#3 推送到远程并更新tag
 git add .
 git commit -m "your message"
 git push
@@ -161,17 +150,17 @@ git push --tags //
 在目录../LCCommon下执行：
 pod spec lint //有警告的话可以加上 --allow-warnings 来忽略警告
 校验spec 出现成功提示该步完成，出现错误重新执行该步骤
-```
 
-4、更新本地索引库
-```
+
+#4 更新本地索引库
 pod repo push LCCommonSpec LCCommon.podspec
+
 ```
 
 
 
 <!-- ************************************************ -->
-## <a id="content5"></a> spec文件
+## <a id="content5">spec文件</a> 
 
 **一、文件说明**
 

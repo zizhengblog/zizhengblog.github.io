@@ -19,7 +19,7 @@ tag: CocoaPods
 
 
 <!-- ************************************************ -->
-## <a id="content1"></a> 环境配置
+## <a id="content1">环境配置</a> 
 
 RVM(ruby管理器) -> ruby(ruby环境) -> gem(包管理器)
 
@@ -127,7 +127,7 @@ sudo gem update --system
 
 
 <!-- ************************************************ -->
-## <a id="content2"></a> cocoaPods
+## <a id="content2">cocoaPods</a> 
 
 
 **一、cocoaPods介绍**

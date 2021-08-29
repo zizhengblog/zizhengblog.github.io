@@ -21,7 +21,7 @@ tag: CocoaPods
 
 
 <!-- ************************************************ -->
-## <a id="content1"></a> 基本指令介绍
+## <a id="content1">基本指令介绍</a> 
 
 - [参考文章：https://www.cnblogs.com/chzheng/p/5949353.html](https://www.cnblogs.com/chzheng/p/5949353.html)
 
@@ -88,7 +88,7 @@ pod update
 
 
 <!-- ************************************************ -->
-## <a id="content2"></a> 三方库集成
+## <a id="content2">三方库集成</a> 
 
 
 **一、初始化podFile文件**
@@ -266,7 +266,7 @@ pod outdated
 ```
 
 <!-- ************************************************ -->
-## <a id="content3"></a> 三方库删除
+## <a id="content3">三方库删除</a> 
 
 删除工程文件夹下的Podfile、Podfile.lock及Pods文件夹
 
