@@ -13,6 +13,29 @@ tag: 其它
 
 - <a href='http://baixin.io/2016/10/jekyll_tutorials1/'>Jekyll搭建个人博客</a>
 
+
+### 快速启动
+1、将项目根目录下的<span style="color:red">Gemfile.lock</span>文件删除
+
+2、运行下面指令
+```
+sudo gem install jekyll bundler
+```
+
+3、查看jekyll是否安装成功
+```
+jekyll --version
+如果报错，可能是包安装不全运行
+sudo bundle install
+```
+
+4、启动服务
+```
+jekyll serve
+```
+
+
+
 ### 说在前面的话 💯   
 
 - 我们需要做很多事情。包括环境配置，账号注册，域名购买（不是必须）等。之前一直想搞一个属于自己的博客，16年我以16元的价格买了一个域名「话说域名的续费有点小贵啊..」并且用python搭了一个离线的博客之后就不了了之了「关键部署太麻烦..」。直到前几又萌生出了搭建博客的心思，才又重新搞起。好在，经过几天的瞎搞，弄出来了。
