@@ -38,13 +38,16 @@ pod  --help
 
 
 #3 查看子指令的帮助
-pod install -- help
+pod repo -- help
 ```
 
 **二、索引库相关**
 
 
 ```
+#0 初始化环境，下载索引仓库到本地，一般首次安装时执行
+pod setup
+
 #1 添加镜像索引
 pod repo add master http://git.oschina.net/akuandev/Specs.git
 
@@ -53,16 +56,14 @@ pod repo add master http://git.oschina.net/akuandev/Specs.git
 pod repo remove master 
 
 
-#3 设置仓库
-pod setup
-
-
-#4 更新仓库
+#3 更新仓库
 pod repo update
+
+#4 更新特定仓库
+pod repo update SDWebImage
 ```
 
 **三、工程相关**
-
 
 ```
 #1 初始化Podfile文件

@@ -164,11 +164,12 @@ pod --version
 
 ```
 #1 设置索引库
-#这步其实是Cocoapods在将它的镜像索引下载到 ~/.cocoapods/repos目录下。       
-#CocoaPods的所有项目的镜像索引Podspec文件都托管在https://github.com/CocoaPods/Specs。       
+#主要用于设置和初始化 CocoaPods 本地环境，包括下载仓库索引、更新本地配置和创建本地仓库镜像。
+#它通常在你首次安装 CocoaPods 或需要确保本地环境的配置和索引是最新的时执行
+#CocoaPods的所有项目的镜像索引Podspec文件都托管在:https://cdn.cocoapods.org/这个是默认源 
+#之前的默认源是https://github.com/CocoaPods/Specs。
 #Podspec文件是我们使用cocoaPods找到第三方库源码的索引文件，每个第三方库都有一个。      
-#第一次执行pod setup时，CocoaPods会将这些podspec索引文件更新到本地的~/.cocoapods/repos/master目录下.
-#这个索引文件比较大，所以第一次更新时非常慢。
+#第一次执行pod setup时，CocoaPods会将这些podspec索引文件更新到本地的~/.cocoapods/repos目录下.
 pod setup
 
 
@@ -210,6 +211,8 @@ pod setup
 **四、卸载cocoaPods**
 
 - [参考文章：https://blog.csdn.net/qq_32666701/article/details/80607646](https://blog.csdn.net/qq_32666701/article/details/80607646)
+
+<span style="color:red; font-weight:bold;">cocoapods 用哪个gem安装的,就要用哪个gem进行更新和卸载</span>
 
 ```
 #1 卸载cocoapods
