@@ -126,6 +126,27 @@ let c:Int = b
 多重可选项的比较
 ```
 
+可选链
+```Swift
+let person:Person? = Person()
+//如果不是可选类型会包装成可选类型
+let age = person?.age // optional
+let age = person!.age // int
+
+// 如果是可选类型不会重复包装
+// car 是可选类型
+let car = person?.car //optional
+let car = person!.car //optional
+
+
+// 如果person是nil就会终止后续操作
+person?.run()
+
+let num:Int? = 5
+let num:Int? = nil
+num? = 10
+
+```
 
 
 <!-- ************************************************ -->
@@ -208,7 +229,7 @@ subscript的使用<br>
 final的使用：禁止被子类重写和继承<br>
 
 
-进度：11-01
+进度：11-01 other11
 
 
 ----------
