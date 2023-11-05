@@ -13,6 +13,7 @@ tag: CocoaPods
 * [pod 常用命令](#content1)
 * [使用的经验](#content2)
 * [Cocoapods 私有库搭建和使用](#content3)
+* [将公开库私有化](#content4)
 
 
 
@@ -172,7 +173,30 @@ podfile.lock
 
 
 
+<!-- ************************************************ -->
+## <a id="content4"></a> 将公开库私有化
 
+一、以AFN为例，创建一个自己的AFNetworking仓库
+```
+https://e.coding.net/lxy911/xy-app-libs/AFNetworking.git
+```
+
+二、将官方的afn仓库同步到自己的仓库<br>
+coding在仓库创建完成之后有对应的选项：从其它仓库同步
+
+
+三、编辑spec文件
+将仓库切换到对应的tag
+修改podspec文件的source选项为自己的git仓库地址
+
+四、将spec文件推送到自己的索引仓库
+
+五、在工程中使用私有化的afn<br>
+在podfile文件中如果指定了私有源，则优先使用私有源中的afn<br>
+如果存在多个私有源都存在afn，那么文件前面的私有源优先级高<br>
+
+PS:<br>
+<span style="color:red;font-weight:bold;">如果确定spec文件没问题，但执行pod repo push 总是不成功，可以将文件直接copy到私有仓库内直接推送到远端</span>
 
 ----------
 >  行者常至，为者常成！
