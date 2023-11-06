@@ -14,10 +14,11 @@ tag: Overview
 
 - [常量](#content1)   
 - [变量与数据类型](#content2)   
-- [可选项](#content3)   
-- [结构体和类](#content4)   
-- [闭包](#content5)   
-- [其它](#content6)   
+- [闭包](#content3)   
+- [可选项](#content4)   
+- [枚举/结构体/类](#content5)   
+- [协议](#content6)   
+- [其它](#content10)   
 
 
 
@@ -69,10 +70,24 @@ func sum(a:Int, b:Int)->Int {return 10}
 func goToWork(at time:String){} // goToWork(at:"10:00")
 ```
  
- 
+<!-- ************************************************ -->
+## <a id="content5">闭包</a>
+
+什么是闭包？<br>
+    外层函数 + 内层函数 + 内层函数访问外层函数的变量<br>
+
+闭包的作用？<br>
+    1、捕获变量，在函数调用结束后仍能访问函数内部的变量：比如计数器<br>
+    2、代码模块化，比如返回一个包含了多个方法的元组或对象：比如计算器<br>
+    3、异步任务，函数调用结束后还能执行捕获的闭包表达式：网络请求<br>
+
+逃逸闭包？<br>
+    非逃逸闭包：内部定义，内部调用<br>
+    逃逸闭包：内部定义，外部调用<br>
+  
  
 <!-- ************************************************ -->
-## <a id="content3">可选项</a>
+## <a id="content4">可选项</a>
 空判断和强制解包
 ```Swift
 let a:Int? = 10
@@ -108,6 +123,8 @@ let a:Int? = 1
 
 let b:Int? = 2
 
+// a不为nil返回a,a为nil返回b.
+// 返回的类型与b相同
 let c = a ?? b
 ```
 
@@ -117,13 +134,16 @@ let a:Int? = 1
 
 let b:Int! = 2
 
+// b可以赋值给c，a不行
 let c:Int = b
 ```
 
 多重可选项
 ```
+多重可选项的比较：
+    能解包出相同的具体值的多重可选项都是相等的
+
 使用场景：GPT异步比如获取用户信息。没明白??
-多重可选项的比较
 ```
 
 可选链
@@ -144,33 +164,35 @@ person?.run()
 
 let num:Int? = 5
 let num:Int? = nil
+//num是nil会终止后续操作，不会赋值10
 num? = 10
 
 ```
 
 
 <!-- ************************************************ -->
-## <a id="content4">结构体和类</a>
+## <a id="content4">枚举/结构体/类</a>
 
-枚举
+### 枚举
+
 ```
 原始值 内存占用1字节
 关联值 内存占用 1字节 + n字节
 枚举内也可以定义方法
 ```
 
-结构体和类
-```
-结构体是值类型  内存分布：栈空间
-类是引用类型   内存分布：堆空间(16的倍数) 前8字节isa 再8字节引用计数。let p = Person() p占用8个字节
-
+### 结构体和类
+结构体是值类型  内存分布：栈空间<br>
 let 对结构体变量和类变量的不同，理解let的本质
 
+
+### 类
+
+#### 基本结构
+
+类是引用类型   内存分布：堆空间(16的倍数) 前8字节isa 再8字节引用计数。let p = Person() p占用8个字节<br>
 嵌套的类型不占用外部类型的空间
-```
 
-
-方法和属性
 ```
 实例属性：
     存储属性
@@ -187,14 +209,78 @@ let 对结构体变量和类变量的不同，理解let的本质
 ```
 
 
-inout的本质
+#### 实例对象与类对象
+```Swift
+class Person {}
+let p :Person = Person()
+let cls :Person.type = Person.self
+// p 对应OC中的实例对象
+// Person.self 对应OC中的类对象
+// Person.type 对应OC中的Class
+// Person 与 Person.self 都能调用类方法
+// let pcls : Person.type = Person.self; 但是不能 let pcls:Person.type = Person
 ```
+
+
+<!-- ************************************************ -->
+## <a id="content6">协议</a>
+
+#### 一个完整的协议格式
+```Swift
+protocol Life {
+    //Property in protocol must have explicit { get } or { get set } specifier
+    var age:Int{get}
+    var name:String{get set}
+    init(age:Int, name:String)//也可以int?(xxx) int!(xxx)
+    func run()
+    mutating func grow()
+    static func walk()
+}
+
+//协议的继承
+protocol Dog : Life {
+    func fake()
+}
+
+protocol Person : Life {
+    var car:String{get}
+}
+
+protocol Teach {
+    var studens:Array<Any>{get}
+}
+
+
+//协议的使用
+class Teacher : Person & Teach {
+    xxx
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### 其它
+
+```
+inout的本质
 地址传递
 copy in copy out(会产生一个副本)
 ```
 
-单利对象
+
 ```Swift
+单利对象
 public static let share = FileManager()
 
 private func init(){
@@ -204,32 +290,18 @@ private func init(){
 
 
 
-<!-- ************************************************ -->
-## <a id="content5">闭包</a>
 
-什么是闭包？<br>
-    外层函数 + 内层函数 + 内层函数访问外层函数的变量<br>
-
-闭包的作用？<br>
-    1、捕获变量，在函数调用结束后仍能访问函数内部的变量：比如计数器<br>
-    2、代码模块化，比如返回一个包含了多个方法的元组或对象：比如计算器<br>
-    3、异步任务，函数调用结束后还能执行捕获的闭包表达式：网络请求<br>
-
-逃逸闭包？<br>
-    非逃逸闭包：内部定义，内部调用<br>
-    逃逸闭包：内部定义，外部调用<br>
- 
 
 
 <!-- ************************************************ -->
-## <a id="content6">其它</a>
+## <a id="content10">其它</a>
 
 mutating的使用<br>
 subscript的使用<br>
 final的使用：禁止被子类重写和继承<br>
 
 
-进度：11-01 other11
+进度：12-01
 
 
 ----------
