@@ -18,8 +18,8 @@ tag: Overview
 - [可选项](#content4)   
 - [枚举/结构体/类](#content5)   
 - [协议](#content6)   
+- [泛型](#content7)   
 - [其它](#content10)   
-
 
 
 
@@ -273,8 +273,9 @@ class Teacher : Person & Teach {
 #### 其它
 
 ```
-inout的本质
-地址传递
+inout的本质：地址传递
+
+// 计算属性 和 设置了属性观察器的属性
 copy in copy out(会产生一个副本)
 ```
 
@@ -288,7 +289,59 @@ private func init(){
 }
 ```
 
+<!-- ************************************************ -->
+## <a id="content7">泛型</a>
+泛型就是将类型作为参数，或者说是类型的占位
 
+```swift
+// 方法与泛型
+func test<T>(num1:T, num2:T) -> T {
+    return num1 + num2
+}
+test(num1:10, num2:20)
+
+//枚举与泛型
+enum Score<T>{
+    case point(T)
+    case grade(String)
+}
+let Score<Int>.point(10)
+
+
+//类与泛型
+class Stack<T> {
+    var elements = [T]()
+    func push(element:T) {
+        elements.append(element)
+    }
+}
+let st = Stack<Int>()
+st.push(element:10)
+
+
+//协议与泛型
+protocol Stackable {
+    associatedtype E // 关联类型
+    mutating func push(element: E)
+}
+class Stack<T> : Stackable {
+    //指定关联类型为具体类型
+    //typealias E = Int
+    //指定关联类型为泛型
+    typealias E = T
+    var elements = [T]()
+    func push(element:T) {
+        elements.append(element)
+    }
+}
+```
+
+可以给泛型指定约束
+```swift
+func test<T : Equatable>(num1:T, num2:T) -> T {
+    return num1 + num2
+}
+```
 
 
 
