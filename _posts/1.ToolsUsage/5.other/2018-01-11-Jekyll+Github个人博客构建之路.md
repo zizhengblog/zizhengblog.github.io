@@ -14,19 +14,23 @@ tag: 其它
 - <a href='http://baixin.io/2016/10/jekyll_tutorials1/'>Jekyll搭建个人博客</a>
 
 
-### 快速启动
+### 快速开始
 1、将项目根目录下的<span style="color:red">Gemfile.lock</span>文件删除
 
 2、运行下面指令
 ```
-sudo gem install jekyll bundler
+sudo gem install -n /usr/local/bin jekyll bundler 
 ```
 
 3、查看jekyll是否安装成功
 ```
 jekyll --version
+
 如果报错，可能是包安装不全运行
-sudo bundle install
+bundle install
+
+如果bundle install没有反应，将Gemfile文件中的源切换成国内的源再次尝试下
+source 'https://gems.ruby-china.com'
 ```
 
 4、启动服务
