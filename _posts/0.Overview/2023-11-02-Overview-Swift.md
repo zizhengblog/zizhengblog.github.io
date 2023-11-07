@@ -280,6 +280,57 @@ print(num4) // Optional(10)
 <!--===============================================================================================-->
 ## <a id="content5">枚举/结构体/类</a>
 
+### 共同
+
+#### 一、扩展
+
+扩展可以给类添加方法：方法、计算属性、下标
+
+扩展不能重写类的方法：如果能重写是不是就覆盖掉了系统类的实现，那些使用系统类方法的地方就会有问题
+
+扩展不能添加指定初始化器：Swift中的初始化是一个严格的过程，不允许在扩展中添加，保证初始化的一致性
+
+```swift
+// 给stack类扩展遵守Equatable协议
+// E 类中的泛型在扩展中仍然可以使用
+// 满足某些条件才会有扩展
+extension Stack : Equatable where E : Equatable {
+    static func == (left: Stack, right: Stack) -> Bool {
+        left.elements == right.elements
+    }
+}
+
+
+// 扩展系统类
+extension Array {
+    subscript(nullable idx: Int) -> Element? {
+        if (startIndex..<endIndex).contains(idx) {
+            return self[idx]
+        }
+        return nil
+    }
+}
+```
+
+#### 二、访问控制
+ 模块：指的是独立的代码单元,框架或应用程序会作为一个独立的模块来构建和发布。在 Swift 中,一个模块可以使用 import 关键字导入另外一个模块
+
+ 在访问权限控制这块，Swift提供了5个不同的访问级别(以下是从高到低排列， 实体指被访问级别修饰的内容)
+
+ open:允许其他模块访问、继承、重写(open只能用在类、类成员上)
+
+ public:其他模块中访问，不允许其他模块进行继承、重写
+
+ internal:只允许在当前模块访问、继承、重写，不允许其他模块访问
+
+ fileprivate:只允许在定义实体的源文件中访问
+
+ private:只允许在定义实体的封闭声明中访问，都在文件下的话private 和 fileprivate 作用相同
+
+ 绝大部分实体默认都是internal 级别
+
+
+
 ### 枚举
 
 ```
@@ -289,13 +340,16 @@ print(num4) // Optional(10)
 ```
 
 ### 结构体和类
-结构体是值类型  内存分布：栈空间<br>
+结构体是值类型  内存分布：栈空间
+
 let 对结构体变量和类变量的不同，理解let的本质
+
 结构体没有便捷初始化器
+
 
 ### 类
 
-#### 基本结构
+#### 一、基本结构
 
 类是引用类型   内存分布：堆空间(16的倍数) 前8字节isa 再8字节引用计数。let p = Person() p占用8个字节<br>
 嵌套的类型不占用外部类型的空间
@@ -306,6 +360,8 @@ let 对结构体变量和类变量的不同，理解let的本质
     计算属性
 实例方法：
     init方法(重要)：指定初始化器 + 便捷初始化器，以及父子类中有哪些规则
+    指定初始化器不能互相调用，一个指定初始化器就是一个出口
+
     deinit方法：先子类后父类
 
 
@@ -316,7 +372,7 @@ let 对结构体变量和类变量的不同，理解let的本质
 ```
 
 
-#### 实例对象与类对象
+#### 二、实例对象与类对象
 ```Swift
 class Person {}
 let p :Person = Person()
@@ -327,7 +383,6 @@ let cls :Person.type = Person.self
 // Person 与 Person.self 都能调用类方法
 // let pcls : Person.type = Person.self; 但是不能 let pcls:Person.type = Person
 ```
-
 
 <!--===============================================================================================-->
 ## <a id="content6">协议</a>
@@ -379,18 +434,13 @@ func setObj(obj:some Runable) {
 }
 ```
 
-#### 三、其它
+#### 三、给协议添加扩展
 
-```
-inout的本质：地址传递
-// 计算属性 和 设置了属性观察器的属性
-copy in copy out(会产生一个副本)
-```
-
-```Swift
-单利对象
-public static let share = FileManager()
-private func init(){}
+```swift
+//提供默认实现
+extension BinaryInteger {
+    func isOdd() -> Bool { self % 2 != 0 }
+}
 ```
 
 <!--===============================================================================================-->
@@ -535,12 +585,27 @@ func set<T:Runable>(obj:T) {
 <!--===============================================================================================-->
 ## <a id="content10">其它</a>
 
-mutating的使用<br>
-subscript的使用<br>
+mutating的使用
+
+subscript的使用
+
 final的使用：禁止被子类重写和继承<br>
 
 
-进度：14-01
+```
+inout的本质：地址传递
+// 计算属性 和 设置了属性观察器的属性
+copy in copy out(会产生一个副本)
+```
+
+```Swift
+单利对象
+public static let share = FileManager()
+private func init(){}
+```
+
+
+进度：15-02
 
 
 ----------
