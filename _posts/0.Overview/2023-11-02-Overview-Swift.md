@@ -39,6 +39,7 @@ let a = 10
 <!-- ************************************************ -->
 ## <a id="content2">变量与数据类型</a>
 
+#### 一、变量
 ```Swift
 var isClick:Bool = false //可以省略类型说明和结尾的分号
 
@@ -46,8 +47,8 @@ var a:Int = 0;
 var a:Float = 10.0; 
 var a:Double = 10.0;
 
-var str:String = "hello world"
 var cha:Character = "a" // 字符类型必须指定类型
+var str:String = "hello world"
 
 var array:Array = [1, 2, 3, 4]
 
@@ -69,6 +70,45 @@ var blk:(Int,Int)->Int = {(a, b) in return a + b}   // var result = blk(10,20)
 func sum(a:Int, b:Int)->Int {return 10}
 func goToWork(at time:String){} // goToWork(at:"10:00")
 ```
+
+#### 二、数据类型
+
+##### 1、String
+swift中的字符串类型是结构体，是值类型<br>
+值类型的特点是：将a赋值给b之后，对b进行修改不会影响a
+
+```swift
+//1、长度小于等于15的字符串存储于str的内存中
+var str:String = "0123456789"
+
+//2、append后长度仍小于等于15的字符串 仍位于变量的内存
+str.append("A")
+
+//3、长度大于15的字符串位于常量区（常量区的内存在编译时分配，程序运行时无法更改）
+var str = "0123456789ABCDEF"
+
+//4、不管之前长度是否大于15，append后长度大于15的字符串 会存储于堆空间
+str.append("ABCDEF")
+
+```
+
+##### 2、Array
+Swift中的数组也是结构体，是值类型
+```swift
+var arr:Array = [1,2,3,4]
+
+var arr1 = arr
+arr1.append(6)
+
+//arr1的改变并不会影响arr
+//arr1 = [1, 2, 3, 4, 6], arr = [1, 2, 3, 4]
+print("arr1 = \(arr1), arr = \(arr)")
+```
+<span style="color:red;fontWeight:bold">PS:Array在底层其实是引用类型 但实际使用时是结构体<br> 行为上是值类型 本质是引用类型只是苹果隐藏了这一层</span>
+
+##### 3、Dictionary 和 Set 也是结构体类型，也是值类型
+
+##### 4、元组是一个复合类型，也是值类型
  
 <!-- ************************************************ -->
 ## <a id="content5">闭包</a>
@@ -434,7 +474,7 @@ subscript的使用<br>
 final的使用：禁止被子类重写和继承<br>
 
 
-进度：12-01
+进度：14-01
 
 
 ----------
