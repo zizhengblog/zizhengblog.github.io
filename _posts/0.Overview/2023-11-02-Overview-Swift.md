@@ -128,7 +128,7 @@ print("arr1 = \(arr1), arr = \(arr)")
  
 <!--===============================================================================================-->
 ## <a id="content4">可选项</a>
-空判断和强制解包
+#### 一、空判断和强制解包
 ```Swift
 let a:Int? = 10
 
@@ -137,7 +137,9 @@ if a! = nil {
 }
 ```
 
-可选项绑定：自动解包
+#### 二、自动解包
+
+##### 1、可选项绑定自动解包
 ```Swift
 // num的作用域是块作用域
 if let num=a, num>0 {
@@ -156,8 +158,18 @@ guard let userName = info["userName"] {
 print(userName)
 ```
 
+##### 2、! 自动解包
+```Swift
+let a:Int? = 1
 
-空合并运算符
+let b:Int! = 2
+
+// b可以赋值给c，a不行
+let c:Int = b
+```
+
+
+#### 三、空合并运算符
 ```Swift
 let a:Int? = 1
 
@@ -168,17 +180,9 @@ let b:Int? = 2
 let c = a ?? b
 ```
 
-自动解包
-```Swift
-let a:Int? = 1
 
-let b:Int! = 2
 
-// b可以赋值给c，a不行
-let c:Int = b
-```
-
-多重可选项
+#### 四、多重可选项
 ```
 多重可选项的比较：
     能解包出相同的具体值的多重可选项都是相等的
@@ -186,7 +190,7 @@ let c:Int = b
 使用场景：GPT异步比如获取用户信息。没明白??
 ```
 
-可选链
+#### 五、可选链
 ```Swift
 let person:Person? = Person()
 //如果不是可选类型会包装成可选类型
@@ -206,7 +210,70 @@ let num:Int? = 5
 let num:Int? = nil
 //num是nil会终止后续操作，不会赋值10
 num? = 10
+```
 
+#### 六、可选项的本质是枚举
+
+##### 1、举例
+```swift
+//可选项
+var num:Int? = nil
+print(num)  // nil
+num = 10
+print(num)  // Optional(10)
+
+// 枚举
+var num1:Optional<Int> = nil
+print(num1) // nil
+num1 = 10
+print(num1) // Optional(10)
+
+
+// .none 就是nil
+var num2:Optional<Int> = .none
+print(num2) // nil
+num2 = .some(10)
+print(num2) // Optional(10)
+```
+
+##### 2、自己实现
+```swift
+enum MYOptional<T> : ExpressibleByNilLiteral & ExpressibleByIntegerLiteral & CustomStringConvertible{
+    case none
+    case some(T)
+    
+    // 字面量协议： ExpressibleByNilLiteral
+    init(nilLiteral: ()) {
+        self = .none
+    }
+    
+    // 字面量协议：ExpressibleByIntegerLiteral
+    init(integerLiteral : Int) {
+        self = .some(integerLiteral as! T)
+    }
+
+    // CustomStringConvertible 协议
+    var description: String {
+        switch self {
+        case .none:
+            return "nil"
+        case let .some(val):
+            return "Optional(\(val))"
+        }
+    }
+}
+
+
+var num3:MYOptional<Int> =  nil
+print(num3) // nil
+num3 = 10
+print(num3) // Optional(10)
+
+
+var num4:MYOptional<Int> = .none
+print(num4) // nil
+num4 = .some(10)
+print(num4) // Optional(10)
 ```
 
 
