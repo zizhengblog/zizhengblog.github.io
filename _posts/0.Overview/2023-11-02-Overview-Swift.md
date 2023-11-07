@@ -225,7 +225,7 @@ let cls :Person.type = Person.self
 <!-- ************************************************ -->
 ## <a id="content6">协议</a>
 
-#### 一个完整的协议格式
+#### 一、一个完整的协议格式
 ```Swift
 protocol Life {
     //Property in protocol must have explicit { get } or { get set } specifier
@@ -257,48 +257,49 @@ class Teacher : Person & Teach {
 }
 ```
 
+#### 二、带关联类型的协议
+```swift
+protocol Runable {
+    associatedtype Speed // 关联类型
+    func run(s:Speed)
+}
 
+//带关联类型和Self的协议只能作为泛型的约束，不能作为参数类型和返回值类型
+//xy:参数类型和返回值类型需要确定的类型，不能包含不透明类型(协议内的关联类型为不透明类型或者叫不确定类型)
+//要想带关联类型和Self的协议作为参数类型和返回值类型可以使用some关键字
+func setObj(obj:some Runable) {
+    
+}
+```
 
-
-
-
-
-
-
-
-
-
-
-
-#### 其它
+#### 三、其它
 
 ```
 inout的本质：地址传递
-
 // 计算属性 和 设置了属性观察器的属性
 copy in copy out(会产生一个副本)
 ```
 
-
 ```Swift
 单利对象
 public static let share = FileManager()
-
-private func init(){
-
-}
+private func init(){}
 ```
+
 
 <!-- ************************************************ -->
 ## <a id="content7">泛型</a>
-泛型就是将类型作为参数，或者说是类型的占位
+#### 一、泛型就是将类型作为参数，或者说是类型的占位
 
 ```swift
 // 方法与泛型
-func test<T>(num1:T, num2:T) -> T {
-    return num1 + num2
+func test<T>(num:T) -> T {
+    //返回值的类型也应该是T
+    // 不能返回 num + 10,因为不知道num是否支持+号运算，也不知道(num+10)是否是T类型
+    // 泛型在使用时要将其作为一个特定类型使用它就是T类型而不是其它任何类型。
+    return num
 }
-test(num1:10, num2:20)
+test(num:10)
 
 //枚举与泛型
 enum Score<T>{
@@ -319,29 +320,108 @@ let st = Stack<Int>()
 st.push(element:10)
 
 
-//协议与泛型
+//类与泛型与协议
 protocol Stackable {
     associatedtype E // 关联类型
     mutating func push(element: E)
 }
+
 class Stack<T> : Stackable {
-    //指定关联类型为具体类型
+    //指定协议内的关联类型为具体类型
     //typealias E = Int
+    //func push(element:E) {}
+    
     //指定关联类型为泛型
-    typealias E = T
-    var elements = [T]()
-    func push(element:T) {
-        elements.append(element)
-    }
+    //typealias E = T
+    //func push(element:E) {}
+    
+    //自定指定关联类型为Int
+    //func push(element: Int) {}
+    
+    // 自定指定关联类型为T
+    func push(element: T) {}
+    
+    // typealias 就是一个别名
 }
 ```
 
-可以给泛型指定约束
+#### 二、可以给泛型指定约束
 ```swift
-func test<T : Equatable>(num1:T, num2:T) -> T {
-    return num1 + num2
+
+// 用协议约束泛型
+func compaire<T : Equatable>(num1:T, num2:T) -> Bool {
+    return num1 == num2
+}
+
+// 用带有关联类型的协议约束泛型
+protocol Runable {
+    associatedtype Speed // 关联类型
+    func run(s:Speed)
+}
+func setObj<T:Runable>(obj:T) {
+}
+
+class Animal : Runable {
+    //指定关联类型为Int
+    func run(s: Int) {}
+}
+
+let ani =  Animal()
+setObj(obj:ani)
+```
+#### 三、some关键字
+
+带关联类型和Self的协议只能作为泛型的约束，不能作为参数类型和返回值类型<br>
+xy:参数类型和返回值类型需要确定的类型，不能包含不透明类型(协议内的关联类型为不透明类型或者叫不确定类型)<br>
+```swift
+// 下面两个方法会报错
+
+//Protocol 'Runnable4' can only be used as a generic constraint because it has Self or associated type requirements
+func get() -> Runable{
+    return Animal() as! Runable
+}
+
+//Protocol 'Runnable4' can only be used as a generic constraint because it has Self or associated type requirements
+func setobj(obj:Runable) {
+
 }
 ```
+要想带关联类型和Self的协议作为参数类型和返回值类型可以使用some关键字<br>
+```swift
+func get() -> some Runable{
+    return Animal() as! Runable
+}
+
+func setobj(obj:some Runable) {
+
+}
+```
+
+还可以使用泛型解决
+```swift
+func get<T:Runable> () -> T {
+
+}
+
+func set<T:Runable>(obj:T) {
+    
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
