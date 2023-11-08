@@ -12,22 +12,21 @@ tag: Overview
 ## 目录
 
 
-- [常量](#content1)   
-- [变量与数据类型](#content2)   
-- [闭包](#content3)   
-- [可选项](#content4)   
-- [枚举/结构体/类](#content5)   
-- [协议](#content6)   
-- [泛型](#content7)   
+- [常量/变量/数据类型](#content1)   
+- [闭包](#content2)   
+- [可选项](#content3)   
+- [枚举/结构体/类](#content4)   
+- [协议](#content5)   
+- [泛型](#content6)   
+- [模式匹配](#content7)   
 - [其它](#content10)   
 
 
 
-Swift中的重要概念
-
-
+## <a id="content1">变量与数据类型</a>
 <!--===============================================================================================-->
-## <a id="content1">常量</a>
+
+#### 一、常量
 ```Swift
 //不要求编译时确定，如果声明时没有值需要指定类型
 let a: Int = 10 
@@ -36,10 +35,8 @@ let a: Int = 10
 let a = 10 
 ```
 
-<!--===============================================================================================-->
-## <a id="content2">变量与数据类型</a>
 
-#### 一、变量
+#### 二、变量
 ```Swift
 var isClick:Bool = false //可以省略类型说明和结尾的分号
 
@@ -71,7 +68,7 @@ func sum(a:Int, b:Int)->Int {return 10}
 func goToWork(at time:String){} // goToWork(at:"10:00")
 ```
 
-#### 二、数据类型
+#### 三、数据类型
 
 ##### 1、String
 swift中的字符串类型是结构体，是值类型<br>
@@ -110,24 +107,78 @@ print("arr1 = \(arr1), arr = \(arr)")
 
 ##### 4、元组是一个复合类型，也是值类型
  
+## <a id="content2">闭包</a>
 <!--===============================================================================================-->
-## <a id="content3">闭包</a>
 
-什么是闭包？<br>
-    外层函数 + 内层函数 + 内层函数访问外层函数的变量<br>
+#### 一、什么是闭包？
+外层函数 + 内层函数 + 内层函数访问外层函数的变量
 
-闭包的作用？<br>
-    1、捕获变量，在函数调用结束后仍能访问函数内部的变量：比如计数器<br>
-    2、代码模块化，比如返回一个包含了多个方法的元组或对象：比如计算器<br>
-    3、异步任务，函数调用结束后还能执行捕获的闭包表达式：网络请求<br>
+#### 二、闭包的作用？
+1、捕获变量，在函数调用结束后仍能访问函数内部的变量：比如计数器<br>
+2、代码模块化，比如返回一个包含了多个方法的元组或对象：比如计算器<br>
+3、异步任务，函数调用结束后还能执行捕获的闭包表达式：网络请求<br>
 
-逃逸闭包？<br>
-    非逃逸闭包：内部定义，内部调用<br>
-    逃逸闭包：内部定义，外部调用<br>
+#### 三、循环引用
+跟OC一样，Swift也是采取基于引用计数的ARC内存管理方案(针对堆空间)<br>
+强引用(strong reference):默认情况下，引用都是强引用<br>
+弱引用(weak reference):通过weak定义弱引用<br>
+无主引用(unowned reference):通过unowned定义无主引用<br>
+
+```swift
+class Person {
+    var blk:Blk?
+    var name:String
+    init(blk: Blk? = nil, name: String) {
+        self.blk = blk
+        self.name = name
+    }
+    
+    deinit {
+        print("deinit")
+    }
+}
+
+let p = Person(name: "xiaoming")
+
+//不会调用deinit方法，p对象无法释放
+p.blk = {(num) in
+    let pname = p?.name ?? ""
+    print("p 的 name是 \(pname)")
+}
+p.blk?(9)
+
+//会调用deinit方法
+p.blk = { [weak p] (num) in
+    let pname = p?.name ?? ""
+    print("p 的 name是 \(pname)")
+}
+p.blk?(9)
+```
+
+
+#### 四、逃逸闭包
+非逃逸闭包、逃逸闭包，一般都是当做参数传递给函数<br>
+非逃逸闭包：闭包调用发生在函数结束前，闭包调用在函数作用域内<br>
+逃逸闭包：闭包有可能在函数结束后调用，闭包调用逃离了函数的作用域，需要通过@escaping声明<br>
+
+```swift
+typealias Blk = ((Int)->Void)
+
+func handleEvent(blk: @escaping Blk) {
+    DispatchQueue.global().async {
+        blk(9)
+    }
+}
+
+handleEvent { num in
+    print("\(num)")
+}
+```
   
  
+## <a id="content3">可选项</a>
 <!--===============================================================================================-->
-## <a id="content4">可选项</a>
+
 #### 一、空判断和强制解包
 ```Swift
 let a:Int? = 10
@@ -277,8 +328,8 @@ print(num4) // Optional(10)
 ```
 
 
+## <a id="content4">枚举/结构体/类</a>
 <!--===============================================================================================-->
-## <a id="content5">枚举/结构体/类</a>
 
 ### 共同
 
@@ -333,11 +384,56 @@ extension Array {
 
 ### 枚举
 
+
+#### 一、原始值
+内存占用1字节
+
+```swift
+enum Season:Int{
+    case spring = 1,summer,autumn,winter
+    
+    //enum 的 rawValue的本质是计算属性
+    var rawValue: Int{
+        get{
+            switch self {
+            case .spring:
+                return 10
+            case .summer:
+                return 20
+            case .autumn:
+                return 30
+            case .winter:
+                return 40
+            }
+        }
+    }
+}
+    
+let value = Season.spring.rawValue
+print(value)// 10
 ```
-原始值 内存占用1字节
-关联值 内存占用 1字节 + n字节
-枚举内也可以定义方法
+#### 二、枚举关联值
+内存占用 1字节 + n字节
+```swift
+enum Score{
+    case points(Int)
+    case grade(Character)
+}
+
+var sc = Score.points(96)
+sc = .grade("A")
+
+// 关联值绑定
+switch sc {
+case let .points(i):
+    print(i,"points")
+case let .grade(i):
+    print(i,"grade")//A grade
+}
 ```
+
+#### 三、枚举内也可以定义方法
+
 
 ### 结构体和类
 结构体是值类型  内存分布：栈空间
@@ -384,9 +480,8 @@ let cls :Person.type = Person.self
 // let pcls : Person.type = Person.self; 但是不能 let pcls:Person.type = Person
 ```
 
+## <a id="content5">协议</a>
 <!--===============================================================================================-->
-## <a id="content6">协议</a>
-
 #### 一、一个完整的协议格式
 ```Swift
 protocol Life {
@@ -443,8 +538,11 @@ extension BinaryInteger {
 }
 ```
 
+
+
+## <a id="content6">泛型</a>
 <!--===============================================================================================-->
-## <a id="content7">泛型</a>
+
 #### 一、泛型就是将类型作为参数，或者说是类型的占位
 
 ```swift
@@ -525,8 +623,8 @@ class Animal : Runable {
 let ani =  Animal()
 setObj(obj:ani)
 ```
-#### 三、some关键字
 
+#### 三、some关键字
 带关联类型和Self的协议只能作为泛型的约束，不能作为参数类型和返回值类型<br>
 xy:参数类型和返回值类型需要确定的类型，不能包含不透明类型(协议内的关联类型为不透明类型或者叫不确定类型)<br>
 ```swift
@@ -564,26 +662,95 @@ func set<T:Runable>(obj:T) {
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## <a id="content7">模式匹配</a>
 <!--===============================================================================================-->
+
+#### 一、Switch 语句
+```swift
+let day = "Monday"
+
+switch day {
+case "Monday":
+    print("It's the start of the week")
+case "Friday":
+    print("It's almost the weekend")
+default:
+    print("It's another day")
+}
+```
+
+#### 二、元组解构
+```swift
+let person = ("Alice", 30)
+let (name, age) = person
+
+print("Name: \(name), Age: \(age)")
+```
+
+#### 三、Optional绑定
+```swift
+let optionalValue: Int? = 42
+
+if let value = optionalValue {
+    print("The value is \(value)")
+} else {
+    print("No value")
+}
+```
+
+#### 四、联值绑定
+##### 1、关联值绑定
+```swift
+var sc = Score.points(96)
+
+// 关联值绑定
+switch sc {
+case let .points(i):
+    print(i,"points")
+case let .grade(i):
+    print(i,"grade")
+}
+```
+
+##### 2、值绑定
+```swift
+let values: [Int?] = [2, 3, nil, 5]
+
+for case let value? in values {
+    print("Found non-nil value: \(value)")
+}
+```
+
+
+#### 五、类型模式匹配
+```swift
+let someValue: Any = "Hello, Swift"
+
+if someValue is String {
+    print("It's a string")
+} else if someValue is Int {
+    print("It's an integer")
+}
+```
+
+#### 六、where 子句
+```swift
+let temperature = 25
+
+switch temperature {
+case let temp where temp < 0:
+    print("It's freezing!")
+case let temp where temp >= 0 && temp < 20:
+    print("It's cold")
+default:
+    print("It's warm")
+}
+
+```
+
+
 ## <a id="content10">其它</a>
+<!--===============================================================================================-->
 
 mutating的使用
 
