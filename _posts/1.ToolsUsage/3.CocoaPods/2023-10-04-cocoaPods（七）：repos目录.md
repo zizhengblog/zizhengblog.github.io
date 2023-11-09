@@ -38,6 +38,7 @@ trunk目录内的文件和文件夹
 **Specs 目录**：这个目录下存放了所有三方库的podspec文件,<span style="color:red;font-weight:bold">存放规则是按三方库名称的md5值进行排列的</span>
 
 ```shell
+# -n 是一个选项参数，表示在输出时不添加换行符
 $ echo -n "AFNetworking" | md5
 
 a75d452377f3996bdc4b623a5df25820
