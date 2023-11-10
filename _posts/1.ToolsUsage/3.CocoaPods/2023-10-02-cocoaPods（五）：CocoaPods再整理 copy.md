@@ -148,18 +148,21 @@ podfile.lock
         git push -u origin main
         组件代码修改好后，提交到仓库
 
-    3.验证
+    3.打tag
+        git tag '0.1.0' // tag一定要跟spec中指定的版本号一致
+        git push --tags
+
+
+    4.验证
         # 验证是否符合cocoapods规范
         pod lib lint
         验证完成之后会有提示:XYSRequest passed validation.
 
         # 验证文件podspec
-        pod spec lint   // 需要先推送tag才能验证过去，否则会报错
+        // 需要先推送tag才能验证过去，否则可能出现错误
+        // 如果不先推送tag查找的是上个版本的spec文件
+        pod spec lint   
         成功有提示:XYSRequest.podspec passed validation.
-
-    4.打tag
-        git tag '0.1.0' // tag一定要跟spec中指定的版本号一致
-        git push --tags
 
 
     5.推送到索引仓库
@@ -200,9 +203,22 @@ pod lib lint --allow-warnings --sources='https://e.coding.net/lxy911/xyappmobile
 
 <span style="color:red;font-weight:bold">（4）遇到xcode返回错误，使用--verbose 来查看具体的问题</span>
 ```shell
+- ERROR | [iOS] xcodebuild: Returned an unsuccessful exit code. You can use `--verbose` for more information.
+
 #查看报错的具体问题，进行修改
 pod lib lint --verbose
 ```
+
+<span style="color:red;font-weight:bold">（5）未推送tag导致的错误</span><br>
+在验证spec的时候xcode报找不到文件的错误，但实际工程中可以找到文件，并且工程可以跑起来。这个错报的莫名其妙。<br>
+原因：podspec文件未打最新的tag并推送到远端，<span style="color:red;font-weight:bold">在验证spec的时候一定要先打tag并推送到远端后再验证</span><br>
+否则会去找上一个版本进行spec lint导致莫名的错误
+```
+//在验证的时候一定要先打tag并推送到远端
+pod spec lint 
+
+```
+
 
 #### 三、私有库的使用
 在podfile文件中指定使用的版本，执行pod install 操作
