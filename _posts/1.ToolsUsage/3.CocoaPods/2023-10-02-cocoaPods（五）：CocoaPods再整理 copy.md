@@ -100,7 +100,7 @@ pod search 搜索
 
 
 
-1、原理
+#### 一、原理
 ```
 两个仓库:
 一个三方仓库:存放podspec文件,这个文件用于描述三方库
@@ -113,9 +113,9 @@ podfile.lock
 ```
 
 
-2、Cocoapods 私有库搭建和使用
+#### 二、Cocoapods 私有库搭建
+##### 1、创建索引仓库
 ```
-一、创建索引仓库
     1.创建私有源仓库
         一个存放spec文件的git仓库，这个仓库可以存放多个pod的spec文件
         https://e.coding.net/lxy911/xyappmobilespec/XYAppMobileSpec.git
@@ -128,8 +128,10 @@ podfile.lock
     3.更新本地的源仓库
         pod repo update //更新所有的源仓库
         pod repo update XYAppMobileSpec // 更新特定的源仓库
-      
-二、创建代码仓库
+```
+
+##### 2、创建代码仓库
+```
     1.创建一个新的pod组件
         pod lib create XYSRequest
         修改spec文件的基本信息
@@ -146,12 +148,7 @@ podfile.lock
         git push -u origin main
         组件代码修改好后，提交到仓库
 
-    3.打tag
-        git tag '0.1.0' // tag一定要跟spec中指定的版本号一致
-        git push --tags
-
-
-    4.验证spec文件,并推送到索引仓库
+    3.验证
         # 验证是否符合cocoapods规范
         pod lib lint
         验证完成之后会有提示:XYSRequest passed validation.
@@ -160,16 +157,26 @@ podfile.lock
         pod spec lint   // 需要先推送tag才能验证过去，否则会报错
         成功有提示:XYSRequest.podspec passed validation.
 
+    4.打tag
+        git tag '0.1.0' // tag一定要跟spec中指定的版本号一致
+        git push --tags
+
+
+    5.推送到索引仓库
         # 将spec文件提交到远程索引仓库
         pod repo push XYAppMobileSpec XYSRequest.podspec
 
         # 成功后可以搜索下
         pod search XYSRequest
-
-三、私有库的使用
-    在podfile文件中指定使用的版本，执行pod install 操作
-    会根据指定的版本找到索引仓库中对应的spec文件，根据spec文件的描述下载源码及其依赖库的源码
 ```
+
+<span style="color:red;font-weight:bold">PS:在验证之前先保证工程能正常的编译和启动起来这样会减少后续验证的错误<br>在验证阶段会有很多警告导致验证失败，可以使用 --allow-warnings 忽略警告<br></span>
+
+#### 三、私有库的使用
+在podfile文件中指定使用的版本，执行pod install 操作
+
+会根据指定的版本找到索引仓库中对应的spec文件，根据spec文件的描述下载源码及其依赖库的源码
+
 
 
 
