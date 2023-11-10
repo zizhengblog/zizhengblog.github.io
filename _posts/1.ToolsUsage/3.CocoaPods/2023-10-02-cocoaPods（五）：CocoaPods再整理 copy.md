@@ -170,7 +170,39 @@ podfile.lock
         pod search XYSRequest
 ```
 
-<span style="color:red;font-weight:bold">PS:在验证之前先保证工程能正常的编译和启动起来这样会减少后续验证的错误<br>在验证阶段会有很多警告导致验证失败，可以使用 --allow-warnings 忽略警告<br></span>
+
+##### 3、验证报错问题
+
+[参考文章：CocoaPods 私有库 pod lib lint 踩坑](https://www.jianshu.com/p/71c701649df6)
+
+
+<span style="color:red;font-weight:bold">（1）在验证之前先保证工程能正常的编译和启动起来这样会减少后续验证的错误</span>
+
+<span style="color:red;font-weight:bold">（2）在验证阶段会有很多警告导致验证失败，可以使用 --allow-warnings 忽略警告</span>
+```shell
+pod lib lint --allow-warnings
+```
+
+<span style="color:red;font-weight:bold">（3）在私有库A依赖了私有库B，使用 --sources 来指定私有源</span>
+```
+ -> XYUIKit (0.1.0)
+    - ERROR | [iOS] unknown: Encountered an unknown error (Unable to find a specification for `XYFoundation` depended upon by `XYUIKit`
+
+You have either:
+ * out-of-date source repos which you can update with `pod repo update` or with `pod install --repo-update`.
+ * mistyped the name or version.
+ * not added the source repo that hosts the Podspec to your Podfile.
+) during validation.
+
+# 解决办法
+pod lib lint --allow-warnings --sources='https://e.coding.net/lxy911/xyappmobilespec/XYAppMobileSpec.git'
+```
+
+<span style="color:red;font-weight:bold">（4）遇到xcode返回错误，使用--verbose 来查看具体的问题</span>
+```shell
+#查看报错的具体问题，进行修改
+pod lib lint --verbose
+```
 
 #### 三、私有库的使用
 在podfile文件中指定使用的版本，执行pod install 操作
