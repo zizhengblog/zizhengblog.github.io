@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "cocoaPods（八）：报错和警告"
-date: "2023-10-04"
+date: "2023-10-05"
 description: ""
 tag: CocoaPods
 --- 
