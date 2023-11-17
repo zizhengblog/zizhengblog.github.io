@@ -17,6 +17,8 @@ tag: Overview
 - [Category](#content3)   
 - [block](#content4)   
 - [Runtime](#content5)  
+- [Runloop](#content6)  
+
 
 
 
@@ -556,6 +558,14 @@ my name is <ViewController: 0x100704080>
 ```
 
 #### 四、利用关联对象给分类添加属性
+
+
+
+<!-- ************************************************ -->
+## <a id="content6">Runloop</a>
+
+一个 run loop 就是一个事件处理的循环，用来不停的调度工作以及处理输入事件。<br>
+使用 run loop 的目的是让你的线程在有工作的时候忙于工作，而没工作的时候处于休眠状态。<br>
 
 ----------
 >  行者常至，为者常成！
