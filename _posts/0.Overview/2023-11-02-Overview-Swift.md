@@ -333,9 +333,196 @@ print(num4) // Optional(10)
 ## <a id="content4">枚举/结构体/类</a>
 <!--===============================================================================================-->
 
+### 枚举
+
+#### **一、原始值**
+内存占用1字节
+
+```swift
+enum Season:Int{
+    case spring = 1,summer,autumn,winter
+    
+    //enum 的 rawValue的本质是计算属性
+    var rawValue: Int{
+        get{
+            switch self {
+            case .spring:
+                return 10
+            case .summer:
+                return 20
+            case .autumn:
+                return 30
+            case .winter:
+                return 40
+            }
+        }
+    }
+}
+    
+let value = Season.spring.rawValue
+print(value)// 10
+```
+
+#### **二、枚举关联值**
+内存占用 1字节 + n字节
+```swift
+enum Score{
+    case points(Int)
+    case grade(Character)
+}
+
+var sc = Score.points(96)
+sc = .grade("A")
+
+// 关联值绑定
+switch sc {
+case let .points(i):
+    print(i,"points")
+case let .grade(i):
+    print(i,"grade")//A grade
+}
+```
+
+#### **三、枚举内也可以定义方法**
+```swift
+enum Season:String {
+    case Spring, Summer, Autum, Winter
+    func show(){
+        print("rawValue is \(rawValue)")
+    }
+}
+```
+
+
+### 结构体
+结构体是值类型  内存分布：栈空间<br>
+let 对结构体变量和类变量的不同，理解let的本质<br>
+结构体没有便捷初始化器<br>
+具体的样式，参考下面的类对象<br>
+
+
+### 类
+#### 一、基本结构
+
+类是引用类型<br>
+内存分布：堆空间(16的倍数) 前8字节isa 再8字节引用计数。let p = Person() p占用8个字节<br>
+嵌套的类型不占用外部类型的空间<br>
+
+**Person对象**
+```swift
+class Animal {
+    var age:Int = 0
+    init(age: Int) {
+        self.age = age
+    }
+}
+
+
+class Person : Animal {
+    //存储实例属性
+    var name:String = ""{
+        willSet{
+            print(newValue)
+        }
+        didSet{
+            print(oldValue)
+        }
+    }
+    
+    //计算实例属性 必须是var,本质是方法
+    //计算属性必须执行类型
+    var nameAndAge:String {
+        set{
+            print(newValue)
+        }
+        get{
+            return "\(self.name) : \(self.age)"
+        }
+    }
+
+    
+    //存储类型属性
+    static var armNum:Int = 2 {
+        willSet {
+            
+        }
+        didSet {
+            
+        }
+    }
+    
+    static var legNum:Int{
+        set {
+            
+        }
+        get {
+            return 2
+        }
+    }
+    
+    //init方法(重要)：指定初始化器 + 便捷初始化器，以及父子类中有哪些规则
+    //指定初始化器不能互相调用，一个指定初始化器就是一个出口
+
+
+    // 指定初始化器
+    init(age: Int, name: String) {
+        //初始化的第一阶段
+        self.name = name
+        super.init(age: 0)
+        
+        //初始化的第二阶段
+        self.age = age
+    }
+    
+    //便捷初始化器
+    convenience init(name:String) {
+        self.init(age: 0, name: "xiaoming")
+    }
+    
+    
+    // 实例方法
+    func tellMeYourName(use language:String) -> String {
+        if language == "En" {
+            return "my name is \(self.name)"
+        } else {
+            return "我的名字叫 \(self.name)"
+        }
+    }
+    
+    // 静态方法
+    static func runDes (){
+        print("run is a ability of human")
+    }
+
+    // deinit 方法不适用于结构体和枚举，因为它们是值类型，而不是引用类型
+    // deinit方法：先子类后父类
+    deinit{
+
+    }
+}
+
+let p = Person(age: 18, name: "Jim")
+p.tellMeYourName(use: "En")
+Person.runDes()
+Person.legNum
+```
+
+
+#### 二、实例对象与类对象
+```Swift
+class Person {}
+let p :Person = Person()
+let cls :Person.type = Person.self
+// p 对应OC中的实例对象
+// Person.self 对应OC中的类对象
+// Person.type 对应OC中的Class
+// Person 与 Person.self 都能调用类方法
+// let pcls : Person.type = Person.self; 但是不能 let pcls:Person.type = Person
+```
+
 ### 共同
 
-#### 一、扩展
+#### **一、扩展**
 
 扩展可以给类添加方法：方法、计算属性、下标
 
@@ -365,122 +552,23 @@ extension Array {
 }
 ```
 
-#### 二、访问控制
- 模块：指的是独立的代码单元,框架或应用程序会作为一个独立的模块来构建和发布。在 Swift 中,一个模块可以使用 import 关键字导入另外一个模块
+#### **二、访问控制**
+模块：指的是独立的代码单元,框架或应用程序会作为一个独立的模块来构建和发布。在 Swift 中,一个模块可以使用 import 关键字导入另外一个模块
 
- 在访问权限控制这块，Swift提供了5个不同的访问级别(以下是从高到低排列， 实体指被访问级别修饰的内容)
+在访问权限控制这块，Swift提供了5个不同的访问级别(以下是从高到低排列， 实体指被访问级别修饰的内容)
 
- open:允许其他模块访问、继承、重写(open只能用在类、类成员上)
+**open:**允许其他模块访问、继承、重写(open只能用在类、类成员上)
 
- public:其他模块中访问，不允许其他模块进行继承、重写
+**public:**其他模块中访问，不允许其他模块进行继承、重写
 
- internal:只允许在当前模块访问、继承、重写，不允许其他模块访问
+**internal:**只允许在当前模块访问、继承、重写，不允许其他模块访问
 
- fileprivate:只允许在定义实体的源文件中访问
+**fileprivate:**只允许在定义实体的源文件中访问
 
- private:只允许在定义实体的封闭声明中访问，都在文件下的话private 和 fileprivate 作用相同
+**private:**只允许在定义实体的封闭声明中访问，都在文件下的话private 和 fileprivate 作用相同
 
- 绝大部分实体默认都是internal 级别
+绝大部分实体默认都是internal 级别
 
-
-
-### 枚举
-
-
-#### 一、原始值
-内存占用1字节
-
-```swift
-enum Season:Int{
-    case spring = 1,summer,autumn,winter
-    
-    //enum 的 rawValue的本质是计算属性
-    var rawValue: Int{
-        get{
-            switch self {
-            case .spring:
-                return 10
-            case .summer:
-                return 20
-            case .autumn:
-                return 30
-            case .winter:
-                return 40
-            }
-        }
-    }
-}
-    
-let value = Season.spring.rawValue
-print(value)// 10
-```
-#### 二、枚举关联值
-内存占用 1字节 + n字节
-```swift
-enum Score{
-    case points(Int)
-    case grade(Character)
-}
-
-var sc = Score.points(96)
-sc = .grade("A")
-
-// 关联值绑定
-switch sc {
-case let .points(i):
-    print(i,"points")
-case let .grade(i):
-    print(i,"grade")//A grade
-}
-```
-
-#### 三、枚举内也可以定义方法
-
-
-### 结构体和类
-结构体是值类型  内存分布：栈空间
-
-let 对结构体变量和类变量的不同，理解let的本质
-
-结构体没有便捷初始化器
-
-
-### 类
-
-#### 一、基本结构
-
-类是引用类型   内存分布：堆空间(16的倍数) 前8字节isa 再8字节引用计数。let p = Person() p占用8个字节<br>
-嵌套的类型不占用外部类型的空间
-
-```
-实例属性：
-    存储属性
-    计算属性
-实例方法：
-    init方法(重要)：指定初始化器 + 便捷初始化器，以及父子类中有哪些规则
-    指定初始化器不能互相调用，一个指定初始化器就是一个出口
-
-    deinit方法：先子类后父类
-
-
-静态属性：
-    存储属性
-    计算属性
-静态方法
-```
-
-
-#### 二、实例对象与类对象
-```Swift
-class Person {}
-let p :Person = Person()
-let cls :Person.type = Person.self
-// p 对应OC中的实例对象
-// Person.self 对应OC中的类对象
-// Person.type 对应OC中的Class
-// Person 与 Person.self 都能调用类方法
-// let pcls : Person.type = Person.self; 但是不能 let pcls:Person.type = Person
-```
 
 ## <a id="content5">协议</a>
 <!--===============================================================================================-->
