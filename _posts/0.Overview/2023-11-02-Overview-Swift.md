@@ -61,7 +61,7 @@ let error = (code:404, msg:"Not Fount")//error.code
 let p:Person = Person(name:"xiaoming",age:18)
 
 //匿名函数:闭包表达式，可以作为参数，尾随闭包的调用
-var blk:(Int,Int)->Int = {(a, b) in return a + b}   // var result = blk(10,20)
+var blk:(Int,Int)->Int = {(a, b)->Int in return a + b}   // var result = blk(10,20)
 
 //函数
 func sum(a:Int, b:Int)->Int {return 10}
