@@ -168,13 +168,158 @@ end
 <!-- ************************************************ -->
 ## <a id="content2">podspec文件</a>
 
+#### **一、文件示例**   
+
 ```ruby
 Pod::Spec.new do |s|
   s.name             = 'XYUIKit'
   s.version          = '0.1.1'
   s.summary          = 'A Base UIKit of XYApp.'
+  s.ios.deployment_target = '13.0'
 end
 ```
+
+#### **二、属性解释**
+
+**homepage**    
+该pod的主页url    
+```ruby
+spec.homepage = 'http://www.example.com'
+```
+
+**authors**   
+代码库的作者们    
+```ruby
+spec.author = 'Darth Vader'
+
+spec.authors = 'Darth Vader', 'Wookiee'
+
+spec.authors = { 'Darth Vader' => 'darthvader@darkside.com',
+                  'Wookiee'     => 'wookiee@aggrrttaaggrrt.com' 
+               }
+```
+
+**source**    
+指定源代码的检索方式    
+```ruby
+spec.source = { :git => 'https://github.com/AFNetworking/AFNetworking.git',
+                :tag => spec.version.to_s 
+              }
+
+spec.source = { :http => 'http://dev.wechatapp.com/download/sdk/WeChat_SDK_iOS_en.zip' }
+
+
+# Using HTTP to download a file using a hash to verify the download. It supports sha1 and sha256.
+spec.source = { :http => 'http://dev.wechatapp.com/download/sdk/WeChat_SDK_iOS_en.zip',
+                :sha1 => '7e21857fe11a511f472cfd7cfa2d979bd7ab7d96' 
+              }
+
+```
+
+
+**platform**    
+支持的平台，如果不写代表支持所有平台。    
+当支持多个平台时，应在下面使用 deployment_target    
+```ruby
+spec.platform = :osx, '10.8'
+
+spec.platform = :ios
+```
+
+
+**deployment_target**     
+为每个平台指定最小部署目标比如：     
+```ruby
+spec.ios.deployment_target = '6.0'
+
+spec.osx.deployment_target = '10.8'
+```
+
+**source_files**   
+指定Pod的源代码文件    
+```ruby
+spec.source_files = 'Classes/**/*.{h,m}'
+
+spec.source_files = 'Classes/**/*.{h,m}', 'More_Classes/**/*.{h,m}'
+
+spec.ios.source_files = 'Classes/ios/**/*.{h,m}'
+
+spec.osx.source_files = 'Classes/osx/**/*.{h,m}'
+```
+
+**public_header_files**       
+指定公共头文件,build setting - headers - public下   
+并且会在生成的framwork内创建一个headers目录存在公共头文件           
+如果未指定公共头文件，则 source_files 中的所有标头都被视为公共标头。           
+```ruby
+spec.public_header_files = 'Headers/Public/*.h'
+```
+
+**exclude_files**   
+不要包括指定的源码文件    
+```ruby
+spec.ios.exclude_files = 'Classes/osx'
+
+spec.exclude_files = 'Classes/**/unused.{h,m}'
+```
+
+
+**resource_bundles**    
+用于指定一个或多个资源束（Resource Bundles）通常用于存储图片、xib 文件、本地化字符串等非代码文件。    
+```ruby
+spec.ios.resource_bundle = { 'MapBox' => 'MapView/Map/Resources/*.png' }
+
+spec.resource_bundles = {
+  # 生成一个MapBox的bundle
+  'MapBox' => ['MapView/Map/Resources/*.png'],
+   # 生成一个MapBoxOtherResources的bundle
+  'MapBoxOtherResources' => ['MapView/Map/OtherResources/*.png']
+}
+```    
+
+**resource**    
+指定的资源会被直接copy到client target下，xcode也不会对这些资源文件优化   
+因此cocoapods官方建议使用resource_bundles   
+```ruby
+spec.resource = 'Resources/HockeySDK.bundle'
+
+spec.resources = ['Images/*.png', 'Sounds/*']
+```
+
+
+**frameworks**   
+需要依赖的系统库    
+```ruby
+spec.ios.framework = 'CFNetwork'
+
+spec.frameworks = 'QuartzCore', 'CoreData'
+```
+
+**dependency**   
+需要依赖的三方库    
+官方建议使用~>来指定版本，提高Pod的兼容性    
+:configurations => ['Debug'] 这是一个配置选项，表示该依赖关系仅在 Debug 模式下生效。    
+```ruby
+spec.dependency 'AFNetworking', '~> 1.0'
+
+spec.dependency 'AFNetworking', '~> 1.0', :configurations => ['Debug']
+
+spec.dependency 'AFNetworking', '~> 1.0', :configurations => :debug
+
+spec.dependency 'RestKit/CoreData', '~> 0.20.0'
+
+spec.ios.dependency 'MBProgressHUD', '~> 0.5'
+```
+
+**static_framework**   
+官方的解释没有理解      
+
+
+
+
+
+
+#### **三、其它**
 
 Pod::Spec 代表pod模块下的Spec类
 
