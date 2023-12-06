@@ -17,6 +17,8 @@ tag: CocoaPods
 <!-- ************************************************ -->
 ## <a id="content1">podfile文件</a> 
 
+#### **一、文件示例**    
+
 ```
 # 这行代码使用 Ruby 的 require 语句来引入一个名为 "fzmultidev.rb" 的 Ruby 文件
 # require 用于将其他 Ruby 文件引入当前文件，以实现代码复用、模块化、分离关注点和更好地组织代码。
@@ -163,6 +165,33 @@ post_install do |installer|
     end
 end
 ```
+
+
+#### **二、属性解释**    
+
+**use_frameworks!**    
+使用framework 替代 static libraries    
+使用时需要指定：:linkage，取值为 :static 或者 :dynamic`   
+```ruby
+target 'MyApp' do
+  use_frameworks!
+  pod 'AFNetworking', '~> 1.0'
+end
+      
+      
+target 'MyApp' do
+  use_frameworks! :linkage => :dynamic
+  pod 'AFNetworking', '~> 1.0'
+end
+
+target 'ZipApp' do
+  use_frameworks! :linkage => :static
+  pod 'SSZipArchive'
+end
+```
+
+
+
 
 
 <!-- ************************************************ -->
@@ -312,7 +341,11 @@ spec.ios.dependency 'MBProgressHUD', '~> 0.5'
 ```
 
 **static_framework**   
-官方的解释没有理解      
+如果指定了使用use_frameworks!     
+那么通过指定static_framework来使用静态framework    
+```ruby
+spec.static_framework = true
+```
 
 
 
