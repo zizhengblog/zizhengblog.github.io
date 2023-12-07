@@ -493,22 +493,21 @@ URL：统一资源定位符
 ## <a id = "content15">15、HTTP（三）</a>
 
 #### **一、常用请求方法**    
-get     
-post     
-head    
-option   
+get、post       
+put、delete       
+head、option      
 
 #### **二、请求头字段**
 
-user-agent： 识别终端类型    
-Reference：这个请求是由哪个请求带来的 防止盗链   
-range:多线程断点下载   
-Content-Type:  application/x-www-form-urlencoded  和 multipart/form-data(上传文件必须是这种+post)    
-Accept: 能够接受的响应内容类型。text/plain 或者 text/html 或者 json 
-Connection:keey-alive:想要优先使用的连接类型   
-Cookie:使http的状态保留，比如存储sessionId
+user-agent： 识别终端类型       
+Reference：这个请求是由哪个请求带来的 防止盗链       
+range:多线程断点下载       
+Content-Type:  application/x-www-form-urlencoded  和 multipart/form-data(上传文件必须是这种+post)        
+Accept: 能够接受的响应内容类型。text/plain 或者 text/html 或者 json     
+Connection:keey-alive:想要优先使用的连接类型      
+Cookie:使http的状态保留，比如存储sessionId    
 
-请求头有标准头也有非标准头，维基百科搜索headers
+请求头有标准头也有非标准头，维基百科搜索headers    
 
 #### **三、响应头字段**   
 Content-Type:text/html;charset=utf-8 与 请求头的Accept字段呼应    
@@ -601,6 +600,8 @@ DNS劫持
 公钥加密    
 私钥签名    
 
+混合密码系统的原理    
+
 #### **三、证书**  
 
 证书 = 公钥 + 签名  
@@ -641,8 +642,8 @@ CA机构
 ## <a id = "content20">20、HTTP的升级改进</a>
 
 
-#### **一、http1.1的不足**
-同一时间，一个连接只能对应一个请求(同一连接不能并行发送请求)
+#### **一、http1.1的不足**   
+同一时间，一个连接只能对应一个请求(同一连接不能并行发送请求)      
 xy:原因是多个请求的数据同时发送无法被区分出来   
 
 针对同一个域名，大多数浏览器允许同时最多6个并发连接   
@@ -652,7 +653,7 @@ xy:原因是多个请求的数据同时发送无法被区分出来
 头信息的重复传输     
 
 #### **二、http2**   
-只需要建立一个连接，可以并行发送请求（多路复用）
+只需要建立一个连接，可以并行发送请求（多路复用）     
 xy:应为http2会标记数据属于哪个请求，到达之后会组装，所以支持多个请求同时发送    
 
 头部信息压缩，客户端和服务器保存了相同的头部信息的表，如果头部字段的信息没有变，只发索引号就行     
