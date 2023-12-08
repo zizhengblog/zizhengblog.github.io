@@ -17,7 +17,9 @@ tag: Overview
 - [Category](#content3)   
 - [block](#content4)   
 - [Runtime](#content5)  
-- [Runloop](#content6)  
+- [多线程](#content6)  
+- [Runloop](#content7)  
+
 
 
 
@@ -560,9 +562,287 @@ my name is <ViewController: 0x100704080>
 #### 四、利用关联对象给分类添加属性
 
 
+<!-- ************************************************ -->
+## <a id="content6">多线程</a>
+
+#### **一、进程和线程**   
+**1、进程**    
+一个app就是一个进程    
+操作系统进行资源分配的基本单位，每个进程运行在独立的内存空间内    
+
+**2、线程**   
+进程的基本执行单元        
+线程是操作系统进行任务调度的基本单位     
+
+**3、线程的状态**   
+创建线程 - 就绪 - 运行 - 阻塞 - 死亡   
+
+**4、线程的优缺点**     
+优点：提高程序执行效率；提高CPU利用率；       
+缺点：程序变复杂；开启线程本身就会占用空间，开启过多会占用大量内存空间，调度频率也会降低；          
+
+
+#### **二、GCD - sync 和 async**   
+
+**1、几个重要概念**     
+
+```objc
+//同步：代码块执行完才返回，在当前线程执行          
+dispatch_sync(queue,{   });
+
+//异步：立即返回，在新线程执行   
+dispatch_async(queue,{   });
+
+//串行队列：在队列里的多个任务按先后顺序，一个一个取出。
+dispatch_queue_t serialQueue = dispatch_queue_create("serial", DISPATCH_QUEUE_SERIAL);
+
+//并发队列：在队列里的多个任务允许同时取出。
+dispatch_queue_t concurrentQueue = dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT);
+
+//主队列:串行队列
+dispatch_queue_t mainQueue = dispatch_get_main_queue()
+
+//全局队列：并发队列
+dispatch_queue_t globalQueue = dispatch_get_global_queue(0, 0);
+```
+
+**2、重要规则**         
+<span style="color:red;font-weight:bold">先看队列是串行并行，再看执行是同步异步</span>   
+
+<span style="color:red;font-weight:bold">放在串行队列里的任务一定是一个执行完再取下一个，是有顺序的</span>    
+<span style="color:red;font-weight:bold">串行队列里会不会死锁，就看任务能不能正常取出</span>     
+放在并行队列里的任务可以同时取出     
+
+<span style="color:red;font-weight:bold">同步执行:在当前线程执行，一定是整个任务块执行完再返回的</span>      
+异步执行：立即返回        
+
+
+**3、典型面试题**   
+
+```objc
+- (IBAction)sync2:(id)sender {
+    //global_queue - main_queue
+    NSLog(@"current1  %@",[NSThread currentThread]);
+    
+    dispatch_sync(dispatch_get_global_queue(0,0), ^{
+        NSLog(@"current2  %@",[NSThread currentThread]);
+        
+        //死锁
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            NSLog(@"current3  %@",[NSThread currentThread]);
+        });
+    });
+    NSLog(@"current4  %@",[NSThread currentThread]);
+
+    /**
+     2022-04-02 00:12:04.476120+0800 XYApp[79949:3633423] current1  <_NSMainThread: 0x283228600>{number = 1, name = main}
+     2022-04-02 00:12:04.476297+0800 XYApp[79949:3633423] current2  <_NSMainThread: 0x283228600>{number = 1, name = main}
+     死锁
+     */
+}
+
+- (IBAction)sync3:(id)sender {
+    //main_queue - global_queue
+    NSLog(@"current1  %@",[NSThread currentThread]);
+    
+    //死锁
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        NSLog(@"current2  %@",[NSThread currentThread]);
+        
+        dispatch_sync(dispatch_get_global_queue(0,0), ^{
+            NSLog(@"current3  %@",[NSThread currentThread]);
+        });
+    });
+    
+    NSLog(@"current4  %@",[NSThread currentThread]);
+
+    /**
+     2022-04-02 00:19:15.663318+0800 XYApp[80099:3637866] current1  <_NSMainThread: 0x280fe8880>{number = 1, name = main}
+     死锁
+     */
+}
+
+- (IBAction)sync3:(id)sender {
+    dispatch_async(mainQueue, ^{//block0
+        NSLog(@"block0");
+    });
+
+    //不用等async任务执行,就可以直接来到此处
+}
+
+
+- (IBAction)sync6:(id)sender {
+    [self subThreadWithDoneBlock:^{
+        NSLog(@"current1  %@",[NSThread currentThread]);
+        
+        dispatch_sync(dispatch_get_global_queue(0,0), ^{
+            NSLog(@"current2  %@",[NSThread currentThread]);
+            
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                NSLog(@"current3  %@",[NSThread currentThread]);
+            });
+        });
+        NSLog(@"current4  %@",[NSThread currentThread]);
+    }];
+    NSLog(@"current5  %@",[NSThread currentThread]);
+    sleep(2);
+    NSLog(@"current6  %@",[NSThread currentThread]);
+
+    /**
+     2022-04-01 23:20:22.017079+0800 XYApp[79118:3610327] current5  <_NSMainThread: 0x280ea8880>{number = 1, name = main}
+     2022-04-01 23:20:22.017094+0800 XYApp[79118:3610359] current1  <NSThread: 0x280ef8040>{number = 5, name = (null)}
+     2022-04-01 23:20:22.017421+0800 XYApp[79118:3610359] current2  <NSThread: 0x280ef8040>{number = 5, name = (null)}
+     2022-04-01 23:20:24.018549+0800 XYApp[79118:3610327] current6  <_NSMainThread: 0x280ea8880>{number = 1, name = main}
+     2022-04-01 23:20:24.020729+0800 XYApp[79118:3610327] current3  <_NSMainThread: 0x280ea8880>{number = 1, name = main}
+     2022-04-01 23:20:24.021011+0800 XYApp[79118:3610359] current4  <NSThread: 0x280ef8040>{number = 5, name = (null)}
+     */
+}
+```
+
+```objc
+- (IBAction)async1:(id)sender {
+    //创建一个串行队列
+    dispatch_queue_t queue = dispatch_queue_create("serial", DISPATCH_QUEUE_SERIAL);
+    
+    dispatch_sync(queue, ^{
+        NSLog(@"current1  %@",[NSThread currentThread]);
+        
+        dispatch_async(queue, ^{
+            NSLog(@"current2  %@",[NSThread currentThread]);
+        });
+    });
+    
+    NSLog(@"current3  %@",[NSThread currentThread]);
+
+    /**
+     2022-04-02 23:27:46.457775+0800 XYApp[18862:12321559] current1  <_NSMainThread: 0x280280800>{number = 1, name = main}
+     2022-04-02 23:27:46.458091+0800 XYApp[18862:12321559] current3  <_NSMainThread: 0x280280800>{number = 1, name = main}
+     2022-04-02 23:27:46.458149+0800 XYApp[18862:12321571] current2  <NSThread: 0x2802ec280>{number = 7, name = (null)}
+     */
+    
+}
+
+- (IBAction)async2:(id)sender {
+    
+    dispatch_queue_t queue = dispatch_queue_create("SERIAL", DISPATCH_QUEUE_SERIAL);
+    
+    dispatch_async(queue, ^{
+        NSLog(@"current1  %@",[NSThread currentThread]);
+        
+        //死锁
+        dispatch_sync(queue, ^{
+            NSLog(@"current2  %@",[NSThread currentThread]);
+        });
+    });
+    
+    NSLog(@"current3  %@",[NSThread currentThread]);
+    
+    /**
+     2022-04-02 23:28:15.568690+0800 XYApp[18862:12321559] current3  <_NSMainThread: 0x280280800>{number = 1, name = main}
+     2022-04-02 23:28:15.568787+0800 XYApp[18862:12321573] current1  <NSThread: 0x2802c7f00>{number = 3, name = (null)}
+     死锁
+     */
+
+}
+```
+
+#### **三、GCD - group**   
+
+**1、用法一**   
+```objc
+-(void)GCD_GroupTest{
+    //全局队列
+    dispatch_queue_t globalQueue = dispatch_get_global_queue(0, 0);
+    
+    //创建线程组
+    dispatch_group_t group = dispatch_group_create();
+    
+    //添加任务
+    dispatch_group_async(group, globalQueue, ^{
+        NSLog(@"block0-%@",[NSThread currentThread]);
+    });
+    
+    dispatch_group_async(group, globalQueue, ^{
+        NSLog(@"block1-%@",[NSThread currentThread]);
+    });
+    
+    //等待通知
+    dispatch_group_notify(group, globalQueue, ^{
+        NSLog(@"block2-%@",[NSThread currentThread]);
+    });
+}
+```
+
+**2、用法二**       
+```objc
+- (void)groupDemo2{
+    
+    // 问题: 如果 dispatch_group_enter 多 dispatch_group_leave 不会调用通知
+    // dispatch_group_enter 少 dispatch_group_leave  奔溃
+    // 成对存在
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    dispatch_group_t group = dispatch_group_create();
+    
+    dispatch_group_enter(group);
+    dispatch_async(queue, ^{
+        NSLog(@"第一个走完了");
+        dispatch_group_leave(group);
+    });
+    
+
+    dispatch_group_enter(group);
+    dispatch_async(queue, ^{
+        NSLog(@"第二个走完了");
+        dispatch_group_leave(group);
+    });
+    
+    //如果没有 dispatch_group_leave(group); 就不会来到dispatch_group_notify
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        NSLog(@"所有任务完成,可以更新UI");
+    });
+}
+
+intptr_t result = dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 6));
+if (result == 0) {
+    //enter 与 leave平衡
+    NSLog(@"current6  %@",[NSThread currentThread]);
+} else  {
+    //超时
+    NSLog(@"current7  %@",[NSThread currentThread]);
+}
+```
+
+#### **四、GCD - barrier**    
+
+```objc
+// 一定要使用自定义的队列
+dispatch_queue_t queue = dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT);
+
+
+// 两个重要的函数
+dispatch_barrier_sync(queue, ^{
+    NSLog(@"[lilog]:barrier_sync");
+});
+    
+
+dispatch_barrier_async(queue, ^{
+    NSLog(@"[lilog]:barrier_async");
+});
+
+```
+
+#### **五、GCD - semaphore**   
+
+
+
+
+
+
+
 
 <!-- ************************************************ -->
-## <a id="content6">Runloop</a>
+## <a id="content7">Runloop</a>
 
 一个 run loop 就是一个事件处理的循环，用来不停的调度工作以及处理输入事件。<br>
 使用 run loop 的目的是让你的线程在有工作的时候忙于工作，而没工作的时候处于休眠状态。<br>
