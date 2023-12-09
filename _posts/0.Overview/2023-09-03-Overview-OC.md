@@ -832,7 +832,184 @@ dispatch_barrier_async(queue, ^{
 
 ```
 
-#### **五、GCD - semaphore**   
+#### **五、GCD - semaphore**      
+初始信号量为0,可以设置依赖关系            
+```objc
+- (IBAction)semaphoreOrder {
+    
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSLog(@"任务1");
+        dispatch_semaphore_signal(sem);
+    });
+    
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSLog(@"任务2");
+        dispatch_semaphore_signal(sem);
+    });
+    
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSLog(@"任务3");
+    });
+}
+```
+
+初始信号量为1,可以做串行队列       
+```objc
+dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+
+intptr_t isSuccess = dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+NSLog(@"drawMoney-isSuccess = %ld",isSuccess);//成功时返回0  
+
+intptr_t process = dispatch_semaphore_signal(semaphore);
+NSLog(@"drawMoney-process = %ld",process);//它只表示成功发送信号的次数,不用过多关注  
+```
+
+#### **六、GCD - 其它**   
+
+```objc
+// 一次执行
+-(void)GCD_Once{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSLog(@"lilog - once");
+    });
+}
+
+// 延迟执行
+-(void)GCD_After{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSLog(@"大牛");
+
+    });
+    NSLog(@"IT民工");
+}
+
+```
+
+#### **七、perform**
+
+```objc
+以下情况不依赖运行循环。会在当前线程立即调用
+     [self performSelector:@selector(test4)];
+     [self performSelector:@selector(test5:) withObject:@"hehe"];
+     [self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:YES];
+ 
+ 其它perform开头的方法都会依赖运行循环。在没有开启运行循环的线程里是没发执行的。
+     [self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:NO];
+     [self performSelector:@selector(test1) withObject:nil afterDelay:0];
+ 
+ 另外performSelector:withObject:afterDelay:和 dispatch_after 都是立即返回。当两者延迟都是0，前者的执行时机比后者慢，因为前者依赖运行循环。
+```
+
+#### **八、interview**   
+
+**1、小米面试题**   
+```objc
+- (IBAction)interview4:(id)sender {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self test1];//主队列排队
+    });
+    
+    
+    [self performSelector:@selector(test2) withObject:nil afterDelay:0];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self test3];//主队列排队:是在指定时间之后将任务追加到主队列中
+    });
+    
+    
+    
+    [self performSelector:@selector(test4)];//当前线程立即执行
+
+    [self test5];//当前线程立即执行
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self test6];//主队列排队
+        });
+        [self test7];
+        
+        [self performSelector:@selector(test8) withObject:nil afterDelay:0];//依赖线程的运行循环，所以不会执行
+    });
+    
+    
+    /**
+     2022-08-19 12:27:15.094636+0800 XYApp[49643:6816750] test4
+     2022-08-19 12:27:15.094888+0800 XYApp[49643:6816750] test5
+     2022-08-19 12:27:15.095116+0800 XYApp[49643:6816968] test7
+     2022-08-19 12:27:15.096323+0800 XYApp[49643:6816750] test1
+     2022-08-19 12:27:15.096513+0800 XYApp[49643:6816750] test3
+     2022-08-19 12:27:15.096664+0800 XYApp[49643:6816750] test6
+     2022-08-19 12:27:15.096876+0800 XYApp[49643:6816750] test2
+
+     
+     //如果将执行test3的延迟改为3秒，打印顺序如下
+     2022-08-19 12:32:51.156387+0800 XYApp[49790:6822158] test4
+     2022-08-19 12:32:51.156642+0800 XYApp[49790:6822158] test5
+     2022-08-19 12:32:51.156919+0800 XYApp[49790:6822177] test7
+     2022-08-19 12:32:51.158391+0800 XYApp[49790:6822158] test1
+     2022-08-19 12:32:51.158598+0800 XYApp[49790:6822158] test6
+     2022-08-19 12:32:51.158820+0800 XYApp[49790:6822158] test2
+     2022-08-19 12:32:54.368531+0800 XYApp[49790:6822158] test3
+     */
+}
+```
+
+**2、面试题**  
+```objc
+- (IBAction)lg_test3:(id)sender {
+    self.num = 0;
+    int time = 0;
+    while (self.num < 100) {
+        time ++;
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            self.num ++;
+            //self.num = self.num + 1;
+        });
+    }
+    NSLog(@"self.num = %d",self.num);
+    NSLog(@"time = %d",time);
+    /**
+     肯定会 >= 100
+     2022-08-15 16:01:48.269255+0800 XYApp[25881:5838957] self.num = 102
+     2022-10-11 11:40:28.179999+0800 XYTestModule_Example[57853:4429651] time = 555
+     */
+}
+```
+
+#### **九、NSOperation**   
+
+NSOperation是对GCD的封装，更加面向对象话       
+```objc
+//queue：异步并发队列的封装  
+NSOperationQueue * concurrentQueue = [[NSOperationQueue alloc] init];
+concurrentQueue.maxConcurrentOperationCount = 2;//最大并发数为2 可同时执行2个任务
+
+//operation
+NSBlockOperation * operation1 = [NSBlockOperation blockOperationWithBlock:^{
+    for (int i = 0; i<10; i++) {
+        NSLog(@"thread = %@ i = %d",[NSThread currentThread],i);
+    }
+}];
+
+NSBlockOperation * operation2 = [NSBlockOperation blockOperationWithBlock:^{
+    for (int j = 0; j<10; j++) {
+        NSLog(@"thread = %@ j = %d",[NSThread currentThread],j);
+    }
+}];
+[operation2 addDependency:operation1];//依赖关系
+
+// 将operation添加到queue
+[queue addOperation:operation1];
+[queue addOperation:operation2];
+```
+
+
+
 
 
 
