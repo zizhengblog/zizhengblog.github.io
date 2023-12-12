@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "14、快速浏览"
+title: "Git概要"
 date: 2019-01-18
 tag: Git
 ---   
