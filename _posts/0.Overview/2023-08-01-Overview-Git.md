@@ -201,10 +201,15 @@ git restore filename
 ## <a id="content3">3、Git基础（二）</a>
 
 查看提交记录    
-```
-    git log 
-    git log --oneline -n 3
-    git log --oneline --graph -n 3
+```shell
+git log 
+
+git log --oneline -n 3
+
+git log --oneline --graph -n 3
+
+# 显示内容更改
+git log -p
 ```
 
 <!-- ************************************************ -->
