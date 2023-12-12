@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "Git概要"
-date: 2019-01-18
-tag: Git
+date: 2023-08-01
+tag: Overview
 ---   
 
 - [参考：玩转Git三剑客](https://time.geekbang.org/course/intro/100021601)
