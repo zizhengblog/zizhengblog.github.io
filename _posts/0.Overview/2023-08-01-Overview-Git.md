@@ -10,6 +10,8 @@ tag: Overview
 
 
 ## 目录
+* [补充：名词解释](#content0)
+* [补充：好用的命令](#content01)
 * [1、Git介绍](#content1)
 * [2、Git基础](#content2)
 * [3、Git基础（二）](#content3)
@@ -25,7 +27,97 @@ tag: Overview
 * [13、分支开发工作流](#content13)
 
 
+<!-- ************************************************ -->
+## <a id="content0">补充：名词解释</a>
 
+```shell
+# 仓库
+reponsitory    
+
+# 分层的
+hierarchical  
+
+# 平铺的
+flat            
+```
+
+```shell
+# 刚创建未被管理   
+？ 
+
+# add添加,进行了add操作                       
+a 
+
+# delete 删除          
+d  
+
+# modify 修改          
+m
+
+# conflict冲突          
+c 
+
+# ignore忽略          
+i
+
+# 详细 --verbose
+-v
+
+# 终止
+--abort
+
+# 具有分叉分支需要指定如何解决：git pull --no-rebase; 或者 git pull --rebase;
+You have divergent branches and need to specify how to reconcile them.
+
+# 获取和更新状态
+fetch and refresh status
+
+# 此操作不能撤销
+This operation cannot be undone. 
+
+# 存储库是最新的。
+The repository is up to date.
+```
+
+```shell
+#  检出
+check out  
+
+# 提交 
+commit   
+
+# 丢弃
+discard 
+
+# 抓取
+fetch  
+
+# 推送远端
+push   
+
+# 拉取远端
+pull             
+
+# 合并
+merge
+
+# 变基
+rebase
+```
+
+
+<!-- ************************************************ -->
+## <a id="content01">补充：好用的命令</a>
+
+查看某次提交的修改内容
+```shell
+# 通过commit的hash来查看
+git show <commit-hash>
+
+# 查看某次提交某个文件的修改
+git show <commit-hash> <file>
+
+```
 
 <!-- ************************************************ -->
 ## <a id="content1">1、Git介绍</a>
@@ -48,7 +140,7 @@ git config --list
 
 
 git的用户相关查看和配置   
-```
+```shell
 # 当前仓库用户名查看和设置
 git config user.name
 git config user.name 'your_name'
@@ -170,7 +262,7 @@ git cat-file -p commitHash
 # 分离头指针
 git checkout commitHash
 
-# 创建一个新的分支来保存我们的提交 
+# 在分离头指针状态下创建一个新的分支来保存我们的提交 
 git switch -c <new-branch-name>  
 ```
 
@@ -275,7 +367,18 @@ git stash apply --index 1
 否则应该先删除 - commit - 重新添加文件 - 加入gitignore文件     
 
 
-#### **三、远程仓库的添加和删除**      
+#### **三、远程仓库**   
+
+#### **1、查看**   
+```shell
+# 显示详细信息
+git remote -v    
+
+# 显示具体仓库信息：origin
+git remote show origin
+```
+
+#### **2、添加和删除**      
 ```shell
 # 查看远程仓库
 git remote -v
@@ -330,7 +433,67 @@ git branch -d branchName
 git branch -D branchName
 ```
 
-#### **五、Merge**    
+
+#### **五、补充：git pull**    
+```shell
+# <remote> 是远程仓库的名称，通常是 origin。
+# <branch> 是要拉取更新的远程分支的名称。
+git pull <remote> <branch>
+
+# 如果你已经设置了分支的上游分支（upstream），可以简化为：
+git pull
+
+# 拉取并变基（rebase）：
+git pull --rebase
+
+# 拉取并合并(merge):
+git pull --no-rebase
+
+# 只拉取不合并：
+git pull --no-merge
+```
+
+#### **六、补充：git push**   
+
+**1、git push**    
+```shell
+# 将本地的 master 分支推送到远程仓库 origin 的 develop 分支。
+# origin 是远程仓库的名称，通常用于指代远程仓库的地址。
+# master 是本地仓库的分支名，表示要推送的本地分支。
+# develop 是远程仓库的分支名，表示要将本地分支推送到的目标远程分支。
+git push origin master:develop
+
+
+# 将本地的 master 分支的提交推送到远程仓库 origin 的同名分支
+# git push origin master:master
+git push origin master
+
+
+# origin 是远程仓库的名称，它是在本地仓库中配置的远程仓库的别名。
+# HEAD 是指代当前所在的本地分支的引用。
+# refs/for/master 是指代远程仓库中的一个特定分支的引用格式。
+git push origin HEAD:refs/for/master
+```
+
+**2、追踪**    
+```shell
+# <branch-name> 是你要推送的本地分支的名称。
+# -u 或 --set-upstream 选项用于建立远程分支与本地分支的关联。
+# 执行这个命令后，Git 将会建立本地分支与远程分支的关联关系，并将远程分支设为默认上游分支。
+# 这样，之后的 git pull 和 git push 就可以省略远程分支的名称，Git 将自动使用建立的关联关系。
+git push -u origin <branch-name>
+```
+
+**3、refs/for/master 这种分支名与普通的分支名有几个区别：**      
+**审查流程：**refs/for/master 分支名通常在代码审查工作流程中使用，用于提交代码进行审查。它与普通分支名的区别在于，提交到这种特殊分支上的代码会触发代码审查工具的相应流程，例如自动分析、评审和讨论等。
+
+**命名空间：**refs/for/master 使用了 Git 引用（references）的命名空间 refs，它是用于管理分支、标签和其他引用的命名空间。这种命名空间让 Git 能够更好地组织和管理引用，以便进行更精确的控制和操作。
+
+**引用格式：**refs/for/master 是一种特定的引用格式，其中 for 表示用于提交代码进行审查。这种引用格式可以被代码审查工具识别，并触发相应的审查流程。普通分支名通常只是简单的分支名称，不包含特殊的引用格式。
+
+总的来说，refs/for/master 分支名是一种特殊用途的引用格式，用于代码审查流程和提交流程控制。它与普通分支名在使用场景和命名空间上有所区别，并具有特定的引用格式
+
+#### **七、Merge**    
 分支合并有两种场景：fast-forward 和 diverged     
 ```shell
 # 将dev分支合并到当前分支
@@ -341,7 +504,7 @@ git merge origin/dev
 ```
 
 
-#### **六、Rebase**    
+#### **八、Rebase**    
 
 **1、rebase的使用**   
 
@@ -354,15 +517,15 @@ git rebase dev
 ```
 
 ```shell
-git pull origin/master
+git pull origin master
 # 相当于下面的操作
-git fetch origin/master
-git merge origin/temp
+git fetch origin master
+git merge origin temp
 
-git rebase origin/master
+git rebase origin master
 # 相当于下面的操作
-git fetch origin/master
-git rebase origin/master
+git fetch origin master
+git rebase origin master
 ```
 
 **2、重要**    
@@ -422,9 +585,6 @@ git cherry-pick e17811c
 长期分支
 主题分支
 ```
-
-
-
 
 
 
