@@ -1009,20 +1009,58 @@ NSBlockOperation * operation2 = [NSBlockOperation blockOperationWithBlock:^{
 ```
 
 
-
-
-
-
-
-
-
-
-
 <!-- ************************************************ -->
 ## <a id="content7">Runloop</a>
 
-一个 run loop 就是一个事件处理的循环，用来不停的调度工作以及处理输入事件。<br>
-使用 run loop 的目的是让你的线程在有工作的时候忙于工作，而没工作的时候处于休眠状态。<br>
+#### **一、runloop介绍**    
+
+**1、介绍**  
+事件处理循环，不停的处理输入事件。      
+线程保活    
+让线程有工作的时候忙于工作，没工作的时候处于休眠状态。        
+
+全局字典里：一个线程(key)对应一个runloop(value)   
+
+**2、mode**   
+<img src="/images/objectC/loop1.png">
+
+一个RunLoop包含<span style="color:red">若干个</span>Mode,启动时只能选择其中一个Mode，作为currentMode    
+每个Mode又包含<span style="color:red">若干个</span>Source0/Source1/Timer/Observer        
+```objc
+kCFRunLoopDefaultMode
+UITrackingRunLoopMode
+NSRunLoopCommonModes
+```
+#### **二、runloop的运行逻辑**    
+
+<img src="/images/objectC/loop4.png">
+
+**runloop的源**   
+输入源：source1、source0    
+定时源：timer     
+
+**runloop的唤醒**   
+注意：source0不能唤醒runloop      
+```objc
+if (被Timer唤醒) {
+    __CFRunLoopDoTimers(rl, rlm, mach_absolute_time())
+} else if (被GCD唤醒) {
+    __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg)
+} else {
+     __CFRunLoopDoSource1(rl, rlm, rls, msg, msg->msgh_size, $reply)
+}
+```
+
+**runloop的退出**   
+手动调用 CFRunLoopStop 函数,停止 Runloop。    
+所有输入源和定时器都被移除。   
+Runloop 遇到错误。   
+
+
+
+
+
+
 
 ----------
 >  行者常至，为者常成！
