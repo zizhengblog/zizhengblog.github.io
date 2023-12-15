@@ -13,7 +13,7 @@ tag: Overview
 
 
 - [对象的本质](#content1)  
- - [kvc/kvo](#content2)  
+- [kvc/kvo](#content2)  
 - [Category](#content3)   
 - [block](#content4)   
 - [Runtime](#content5)  

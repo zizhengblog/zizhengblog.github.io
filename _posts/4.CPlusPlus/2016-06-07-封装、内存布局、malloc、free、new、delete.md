@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "7、封装、内存布局、malloc、free、new、delete"
-date: 2019-11-13
+date: 2016-06-07
 description: "封装、内存布局、malloc、free、new、delete"
 tag: C++
 ---

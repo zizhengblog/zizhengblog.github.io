@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "2、cin、cout、函数重载、extern C、默认参数"
-date: 2019-11-03
+date: 2016-06-02
 description: "cin、cout、函数重载、extern C、默认参数"
 tag: C++
 ---
