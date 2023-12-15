@@ -891,17 +891,37 @@ NSLog(@"drawMoney-process = %ld",process);//它只表示成功发送信号的次
 
 #### **七、perform**
 
+**主线程执行perform相关方法的情况** 
+
 ```objc
-以下情况不依赖运行循环。会在当前线程立即调用
-     [self performSelector:@selector(test4)];
-     [self performSelector:@selector(test5:) withObject:@"hehe"];
-     [self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:YES];
+// 依赖runloop，处理source0时处理
+[self performSelector:@selector(test4)];
+[self performSelector:@selector(test5:) withObject:@"hehe"];
+// 阻塞当前线程，直到test1执行完成
+[self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:YES];
+// 不会阻塞当前线程，立即返回
+[self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:NO];
+
+
+// 依赖runloop，处理timer时处理
+[self performSelector:@selector(test1) withObject:nil afterDelay:0];
+```
+
+**子线程执行perform相关方法的情况**     
+```objc
+// 以下情况不依赖运行循环。会在当前线程立即调用
+[self performSelector:@selector(test4)];
+[self performSelector:@selector(test5:) withObject:@"hehe"];
+//阻塞当前线程，直到test1执行完成
+[self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:YES];
  
- 其它perform开头的方法都会依赖运行循环。在没有开启运行循环的线程里是没发执行的。
-     [self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:NO];
-     [self performSelector:@selector(test1) withObject:nil afterDelay:0];
+
+// 下面perform开头的方法都会依赖运行循环。在没有开启运行循环的线程里是没发执行的。
+[self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:NO];
+[self performSelector:@selector(test1) withObject:nil afterDelay:0];
  
- 另外performSelector:withObject:afterDelay:和 dispatch_after 都是立即返回。当两者延迟都是0，前者的执行时机比后者慢，因为前者依赖运行循环。
+
+另外performSelector:withObject:afterDelay:和 dispatch_after 都是立即返回。当两者延迟都是0，前者的执行时机比后者慢，因为前者依赖运行循环。
 ```
 
 #### **八、interview**   
