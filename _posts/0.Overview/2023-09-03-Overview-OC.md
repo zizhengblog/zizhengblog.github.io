@@ -1057,6 +1057,38 @@ if (被Timer唤醒) {
 Runloop 遇到错误。   
 
 
+#### **三、runloop相关**    
+
+**source1(唤醒runloop)**    
+基于port的线程间通讯   
+系统事件捕获(比如触摸事件)  
+
+**Timer(唤醒runloop)**   
+NSTimer(可以观察调用栈：__CFRunLoopDoTimer)    
+performSelector:withObject:afterDelay:(可以观察调用栈：__CFRunLoopDoTimer)
+
+**GCD回主线程(唤醒runloop)**    
+可以观察调用栈(__CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__),跟source0和source1没关系   
+
+
+**source0**  
+触摸事件(事件是如何分发给source0的？)    
+performSelector:onThread:(哪些是依赖runloop的？)        
+通知(通知也是source0处理的，可以观察调用栈)   
+
+
+**Observer**   
+监听runloop的状态      
+UI刷新(BeforeWaiting)       
+AutoReleasePool(BeforeWaiting)     
+手势回调调用(BeforeWaiting)         
+
+<span style="color:red;font-weight:bold">不管是source1还是source0都是通过回调来处理事件的</span>
+
+
+
+
+
 
 
 
