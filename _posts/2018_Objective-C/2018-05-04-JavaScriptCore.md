@@ -31,8 +31,9 @@ iOS中可以使用JSCore的地方有多处，比如封装在UIWebView中的JSCor
 很有必要了解的概念只有4个：JSVM，JSContext，JSValue，JSExport。
 
 **JSVirtualMachine**    
-一个JSVirtualMachine（以下简称JSVM）实例代表了一个自包含的JS运行环境，或者是一系列JS运行所需的资源。该类有两个主要的使用用途：一是支持并发的JS调用，二是管理JS和Native之间桥对象的内存。
-
+一个JSVirtualMachine（以下简称JSVM）实例代表了一个自包含的JS运行环境，或者是一系列JS运行所需的资源。    
+该类有两个主要的使用用途：一是支持并发的JS调用，二是管理JS和Native之间桥对象的内存。      
+   
 **JSContext**     
 是一个关键的类，它代表了JavaScript的执行环境。
 
@@ -204,7 +205,19 @@ point.description();
 通过使用JSExport协议，你可以轻松地在Objective-C和JavaScript之间定义和传递接口，使得两种语言之间的交互更加方便。    
 这对于在iOS应用中嵌入Web内容，或者在JavaScript中使用Objective-C实现的功能非常有用。     
 
+**5、关系图如下**   
 
+<img src="/images/objectC/objc19.webp">
+
+oc对象属性 - js对象的原型对象中属性      
+oc对象方法 - js对象的原型对象中方法      
+oc类方法 - js对象构造函数的静态方法     
+oc的继承关系 - js的原型链继承     
+
+
+**6、内存管理**      
+不要在JS中给OC对象增加成员变量    
+OC对象不要直接强引用JSValue对象(有解决方法，查阅参考文档)        
 
 <!-- ************************************************ -->
 ## <a id="content3">Demo</a>
