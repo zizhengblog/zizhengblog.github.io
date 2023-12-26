@@ -13,10 +13,13 @@ tag: Overview
 * [变量/函数提升](#content2)
 * [构造函数](#content3)
 * [原型对象](#content4)
-
-
-
-
+* [this指针](#content5)
+* [闭包](#content6)
+* [异步](#content7)
+* [事件循环](#content8)
+* [定时器](#content9)
+* [捕获与冒泡](#content10)
+* [Dom](#content11)
 
 
 
@@ -201,9 +204,7 @@ console.log(Person.eyes, Person.walk());
 ## <a id="content4">原型对象</a>
 
 原型对象的本质，它也是一个对象     
-共享方法   
-共享属性   
-可以节省内存   
+作用：共享方法、共享属性、可以节省内存   
 
 #### **一、原型对象**   
 
@@ -245,17 +246,453 @@ console.log(person1.age); // 输出: 25
 console.log(person2.age); // 输出: 0（person2的age属性仍然是0，因为它没有被修改）
 ```
 
+#### **二、原型链**   
+
+基类    
+```js
+// 基类构造函数
+function Animal(name) {
+    this.name = name;
+}
+// 基类原型对象上的方法
+Animal.prototype.sayHello = function () {
+    console.log(`Hello, I'm ${this.name}`);
+};
+```
+
+子类   
+```js
+// 派生类构造函数
+function Dog(name, breed) {
+    // 使用call方法调用基类构造函数，以继承基类属性
+    Animal.call(this, name);
+    this.breed = breed;
+}
+
+
+// 建立原型链，使Dog继承Animal
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.constructor = Dog; // 修复构造函数指向
+
+
+// 派生类上的方法
+Dog.prototype.bark = function () {
+    console.log(`${this.name} is barking!`);
+};
+```
+
+使用   
+```js
+// 创建Animal实例
+const animal = new Animal('Generic Animal');
+animal.sayHello(); // 输出: Hello, I'm Generic Animal
+
+// 创建Dog实例
+const dog = new Dog('Buddy', 'Golden Retriever');
+dog.sayHello(); // 输出: Hello, I'm Buddy
+dog.bark(); // 输出: Buddy is barking!
+
+// 是否是同一个方法
+console.log(dog.sayHello === animal.sayHello); // ture
+```
+
+**继承链关系图**  
+三个关键：构造函数、原型对象、实例对象     
+<img src="/images/web/3.png">
+
+**instanceof的用法**
+
+```js
+// 是否在继承链上
+console.log(arr instanceof Object); // true
+```
+
+
+<!-- ************************************************ -->
+## <a id="content5">this指针</a>
+
+#### **一、this讲解**   
+
+普通函数内才有this:      
+普通函数this指向调用者   
+
+```js
+function generalFn() {
+    // 普通函数的this是 [object Window]
+    console.log(`普通函数的this是 ${this}`);
+}
+generalFn()
+```
+
+箭头函数：          
+箭头函数中并不存在 this    
+箭头函数会默认帮我们绑定外层 this 的值     
+适用：需要使用上层this的地方      
+不适用：    
+构造函数/原型函数/字面量对象中函数/dom事件函数     
+
+```js
+let person = {
+    name: "qiaozhi",
+    age: 5,
+    walk: function () {
+        // 对象内普通函数的this是 [object Object]
+        console.log(`对象内普通函数的this是 ${this}`);
+    },
+    eat: () => {
+        // 对象内箭头函数的this是 [object Window]
+        console.log(`对象内箭头函数的this是 ${this}`);
+    }
+}
+person.walk()
+person.eat()
+```
+
+
+#### **二、修改this指向**
+
+三个函数：call、apply、bind     
+
+```js
+let person = { name: '乔治', age: 18 }
+function sayHi(x, y) {
+    console.log(`this 指向 ${JSON.stringify(this)}`, `参数1：${x}`, `参数2：${y}`);
+}
+
+// this 指向 {"name":"乔治","age":18} 参数1：call1 参数2：call2
+sayHi.call(person, 'call1', 'call2')
+
+
+//this 指向 {"name":"乔治","age":18} 参数1：apply1 参数2：apply2
+sayHi.apply(person, ['apply1', 'apply2'])
+// apply 主要跟数组有关系,把参数变成了数组形式传入，比如使用 Math.max() 求数组的最大值
+console.log(Math.max.apply(null, [1, 2, 3]))
+console.log(Math.max(...[1, 2, 3]))
+
+
+// this 指向 {"name":"乔治","age":18} 参数1：bind1 参数2：bind2
+let sayHello = sayHi.bind(person)
+//bind 不会调用函数, 可以改变函数内部this指向.
+sayHello('bind1', 'bind2')
+```
 
 
 
+<!-- ************************************************ -->
+## <a id="content6">闭包</a>
+
+什么是闭包？   
+外层函数 + 内层函数 + 内层函数访问外层函数的变量     
+                
+逃逸闭包？   
+在调用函数内部被执行为非逃逸闭包。    
+函数调用结束了，仍然可以被调用是逃逸闭包。    
+
+可能引起的问题：   
+内存泄露    
+
+**1、访问局部变量：计数器**     
+```js
+function counter() {
+    let count = 0;
+    return function () {
+        return count++;
+    };
+}
+const increment = counter();
+console.log(increment()); // 0
+console.log(increment()); // 1
+```
+
+**2、模块化：计算器**     
+```js
+// 闭包可以用于创建模块化的代码结构，将相关的功能函数(内部函数)封装在一个函数(外部函数)内部，并通过返回内部函数来暴露一些接口。
+function createCalculator() {
+    let result = 0;
+    return {
+        add: function (num) {
+            result += num;
+        },
+        subtract: function (num) {
+            result -= num;
+        },
+        getResult: function () {
+            return result;
+        }
+    };
+}
+const calculator = createCalculator();
+calculator.add(5);
+calculator.subtract(2);
+console.log(calculator.getResult()); // 3
+```
 
 
+**3、异步执行：网络请求**      
+```js
+function fetchData(url, callback) {
+    // 外部函数：fetchData; 内部函数： setTimeout; 局部变量：callback;
+    // 模拟异步请求
+    setTimeout(function () {
+        const data = 'Some data from the server';
+        callback(data);
+    }, 1000);
+}
+fetchData('https://example.com/api/data', function (result) {
+    console.log('Data received:', result);
+});
+```
 
 
+<!-- ************************************************ -->
+## <a id="content7">异步</a>
+
+#### **一、Promise**    
+
+Promise的两个关键：resolve 和 reject     
+resolve触发.then内的回调，reject触发.catch内的回调     
+```js
+const p1 = new Promise((resolve, reject) => {
+    console.log('这个代码块是立即执行的1')
+    setTimeout(() => {
+        resolve('第一次回调')
+    }, 2000);
+})
+
+// promise实例对象的then方法
+const p2 = p1.then(result => {
+    console.log(result)
+    return new Promise((resolve, reject) => {
+        console.log('这个代码块是立即执行的2')
+        setTimeout(() => {
+            resolve('第二次回调')
+        }, 2000);
+    })
+})
+
+p2.then((result) => {
+    console.log(result)
+})
+```
+
+以上代码可以使用链式编程写成下面这样     
+```js
+console.log(1)
+new Promise((resolve, reject) => {
+    console.log('这个代码块是立即执行的1')
+    setTimeout(() => {
+        resolve('第一次回调')
+        // reject('第一次回调：失败')
+    }, 2000);
+}).then((result) => {
+    console.log(result)
+    return new Promise((resolve, reject) => {
+        console.log('这个代码块是立即执行的2')
+        setTimeout(() => {
+            resolve('第二次回调')
+            // reject('第二次回调：失败')
+        }, 2000);
+    })
+}).then((result) => {
+    console.log(result)
+}).catch((error) => {
+    console.log(`error:${error}`);
+});
+console.log(2)
+
+/**
+1
+这个代码块是立即执行的1
+2
+第一次回调
+这个代码块是立即执行的2
+第二次回调
+*/
 
 
+//then可以传递两个回调函数，一个成功回调，一个失败回调
+//.then((success)=>{},(error)=>{});
+```
+
+#### **二、async 和 await的使用**   
+
+```js
+function asyncAndAwaitTest() {
+
+    console.log('执行顺序0')
+    testFunc()
+    console.log('执行顺序1')
+
+    async function testFunc() {
+        //async函数和await_捕获错误 使用try...catch
+        try {
+
+            console.log('执行顺序2');
+
+            //重要：在 async 函数内，使用 await 关键字取代 then 函数，等待获取 Promise 对象成功状态的结果值
+            let p = new Promise((resolve, reject) => {
+                console.log('执行顺序3')
+                setTimeout(() => {
+                    resolve('这是resolve的结果')
+                    // reject('这是reject的结果')
+                }, 2000);
+                console.log('执行顺序4')
+            })
+
+            //await 后边跟的是一个Promise 的实例对象p
+            // p 的异步执行结果能拿到的两种方式就是 p.then((result)=>{})) 或 let result = await p
+            const result = await p
+
+            console.log('执行顺序5')
+            console.log(result)
+            console.log('执行顺序6')
+
+        } catch (error) {
+            console.log('error = ', error);
+        }
+
+        /*
+            执行顺序0
+            执行顺序2
+            执行顺序3
+            执行顺序4
+            执行顺序1
+            ... 2s后执行下面
+            执行顺序5
+            这是resolve的结果
+            执行顺序6
+        */
+    }
+}
+```
+
+```js
+function promiseAllTest() {
+    const bjPromise = axios({ url: 'http://hmajax.itheima.net/api/weatherc', params: { city: '110100' } })
+    const shPromise = axios({ url: 'http://hmajax.itheima.net/api/weather', params: { city: '310100' } })
+    Promise.all(
+        [bjPromise, shPromise]
+    ).then((result) => {
+        // 注意：结果数组顺序和合并时顺序是一致
+        console.log(result)
+    }).catch((error) => {
+        console.log('error = ', error)
+    })
+}
+```
 
 
+<!-- ************************************************ -->
+## <a id="content8">事件循环</a>
+
+<img src="/images/web/4.png">
+
+
+<!-- ************************************************ -->
+## <a id="content9">定时器</a>
+
+**1、定时器**   
+```js
+setTimeout(() => {
+    console.log('这段代码会在2秒后执行');
+}, 2000);
+
+
+const timer = setTimeout(() => {
+    console.log('这段代码不会执行');
+}, 2000);
+
+//清除定时器
+clearTimeout(timer)
+```
+
+**2、间歇函数**   
+
+```js
+setInterval(() => {
+    console.log('这段代码会间隔1秒执行');
+}, 1000);
+
+const interval = setInterval(() => {
+    console.log('这段代码不会执行');
+}, 1000);
+
+// 清除间歇函数
+clearInterval(interval)
+```
+
+
+<!-- ************************************************ -->
+## <a id="content10">捕获与冒泡</a>
+
+lxy:捕获与冒泡是一个完整的事件链路，stopPropagation会终止整个链路的后续事件    
+lxy:链路：父元素捕获回调 - 子元素捕获回调 - 子元素冒泡回调 - 父元素冒泡回调     
+
+```js
+// 捕获事件回调
+container.addEventListener('click', function (e) {
+    // console.log(e) // e 是事件对象
+
+    //this 是环境对象
+    console.log(`捕获：${this.className}监听回调，被点击对象是${e.target.className}`)
+    // e.stopPropagation()
+}, true)//默认是false:冒泡事件回调。true:捕获事件回调
+
+
+// 冒泡事件回调  
+container.addEventListener('click', function (e) {
+    console.log(`冒泡：${this.className}监听回调，被点击对象是${e.target.className}`)
+    // e.stopPropagation()
+}, false)
+```
+
+<!-- ************************************************ -->
+## <a id="content11">Dom</a>
+
+**1、对一个节点，添加/删除/转换 一个类选择器**     
+```js
+let container = document.querySelector('.container')
+container.classList.add('border')
+container.classList.remove('container')
+container.classList.toggle('container')
+```
+
+**2、克隆/追加/插入/删除一个节点**    
+```js
+//true 克隆所有子节点 false为只克隆自己
+const cloneSub1 = sub1.cloneNode(true)
+father.appendChild(cloneSub1)// 追加到后边
+father.insertBefore(sub3, sub1)// 插入到sub1的前边
+father.removeChild(sub3)
+```
+
+**3、拿到一个节点(父容器)，修改它的innerHTML**
+```js
+let sub = document.querySelector('.container .sub')
+sub.style.backgroundColor = 'blue'
+sub.innerHTML = `<h1>哈哈</h1>`
+
+let divs = document.querySelectorAll('div')
+console.dir(divs)
+```
+
+**4、节点的查询**   
+```js
+father.children
+sub1.parentNode
+sub1.nextElementSibling
+```
+
+**5、偏移计算**    
+```js
+//html 被卷去的头部
+let scrollTop = document.documentElement.scrollTop
+console.log(scrollTop)
+
+//offsetTop以谁为准：带有定位的父级，如果都没有则以 文档左上角 为准
+let offsetTop = document.querySelector('.sub').offsetTop
+console.log(offsetH)
+```
 
 
 ----------
