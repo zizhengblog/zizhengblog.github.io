@@ -20,7 +20,7 @@ tag: Overview
 * [定时器](#content9)
 * [捕获与冒泡](#content10)
 * [Dom](#content11)
-* [节流与抖动](#content12)
+* [其它](#content12)
 
 
 
@@ -700,8 +700,9 @@ console.log(offsetH)
 
 
 <!-- ************************************************ -->
-## <a id="content12">节流与抖动</a>
+## <a id="content12">其它</a>
 
+#### **一、节流与抖动**   
 
 **1、节流**    
 对于连续触发的事件，在 n 秒中只执行一次函数。如果不加节流在n秒内可能调用上百次       
@@ -761,6 +762,14 @@ function debounce(fn, msecond = 500) {
 }
 ```
 
+
+
+
+#### **二、JS的GC机制**   
+
+JS同样也不需要我们去手动管理内存。JS的内存管理使用的是GC机制（Tracing Garbage Collection）。     
+不同于OC的引用计数，Tracing Garbage Collection是由GCRoot（Context）开始维护的一条引用链，一旦引用链无法触达某对象节点，这个对象就会被回收掉。如下图所示：
+<img src="/images/web/5.png">
 
 ----------
 >  行者常至，为者常成！

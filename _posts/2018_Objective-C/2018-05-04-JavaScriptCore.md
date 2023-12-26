@@ -1,10 +1,10 @@
 ---
 layout: post
 title: "JavaScriptCore"
-date: 2018-05-03
+date: 2018-05-04
 tag: Objective-C
 --- 
-
+- [美团技术团队：深入理解JSCore](https://tech.meituan.com/2018/08/23/deep-understanding-of-jscore.html)
 - [重要：深入浅出 JavaScriptCore](https://www.jianshu.com/p/ac534f508fb0)
 - [重要：上面文章中在 Github 上的Demo](https://github.com/DengKaiHui/Demo_JSExport)
 
@@ -13,24 +13,37 @@ tag: Objective-C
 
 
 ## 目录
-* [JSContext 和 JSValue](#content1)
+* [iOS的JavaScriptCore框架](#content1)
 * [JSExport协议](#content2)
 * [Demo](#content3)
 
 
 
-
 <!-- ************************************************ -->
-## <a id="content1">JSContext和JSValue</a>
+## <a id="content1">iOS的JavaScriptCore框架</a>
 
 JavaScriptCore是苹果公司提供的JavaScript引擎，用于在iOS和macOS上**执行JavaScript代码**。      
 它是WebKit框架的一部分，WebKit是苹果用于处理Web内容的开源引擎。    
 JavaScriptCore提供了与JavaScript交互的接口，使开发者能够在原生应用中使用JavaScript来实现一些功能。
 
-JSContext是一个关键的类，它代表了JavaScript的执行环境。
+iOS中可以使用JSCore的地方有多处，比如封装在UIWebView中的JSCore，封装在WKWebView中的JSCore，以及系统提供的JSCore。
 
-JSValue可以表示JavaScript中的各种基本类型，包括数字、字符串、布尔值、对象、数组和函数等。   
-是类型转换的桥梁。          
+很有必要了解的概念只有4个：JSVM，JSContext，JSValue，JSExport。
+
+**JSVirtualMachine**    
+一个JSVirtualMachine（以下简称JSVM）实例代表了一个自包含的JS运行环境，或者是一系列JS运行所需的资源。该类有两个主要的使用用途：一是支持并发的JS调用，二是管理JS和Native之间桥对象的内存。
+
+**JSContext**     
+是一个关键的类，它代表了JavaScript的执行环境。
+
+**JSValue**    
+可以表示JavaScript中的各种基本类型，包括数字、字符串、布尔值、对象、数组和函数等。是类型转换的桥梁。              
+
+**JSExport**   
+通过采用JSExport协议，你可以将Objective-C对象的方法和属性暴露给JavaScript环境，使得它们在JavaScript代码中可以直接调用。  
+
+<img src="/images/objectC/objc18.png">
+
 
 #### **一、代码演示**    
 
@@ -279,9 +292,6 @@ var midpoint = function(p1, p2) {
     NSLog(@"midpoint = %@",midpoint);
 }
 ```
-
-
-
 
 
 ----------
