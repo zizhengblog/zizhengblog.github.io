@@ -20,6 +20,9 @@ tag: Overview
 * [定时器](#content9)
 * [捕获与冒泡](#content10)
 * [Dom](#content11)
+* [节流与抖动](#content12)
+
+
 
 
 
@@ -692,6 +695,70 @@ console.log(scrollTop)
 //offsetTop以谁为准：带有定位的父级，如果都没有则以 文档左上角 为准
 let offsetTop = document.querySelector('.sub').offsetTop
 console.log(offsetH)
+```
+
+
+
+<!-- ************************************************ -->
+## <a id="content12">节流与抖动</a>
+
+
+**1、节流**    
+对于连续触发的事件，在 n 秒中只执行一次函数。如果不加节流在n秒内可能调用上百次       
+
+```js
+let div = document.querySelector('.throttle')
+
+let callFn = function () {
+    div.innerHTML = i++
+}
+
+i = 0
+// div.addEventListener('mousemove', callFn)
+
+//节流：对于连续触发的事件，在 n 秒中只执行一次函数。如果不加节流在n秒内可能调用上百次
+div.addEventListener('mousemove', throttle(callFn, 500))
+
+
+//节流函数
+function throttle(fn, msecond = 500) {
+    let startTime = new Date()
+    return function () {
+        let now = new Date()
+        if (now - startTime >= msecond) {
+            fn()
+            startTime = now
+        }
+    }
+}
+```
+
+**2、抖动**   
+在指定时间内，如果触发了第二次操作，就将第一次取消，然后重新计时。     
+比如：输入框事件    
+```js
+let div = document.querySelector('.debounce')
+
+let callFn = function () {
+    div.innerHTML = i++
+}
+
+i = 0
+// div.addEventListener('mousemove', callFn)
+
+div.addEventListener('mousemove', debounce(callFn, 500))
+
+
+//
+function debounce(fn, msecond = 500) {
+    let timeId
+    return function () {
+        if (timeId) clearTimeout(timeId)
+        timeId = setTimeout(function () {
+            fn()
+        }, msecond);
+    }
+}
 ```
 
 
