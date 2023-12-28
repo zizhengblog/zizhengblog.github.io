@@ -4,12 +4,17 @@ title: "WebViewJavaScriptBridge "
 date: 2018-05-05
 tag: Objective-C
 --- 
+
+- [参考：一篇文章了解JsBridge之IOS篇](https://juejin.cn/post/6844903567992553480?from=search-suggest)
 - [参考：WebViewJavaScriptBridge 基本使用](https://www.jianshu.com/p/d12ec047ce52)
+
 
 
 ## 目录
 * [介绍](#content1)
 * [基本使用](#content2)
+* [三方库 WebViewJavascriptBridge 原理分析](#content3)
+
 
 
 
@@ -176,7 +181,11 @@ function generateRandomColor() {
 }
 ```
 
-**3、关于WebViewJavascriptBridge对象**
+<!-- ************************************************ -->
+## <a id="content3">三方库 WebViewJavascriptBridge 原理分析</a>
+
+- [参考：iOS之WebViewJavascriptBridge浅析](https://juejin.cn/post/7168824876059328548)
+
 
 在js的`changeColor`方法中，其实是调用了`WebViewJavascriptBridge.callHandler`方法，那么`WebViewJavascriptBridge`对象是在什么地方创建的呢？    
 在js代码中并没有找到相关代码，在OC代码中我们找到了相关的代码     
@@ -193,6 +202,14 @@ function generateRandomColor() {
         }
     }
 }
+```
+
+**几个重要的宏定义**  
+```objc
+#define kOldProtocolScheme @"wvjbscheme"
+#define kNewProtocolScheme @"https"
+#define kQueueHasMessage   @"__wvjb_queue_message__"
+#define kBridgeLoaded      @"__bridge_loaded__"
 ```
 
 
