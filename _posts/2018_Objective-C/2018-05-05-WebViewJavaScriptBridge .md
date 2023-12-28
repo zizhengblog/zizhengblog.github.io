@@ -27,6 +27,7 @@ WebViewJavaScriptBridge 用于 WKWebView & UIWebView 中 OC 和 JS 交互的框�
 
 <!-- ************************************************ -->
 ## <a id="content2">基本使用</a>
+
 #### **一、使用pod管理**  
 
 ```ruby
@@ -162,7 +163,7 @@ function generateRandomColor() {
 </script>
 ```
 
-#### **二、OC如何调用**  
+**2、OC如何调用**  
 ```objc
 // oc调用js方法
 - (IBAction)changeHTMLBgColor:(id)sender {
@@ -174,6 +175,26 @@ function generateRandomColor() {
     }];
 }
 ```
+
+**3、关于WebViewJavascriptBridge对象**
+
+在js的`changeColor`方法中，其实是调用了`WebViewJavascriptBridge.callHandler`方法，那么`WebViewJavascriptBridge`对象是在什么地方创建的呢？    
+在js代码中并没有找到相关代码，在OC代码中我们找到了相关的代码     
+
+```objc
+- (void)injectJavascriptFile {
+    NSString *js = WebViewJavascriptBridge_js();
+    [self _evaluateJavascript:js];
+    if (self.startupMessageQueue) {
+        NSArray* queue = self.startupMessageQueue;
+        self.startupMessageQueue = nil;
+        for (id queuedMessage in queue) {
+            [self _dispatchMessage:queuedMessage];
+        }
+    }
+}
+```
+
 
 
 
