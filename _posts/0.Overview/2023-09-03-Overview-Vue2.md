@@ -99,6 +99,7 @@ xy:脚手架帮助我们创建一个集成了打包工具的标准化项目
 <script>
 export default {
   name: 'FindMusic',
+  // data是一个方法   
   data() {
     return {
       inpValue: '搜索一下'
@@ -134,7 +135,7 @@ export default {
 #### **二、组件：根组件、全局组件、普通组件**    
 
 **1、根组件**     
-src/App.vue 就是根组件    
+src/App.vue 就是根组件，整个应用最上层组件，包裹其它组件         
 
 **2、全局组件**     
 在main.js中注册           
@@ -175,7 +176,7 @@ export default {
 export default {
     data () {
         return {
-            count: 0
+            title: '标题'
         }
     },
 
@@ -293,13 +294,15 @@ v-on:click="count++" 内联语句、 v-on:click="fn" 配置函数、 @click="fn"
 ```
 
 v-if  底层原理：根据 判断条件 控制元素的 创建 和 移除（条件渲染）v-else-if   v-else   
+如果是false不会渲染    
 ```js
 <p v-if="score >= 90">成绩评定A：奖励电脑一台</p>
 <p v-else-if="score >= 70">成绩评定B：奖励周末郊游</p>
 <p v-else-if="score >= 60">成绩评定C：奖励零食礼包</p>
 <p v-else>成绩评定D：惩罚一周不能玩手机</p>
 ```
-v-show 底层原理：切换 css 的 display: none 来控制显示隐藏      
+v-show 底层原理：切换 css 的 display: none 来控制显示隐藏   
+ture和false都会渲染，需要频繁控制显隐的场景使用，开销较小        
 ```js
  <div v-show="flag" class="box">我是v-show控制的盒子</div>
  ```
