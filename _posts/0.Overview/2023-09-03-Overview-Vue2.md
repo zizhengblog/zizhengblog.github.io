@@ -12,7 +12,10 @@ tag: Overview
 * [开发 Vue 的两种方式](#content1)
 * [Vue文件](#content2)
 * [Vue中的指令](#content3)
-
+* [父子组件通信](#content4)
+* [双向绑定](#content5)
+* [插槽slot](#content6)
+* [vue-router](#content7)
 
 
 
@@ -359,6 +362,421 @@ Vue.directive('focus', {
 // 在其他模板中使用
 <input v-focus ref="inp" type="text">
 ```
+
+
+
+<!-- ************************************************ -->
+## <a id="content4">父子组件通信</a>
+
+#### **一、单向数据流**
+
+**1、子组件**  
+
+**数据：父传子**       
+通过属性把数据传递给子组件比如:title='myTitle'        
+prop 的数据是外部的 → 不能直接改，要遵循 单向数据流    
+在组件内部修改props会报错：Unexpected mutation of "title" prop    
+属性还可以添加校验规则         
+
+**数据：子传父**     
+通过方法向父组件传递数据比如：`this.$emit('changTitle','传智教育')`
+
+```js
+<template>
+  <div class="son" style="border: 3px solid #000; margin: 10px">
+    我是Son组件 {{ title }}
+    <button @click="changeFn">修改title</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Son-Child',
+  props: ['title'],
+  methods: {
+    changeFn() {
+      // 通过this.$emit() 向父组件发送通知
+      this.$emit('changTitle','传智教育')
+    },
+  },
+}
+</script>
+```
+
+**2、父组件**   
+```js
+<template>
+  <div class="app" style="border: 3px solid #000; margin: 10px">
+    我是APP组件
+    <!-- 2.父组件对子组件的消息进行监听 -->
+    <Son :title="myTitle" @changTitle="handleChange"></Son>
+  </div>
+</template>
+
+<script>
+import Son from './components/Son.vue'
+export default {
+  name: 'App',
+  data() {
+    return {
+      myTitle: '学前端，就来黑马程序员',
+    }
+  },
+  components: {
+    Son,
+  },
+  methods: {
+    // 3.提供处理函数，提供逻辑
+    handleChange(newTitle) {
+      this.myTitle = newTitle
+    },
+  },
+}
+</script>
+
+<style>
+</style>
+```
+
+
+#### **二、事件总线**    
+
+**1、创建一个文件**  
+EventBus.js     
+```js
+import Vue from 'vue'
+const Bus  =  new Vue()
+export default Bus
+```
+
+**2、传递数据** 
+可以在任何地方发送      
+```js
+<script>
+import Bus from '../utils/EventBus'
+export default {
+  methods: {
+    sendMsgFn() {
+      Bus.$emit('sendMsg', '今天天气不错，适合旅游')
+    },
+  },
+}
+</script>
+```
+
+**3、接收数据**  
+可以在任何地方接收     
+```js
+<script>
+import Bus from '../utils/EventBus'
+export default {
+  data() {
+    return {
+      msg: '',
+    }
+  },
+  created() {
+    Bus.$on('sendMsg', (msg) => {
+      this.msg = msg
+    })
+  },
+}
+</script>
+```
+
+#### **三、爷-父-子 provide 和 inject**     
+爷爷组件
+```js
+export default {
+  provide() {
+    return {
+      // 简单类型 是非响应式的
+      color: this.color,
+      // 复杂类型 是响应式的
+      userInfo: this.userInfo,
+    }
+  }
+}
+```
+
+子组件(包括父组件或者孙子组件)     
+```js
+<template>
+  <div class="grandSon">
+    我是GrandSon
+    {{ color }} -{{ userInfo.name }} -{{ userInfo.age }}
+  </div>
+</template>
+
+export default {
+  inject: ['color', 'userInfo'],
+}
+```
+
+
+<!-- ************************************************ -->
+## <a id="content5">双向绑定</a>
+
+#### **一、v-model原理**    
+
+```js
+<!-- v-model的底层其实就是：value 和 @input的简写 -->
+<!-- input内部：props:['value'] this.$emit('input','事件对象') -->
+<!-- 此处$event取到的参数是事件对象,所以通过 $event.target.value 拿到新值-->
+<input type="text" v-model="msg2"/>
+<input type="text" :value="msg2" @input="msg2 = $event.target.value" />
+```
+注意:$event 用于在模板中，获取事件的形参    
+
+#### **二、自定义组件使用v-model**      
+```js
+<div class="app">
+<!-- 自定义组件使用v-model -->
+<!-- BaseSelect内部：props:['value'] this.$emit('input','newValue') -->
+<!-- $event 取到的是传递出来的参数 newValue -->
+<BaseSelect :value="selectId" @input="selectId = $event"></BaseSelect>
+<BaseSelect v-model="selectId"></BaseSelect>
+</div>
+```
+为什么此处是$event，而不是像input一样的$event.target.value?     
+xy:我的理解是系统组件会根据需要进行绑定和解析，比如input是value相关，单选和复选v-model 会绑定 checked 属性     
+绑定的属性会根据需要进行变更，那么传递出来的参数也会根据需要进行调整。    
+自定义的组件会直接绑定传递出来的参数        
+
+```js
+<template>
+  <div>
+    <select :value="value" @change="selectCity">
+      <option value="101">北京</option>
+      <option value="102">上海</option>
+      <option value="103">广州</option>
+      <option value="104">深圳</option>
+    </select>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    value: String,
+  },
+  methods: {
+    selectCity(e) {
+      this.$emit('input', e.target.value)
+    },
+  },
+}
+</script>
+```
+
+#### **三、自定义组件使用自定义名称**  
+如果不想使用固定的v-model 和 value，想使用自定义的名称，可以使用sync    
+
+```js
+<BaseDialog :isShow="isShow" @update:isShow="isShow=$event"></BaseDialog>
+<BaseDialog :isShow.sync="isShow"></BaseDialog>
+```
+
+BaseDialog组件内部
+```js
+export default {
+  props: {
+    isShow: Boolean,
+  },
+  methods:{
+    closeDialog(){
+      this.$emit('update:isShow',false)
+    }
+  }
+}
+```
+
+
+<!-- ************************************************ -->
+## <a id="content6">插槽slot</a>
+
+#### **一、默认插槽**   
+
+```js
+<template>
+  <div class="dialog">
+    <!-- 默认插槽定义：默认插槽只能有一个定制位置 -->
+    <slot>我是默认内容</slot>
+  </div>
+</template>
+```
+
+默认插槽使用：只能有一个定制位置   
+```js
+<MyDialog>要显示的内容</MyDialog>
+<MyDialog>
+    <div>要显示的内容</div>
+</MyDialog>
+```
+
+
+#### **二、具名插槽**    
+
+```js
+<template>
+  <div class="dialog">
+    <!-- 具名插槽定义 -->
+    <!-- 一但插槽起了名字，就是具名插槽，只支持定向分发 -->
+    <slot name="head"></slot>
+  </div>
+</template>
+```
+
+具名插槽使用       
+```js
+<MyDialog>
+    <!-- 需要通过template标签包裹需要分发的结构，包成一个整体 -->
+    <!-- v-slot:可以使用#号替换 -->
+    <template v-slot:head>
+        <div>我是大标题</div>
+    </template>
+</MyDialog>
+```
+
+
+#### **三、作用域插槽**
+
+```js
+<template>
+  <div class="dialog">
+    <!-- 作用域插槽定义 -->
+    <!-- 作用域插槽是内部向外部传递数据 -->
+    <!-- 传递的格式：{"xm":"xiaoming","age":"18"} -->
+    <slot name="head" xm="xiaoming" age="18"></slot>
+  </div>
+</template>
+```
+
+作用域插槽使用       
+```js
+<MyDialog>
+    <!-- 需要通过template标签包裹需要分发的结构，包成一个整体 -->
+    <!-- 如果是没有名字的默认插槽：#default="obj" -->
+    <template #head="obj">
+        <div> \{\{ obj.xm \}\}</div>
+        <div>\{\{ obj.age \}\}</div>
+    </template>
+</MyDialog>
+```
+
+
+
+<!-- ************************************************ -->
+## <a id="content7">vue-router</a>
+
+
+#### **一、引入vue-router包**   
+vue2使用的vue-router是3.x版本     
+```js
+ "dependencies": {
+    "axios": "^1.3.3",
+    "core-js": "^3.8.3",
+    "less": "^4.1.3",
+    "less-loader": "^11.1.0",
+    "vue": "^2.6.14",
+    "vue-router": "3.6.5"
+  },
+```
+
+#### **二、main.js挂载**   
+```js
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router/index'
+Vue.config.productionTip = false
+new Vue({
+  render: h => h(App),
+  router
+}).$mount('#app')
+```
+
+#### **三、设置路由出口**     
+
+```js
+<template>
+  <div id="app">
+    <div class="link">
+      <router-link to="/home">首页</router-link>
+      <router-link to="/search">搜索页</router-link>
+    </div>
+    <router-view></router-view>
+  </div>
+</template>
+```
+
+#### **四、编辑路由**       
+在单独的文件中router/index.js编辑路由        
+
+```js
+import Home from '@/views/Home'
+import Search from '@/views/Search'
+import NotFound from '@/views/NotFound'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter) // VueRouter插件初始化
+// 创建了一个路由对象
+const router = new VueRouter({
+  // 注意：一旦采用了 history 模式，地址栏就没有 #，需要后台配置访问规则
+  // mode: 'history',
+  routes: [
+    { path: '/', redirect: '/home' },
+    { path: '/home', component: Home },
+    { name: 'search', path: '/search/:words?', component: Search },
+    { path: '*', component: NotFound }
+  ]
+})
+export default router
+```
+
+#### **五、路由的跳转传参**    
+
+**1、编程式导航**   
+```js
+this.$router.push('/search')
+this.$router.push('search')
+```
+
+**2、查询参数传参**   
+```js
+// 查询参数传参
+// http://localhost:8080/#/search?key=aa
+this.$router.push('/search?key=aa}')
+
+//完整写法
+this.$router.push({
+    path: '/search',
+    query: { key: 'aa', key1: 'bb' }
+})
+
+// 取参数
+this.$route.query.key //aa
+```
+
+**3、动态路由传参**   
+```js
+// 动态路由传参
+// http://localhost:8080/#/search/aa
+this.$router.push('/search/aa')
+// 完整写法
+this.$router.push({
+name: 'search',
+query: { key: 'aa' },
+params: { words: 'aa', value: 'bb' }
+})
+// 取参数
+this.$route.params.words //aa
+```
+
+**六、一级路由、二级路由**   
+
+如何区分一级路由和二级路由？    
+
+<keep-alive></keep-alive>的使用    
 
 
 ----------
