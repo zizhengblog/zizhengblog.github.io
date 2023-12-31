@@ -16,6 +16,7 @@ tag: Overview
 * [双向绑定](#content5)
 * [插槽slot](#content6)
 * [vue-router](#content7)
+* [vuex](#content8)
 
 
 
@@ -669,6 +670,10 @@ export default {
 <!-- ************************************************ -->
 ## <a id="content7">vue-router</a>
 
+路由：路由是一种映射关系     
+Vue中的路由：路径 和 组件 的映射关系，根据路由就能知道不同路径的，应该匹配渲染哪个组件     
+lxy:路由就是路径和页面的映射关系     
+
 
 #### **一、引入vue-router包**   
 vue2使用的vue-router是3.x版本     
@@ -777,6 +782,179 @@ this.$route.params.words //aa
 如何区分一级路由和二级路由？    
 
 <keep-alive></keep-alive>的使用    
+
+
+
+
+<!-- ************************************************ -->
+## <a id="content8">vuex</a>
+
+#### **一、引包**    
+vue2使用的是vuex3.x  
+```js  
+"dependencies": {
+"core-js": "^3.8.3",
+"vue": "^2.6.14",
+"vuex": "3"
+},
+```
+#### **二、main.js挂载**   
+
+```js
+import Vue from 'vue'
+import App from './App.vue'
+import store from './store'
+
+new Vue({
+  store,
+  render: h => h(App)
+}).$mount('#app')
+```
+
+#### **三、定义store**   
+
+在src/store/index.js文件内定义store   
+```js
+// 这里面存放的就是 vuex 相关的核心代码
+import Vue from 'vue'
+import Vuex from 'vuex'
+import user from './modules/user'
+import setting from './modules/setting'
+
+// 插件安装
+Vue.use(Vuex)
+
+// 1. 通过 state 可以提供数据 (所有组件共享的数据)
+const state = {
+  title: '仓库大标题',
+  count: 100,
+  list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+}
+// 获取数据
+// this.$store.state.count
+
+// 2. 通过 mutations 可以提供修改数据的方法
+const mutations = {
+  // 所有mutation函数，第一个参数，都是 state
+  // 注意点：mutation参数有且只能有一个，如果需要多个参数，包装成一个对象
+  addCount(state, obj) {
+    console.log(obj)
+    // 修改数据
+    state.count += obj.count
+  },
+  subCount(state, n) {
+    state.count -= n
+  },
+  changeCount(state, newCount) {
+    state.count = newCount
+  },
+  changeTitle(state, newTitle) {
+    state.title = newTitle
+  }
+}
+// 提交mutation，调用mutation函数
+// this.$store.commit('changeCount', num)
+
+
+// 3. actions 处理异步
+// 注意：不能直接操作 state，操作 state，还是需要 commit mutation
+const actions = {
+  // context 上下文 (此处未分模块，可以当成store仓库)
+  // context.commit('mutation名字', 额外参数)
+  changeCountAction(context, num) {
+    // 这里是setTimeout模拟异步，以后大部分场景是发请求
+    setTimeout(() => {
+      context.commit('changeCount', num)
+    }, 1000)
+  }
+}
+// 使用
+// this.$store.dispatch('changeCountAction', 100)
+
+// 4. getters 类似于计算属性
+const getters = {
+  // 注意点：
+  // 1. 形参第一个参数，就是state
+  // 2. 必须有返回值，返回值就是getters的值
+  filterList(state) {
+    return state.list.filter(item => item > 5)
+  }
+}
+// 使用
+// this.$store.getters.filterList
+
+// 5. modules 模块
+const modules = {
+  user,
+  setting
+}
+
+// 创建仓库
+const store = new Vuex.Store({
+  // 严格模式 (有利于初学者，检测不规范的代码 => 上线时需要关闭)
+  strict: true,
+  state,
+  mutations,
+  actions,
+  getters,
+  modules
+})
+
+// 导出给main.js使用
+export default store
+```
+
+
+#### **四、使用**    
+
+**1、直接使用**   
+
+```js
+// 获取数据
+this.$store.state.count
+
+// 修改数据：提交mutation，调用mutation函数
+this.$store.commit('changeCount', num)
+
+// 异步修改数据：100是传递的参数
+this.$store.dispatch('changeCountAction', 100)
+
+// 派生方法：类似计算属性
+this.$store.getters.filterList
+
+
+// 如果是调用子模块
+this.$store.dispatch('user/setUser', newUserInfo)
+```
+
+**2、通过辅助函数使用**    
+
+```js
+<script>
+import { mapState } from 'vuex'
+
+export default {
+    computed: {
+        // mapState 和 mapGetters 都是映射属性
+        ...mapState(['count', 'title'])
+        ...mapGetters(['filterList']),
+    },
+    methods: {
+        // mapMutations 和 mapActions 都是映射方法
+        // 全局级别的映射
+        ...mapMutations(['subCount', 'changeTitle']),
+        ...mapActions(['changeCountAction']),
+
+        // 模块的映射
+        ...mapMutations('user', ['setUser']),
+    }
+}
+</script>
+```
+
+
+
+
 
 
 ----------
