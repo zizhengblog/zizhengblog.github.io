@@ -12,6 +12,8 @@ tag: Overview
 * [组合式api](#content1)
 * [父子通讯](#content2)
 * [双向绑定](#content3)
+* [路由](#content4)
+
 
 
 <!-- ************************************************ -->
@@ -360,6 +362,138 @@ export default defineConfig({
   ],
 })
 ```
+
+
+
+<!-- ************************************************ -->
+## <a id="content4">路由</a>
+
+#### **一、引入vue-router包**       
+vue3使用的vue-router是4.x版本    
+
+```js
+"dependencies": {
+  "@element-plus/icons-vue": "^2.1.0",
+  "@vueup/vue-quill": "^1.2.0",
+  "axios": "^1.4.0",
+  "element-plus": "^2.3.7",
+  "pinia": "^2.1.3",
+  "vue": "^3.3.4",
+  "vue-router": "^4.2.2"
+},
+```
+
+
+#### **二、main.js挂载**      
+```js
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+
+const app = createApp(App)
+app.use(router)
+app.mount('#app')
+```
+
+#### **三、设置路由出口**    
+```js
+<template>
+  <div>
+    <router-view></router-view>
+  </div>
+</template>
+
+<style scoped></style>
+```
+
+#### **四、编辑路由**     
+在单独的文件中router/index.js编辑路由     
+
+```js
+import { createRouter, createWebHistory } from 'vue-router'
+
+// createRouter 创建路由实例
+// 创建路由实例由 createRouter 实现:是对 new VueRouter()的封装
+
+// 配置 history 模式
+// 1. history模式：createWebHistory     地址栏不带 #
+// 2. hash模式：   createWebHashHistory 地址栏带 #
+// console.log(import.meta.env.DEV)
+
+// 参数是基础路径
+// vite 中的环境变量 import.meta.env.BASE_URL  就是 vite.config.js 中的 base 配置项
+// import.meta.env.BASE_URL  默认/
+// 修改的话在 vite.config.js 中的 path: '/',
+
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    { path: '/login', component: () => import('@/views/login/LoginPage.vue') }, // 登录页
+    {
+      path: '/',
+      component: () => import('@/views/layout/LayoutContainer.vue'),
+      redirect: '/article/manage',
+      children: [
+        {
+          path: '/article/manage',
+          component: () => import('@/views/article/ArticleManage.vue')
+        },
+        {
+          path: '/article/channel',
+          component: () => import('@/views/article/ArticleChannel.vue')
+        },
+        {
+          path: '/user/profile',
+          component: () => import('@/views/user/UserProfile.vue')
+        },
+        {
+          path: '/user/avatar',
+          component: () => import('@/views/user/UserAvatar.vue')
+        },
+        {
+          path: '/user/password',
+          component: () => import('@/views/user/UserPassword.vue')
+        }
+      ]
+    }
+  ]
+})
+
+export default router
+```
+
+
+#### **五、路由的跳转传参**   
+
+编程式导航
+
+**1、在结构中跟vue2的使用方式相同**      
+```js
+<button @click="$router.push('/home')">跳转首页</button>
+```
+
+**2、在行为中**   
+由于vue3的setup中没有this,所以跟vue2中的使用有所不同  
+
+```js
+// vue2 
+// 跳转
+this.$router.push('path')  
+// 获取参数
+this.$route.query.key
+
+// vue3
+// 跳转：这里是router
+const router = useRouter();
+router.push('path');
+
+// 获取参数：这里是route
+const route = useRoute();
+route.query.key;
+```
+
+
 
 
 
