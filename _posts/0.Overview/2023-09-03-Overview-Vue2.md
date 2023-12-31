@@ -930,7 +930,6 @@ this.$store.dispatch('user/setUser', newUserInfo)
 **2、通过辅助函数使用**    
 
 ```js
-<script>
 import { mapState } from 'vuex'
 
 export default {
@@ -949,7 +948,6 @@ export default {
         ...mapMutations('user', ['setUser']),
     }
 }
-</script>
 ```
 
 
