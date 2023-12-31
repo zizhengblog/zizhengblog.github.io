@@ -13,6 +13,9 @@ tag: Overview
 * [父子通讯](#content2)
 * [双向绑定](#content3)
 * [路由](#content4)
+* [pinia](#content5)
+* [pinia的持久化](#content6)
+
 
 
 
@@ -494,11 +497,180 @@ route.query.key;
 ```
 
 
+<!-- ************************************************ -->
+## <a id="content5">pinia</a>
 
+#### **一、安装pinia**   
+在 package 文件中引用    
+```js
+"dependencies": {
+  "pinia": "^2.1.3",
+  "vue": "^3.3.4",
+  "vue-router": "^4.2.2"
+},
+```
+
+或者  
+```js
+npm install pinia
+```
+
+#### **二、在main.js中配置pinia**        
+```js
+import { createApp } from 'vue'
+import App from './App.vue'
+
+import { createPinia } from 'pinia'
+
+const pinia = createPinia()
+
+const app = createApp(App)
+
+app.use(pinia)
+
+app.mount('#app')
+```
+
+#### **三、创建一个仓库**    
+
+在src/store/counter.js 文件内   
+```js
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import axios from 'axios'
+
+// useCounterStore是一个函数
+export const useCounterStore = defineStore('counter', () => {
+    // 相当于state
+    const count = ref(100)
+    const channelList = ref([])
+
+    // function 就是 actions
+    // action 合并了vuex中的actions 和 mutations
+    function addfn() {
+        count.value++
+    }
+    // 支持异步
+    const getList = async () => {
+        const url = 'http://geek.itheima.net/v1_0/channels'
+        const { data: { data } } = await axios.get(url)
+        channelList.value = data.channels
+    }
+
+    // computed 就是getters
+    const double = computed(() => {
+        return count.value * 2
+    })
+    return { count, channelList, addfn, getList, double }
+})
+```
+
+
+#### **四、使用共享数据**    
+
+```js
+
+<script setup>
+import { useCounterStore } from '@/store/counter';
+import { storeToRefs } from 'pinia'
+
+// 调用后会返回一个包含响应式信息的对象(还有很多其它的内容)
+const counterStore = useCounterStore()
+// 不能直接解构会丢失响应式
+const { count, double } = storeToRefs(counterStore)
+// 方法可以直接解构
+const { getList } = counterStore
+</script>
+
+<template>
+    <div>
+        <slot></slot>
+        <div>SonCom使用数据: \{\{ counterStore.count \}\} - \{\{ counterStore.double \}\} - \{\{ count }} - \{\{ double \}\}</div>
+        <div @click="counterStore.addfn">加数据</div>
+        <div @click="counterStore.getList">获取列表</div>
+        <div @click="getList">获取列表</div>
+        <div v-for="item in counterStore.channelList" :key="item.id"> \{\{ item.name \}\} </div>
+    </div>
+</template>
+
+<style scoped></style>
+```
+
+
+<!-- ************************************************ -->
+## <a id="content6">pinia的持久化</a>
+
+#### **一、安装插件**   
+```shell
+npm install pinia-plugin-persistedstate
+```
+或者在文件中配置，然后执行`npm install`          
+```js
+"dependencies": {
+  "axios": "^1.4.0",
+  "element-plus": "^2.3.7",
+  "pinia": "^2.1.3",
+  "vue": "^3.3.4",
+  "vue-router": "^4.2.2"
+},
+"devDependencies": {
+  "pinia-plugin-persistedstate": "^3.1.0",
+},
+```
+
+```js
+"dependencies": {
+  "axios": "^1.4.0",
+  "pinia": "^2.1.4",
+  "pinia-plugin-persistedstate": "^3.1.0",
+  "vue": "^3.3.4"
+},
+```
+疑问：不确定是放在 dependencies 还是 devDependencies 中    
+
+#### **二、在main.js中配置**      
+```js
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+// 导入持久化的插件
+import persist from 'pinia-plugin-persistedstate'
+
+import App from './App.vue'
+const pinia = createPinia() // 创建Pinia实例
+const app = createApp(App) // 创建根实例
+app.use(pinia.use(persist)) // pinia插件的安装配置
+app.mount('#app') // 视图的挂载
+```
+
+
+#### **三、在仓库中配置**    
+
+```js
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+
+export const useCounterStore = defineStore('counter', () => {
+  const count = ref(100)
+  const double = computed(() => count.value * 2)
+
+  return {
+    count,
+    double,
+  }
+}, {
+  // persist: true // 开启当前模块的持久化
+  persist: {
+    key: 'hm-counter', // 修改本地存储的唯一标识
+    paths: ['count'] // 存储的是哪些数据
+  }
+})
+```
 
 
 ----------
 >  行者常至，为者常成！
+
+
 
 
 
