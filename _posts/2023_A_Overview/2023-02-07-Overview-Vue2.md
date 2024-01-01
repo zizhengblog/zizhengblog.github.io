@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Vue2概要"
-date: 2021-02-07
+date: 2023-02-07
 tag: Overview
 ---   
 

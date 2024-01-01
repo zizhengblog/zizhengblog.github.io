@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "JavaScript概要"
-date: 2021-02-06
+date: 2023-02-06
 tag: Overview
 ---   
 
