@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "2、SimpleFactory"
-date: 2020-12-04
+date: 2017-06-02
 description: ""
 tag: 设计模式
 ---

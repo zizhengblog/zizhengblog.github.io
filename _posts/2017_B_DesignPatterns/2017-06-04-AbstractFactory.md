@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "4、AbstractFactory"
-date: 2020-12-08
+date: 2017-06-04
 description: ""
 tag: 设计模式
 ---

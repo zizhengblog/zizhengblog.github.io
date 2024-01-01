@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "1、Singleton"
-date: 2020-12-02
+date: 2017-06-01
 description: ""
 tag: 设计模式
 ---
