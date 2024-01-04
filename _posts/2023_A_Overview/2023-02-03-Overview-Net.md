@@ -556,41 +556,45 @@ URL：统一资源定位符
 <!-- ************************************************ -->
 ## <a id = "content15">15、HTTP（三）</a>
 
-#### **一、常用请求方法**    
-get、post       
-put、delete       
-head、option      
+#### **一、常用请求方法**   
+
+|get|post|put|delete|head|option |     
 
 #### **二、请求头字段**
 
-user-agent： 识别终端类型       
-Reference：这个请求是由哪个请求带来的 防止盗链       
-range:多线程断点下载       
-Content-Type:  application/x-www-form-urlencoded  和 multipart/form-data(上传文件必须是这种+post)        
-Accept: 能够接受的响应内容类型。text/plain 或者 text/html 或者 json     
-Connection:keey-alive:想要优先使用的连接类型      
-Cookie:使http的状态保留，比如存储sessionId    
+|常用|解释|
+|:----|:----|
+|user-agent： |识别终端类型  |     
+|Reference：|这个请求是由哪个请求带来的 防止盗链 |      
+|range:|多线程断点下载       |
+|Content-Type: | application/x-www-form-urlencoded  和 multipart/form-data(上传文件必须是这种+post)  |      
+|Accept:| 能够接受的响应内容类型。text/plain 或者 text/html 或者 json   |  
+|Connection:|keey-alive:想要优先使用的连接类型     | 
+|Cookie:|使http的状态保留，比如存储sessionId   | 
 
 请求头有标准头也有非标准头，维基百科搜索headers    
 
 #### **三、响应头字段**   
-Content-Type:text/html;charset=utf-8 与 请求头的Accept字段呼应    
-Location:http://www.w3.org 用来重定向  
-Connection:close 针对该连接预期的选项与请求头的Connection呼应      
-Set-Cookie 与请求头的Cookie字段呼应
+
+|常用|解释|
+|:----|:----|
+|Content-Type:|text/html;charset=utf-8 与 请求头的Accept字段呼应 |   
+|Location:|http://www.w3.org 用来重定向  |
+|Connection:|close 针对该连接预期的选项与请求头的Connection呼应  |    
+|Set-Cookie| 与请求头的Cookie字段呼应|
 
 #### **四、状态码**
-200：成功  
 
-302：重定向,重定向是后台人员控制的    
-304：就是服务器告诉客户端我这里没更新 你使用缓存就行.客户端一般会对HTML css静态资源进行缓存       
-
-401：缺乏身份验证   
-403：服务器有能力提供请求，但拒绝授权访问   
-404：服务器端无法找到所请求的资源    
-
-502：从上游服务器（如tomcat）中接收到的响应是无效的   
-503：服务器停机维护或者已超载   
+|常用|解释|
+|:----|:----|
+|200：|成功  |
+|302：|重定向,重定向是后台人员控制的    |
+|304：|就是服务器告诉客户端我这里没更新 你使用缓存就行.客户端一般会对HTML css静态资源进行缓存       |
+|401：|缺乏身份验证   |
+|403：|服务器有能力提供请求，但拒绝授权访问   |
+|404：|服务器端无法找到所请求的资源    |
+|502：|从上游服务器（如tomcat）中接收到的响应是无效的   |
+|503：|服务器停机维护或者已超载   |
 
 <span style="color:red;font-weight:bold">状态码后台人员是可以随意返回的</span>
 
