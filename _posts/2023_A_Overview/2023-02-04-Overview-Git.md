@@ -439,6 +439,9 @@ git branch -d branchName
 
 # 强制删除分支
 git branch -D branchName
+
+# 删除远程分支
+git push origin --delete <branch_name>
 ```
 
 
