@@ -490,6 +490,8 @@ git push origin HEAD:refs/for/master
 # 执行这个命令后，Git 将会建立本地分支与远程分支的关联关系，并将远程分支设为默认上游分支。
 # 这样，之后的 git pull 和 git push 就可以省略远程分支的名称，Git 将自动使用建立的关联关系。
 git push -u origin <branch-name>
+
+git push --set-upstream origin dev
 ```
 
 **3、refs/for/master 这种分支名与普通的分支名有几个区别：**      
