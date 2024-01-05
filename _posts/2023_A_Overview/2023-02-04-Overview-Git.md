@@ -11,7 +11,7 @@ tag: Overview
 
 ## 目录
 * [补充：名词解释](#content0)
-* [补充：好用的命令](#content01)
+* [常用命令表](#content01)
 * [1、Git介绍](#content1)
 * [2、Git基础](#content2)
 * [3、Git基础（二）](#content3)
@@ -107,17 +107,21 @@ rebase
 
 
 <!-- ************************************************ -->
-## <a id="content01">补充：好用的命令</a>
+## <a id="content01">常用命令表</a>
 
-查看某次提交的修改内容
-```shell
-# 通过commit的hash来查看
-git show <commit-hash>
+#### **一、查看相关指令**   
 
-# 查看某次提交某个文件的修改
-git show <commit-hash> <file>
-
-```
+|git命令|说明|
+|:----|:----|
+|git help -a|查看所有帮助|
+|git config --list|配置项查看，有三个选项：- -local / - -global / - -system |
+|git status|查看仓库状态可以指定简略查看，-s|
+|git log|查看提交记录。-p显示内容。-n 2/ - -oneline / - - graph / - - author=xxxx|
+|git show commit|查看提交内容 <br> git show commit file|
+|git diff|比较不同 <br> git diff 工作区的更改 <br> git diff - -staged 暂存区的更改 <br> git diff head 工作区+暂存区的更改  <br> git diff hash1 hash1 - -index.html 两次提交的不同|
+|git stash list | 查看贮藏 <br> git stash show -p 1 查看索引为1的贮藏的具体内容|
+|git remote -v|显示远程仓库信息 <br> git remote show origin 显示origin的详细信息|
+|git branch|查看分支 <br> git branch -a 本地和远程所有分支 <br> git branch -v 详细信息 <br> git branch -av |
 
 <!-- ************************************************ -->
 ## <a id="content1">1、Git介绍</a>

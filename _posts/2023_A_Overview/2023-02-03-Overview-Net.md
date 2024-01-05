@@ -558,19 +558,23 @@ URL：统一资源定位符
 
 #### **一、常用请求方法**   
 
-|get|post|put|delete|head|option |     
+|get|post|
+|put|delete|
+|head|option|     
 
 #### **二、请求头字段**
 
 |常用|解释|
 |:----|:----|
+|host： |主机地址  | 
 |user-agent： |识别终端类型  |     
+|Content-Type: | application/x-www-form-urlencoded  和 multipart/form-data(上传文件必须是这种+post)  | 
+|Accept:| 能够接受的响应内容类型。text/plain 或者 text/html 或者 json   |  
+|Cookie:|使http的状态保留，比如存储sessionId   | 
+|Origin:|发起一个针对跨域资源共享的请求 origin:https://www.baidu.com  |
 |Reference：|这个请求是由哪个请求带来的 防止盗链 |      
 |range:|多线程断点下载       |
-|Content-Type: | application/x-www-form-urlencoded  和 multipart/form-data(上传文件必须是这种+post)  |      
-|Accept:| 能够接受的响应内容类型。text/plain 或者 text/html 或者 json   |  
 |Connection:|keey-alive:想要优先使用的连接类型     | 
-|Cookie:|使http的状态保留，比如存储sessionId   | 
 
 请求头有标准头也有非标准头，维基百科搜索headers    
 
@@ -578,10 +582,11 @@ URL：统一资源定位符
 
 |常用|解释|
 |:----|:----|
-|Content-Type:|text/html;charset=utf-8 与 请求头的Accept字段呼应 |   
+|Content-Type:|text/html;charset=utf-8 与 请求头的Accept字段呼应 |  
+|Set-Cookie| 与请求头的Cookie字段呼应|
+|Access-Control-Allow-Origin|指定哪些网站可以跨域 Access-Control-Allow-Origin:*|
 |Location:|http://www.w3.org 用来重定向  |
 |Connection:|close 针对该连接预期的选项与请求头的Connection呼应  |    
-|Set-Cookie| 与请求头的Cookie字段呼应|
 
 #### **四、状态码**
 
