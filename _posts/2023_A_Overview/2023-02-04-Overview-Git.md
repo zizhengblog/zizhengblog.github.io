@@ -133,6 +133,20 @@ rebase
 |git pull origin develop| 相当于 git fetch origin develop 和 git merge origin develop|
 |git rebase origin develop| 变基：重放到目标分支 |
 
+**merge** 
+```shell
+git merge temp
+```  
+是把temp分支合并到当前分支：当前分支的head,temp分支的head,他们共同的祖先,三个节点进行合并
+
+**rebase(推荐)** 
+```shell
+git rebase temp
+```     
+是在把当前分支的修改，重放到temp分支。   
+它会丢弃现有提交，在temp分支产生内容相同的新的提交            
+**使提交记录更整洁**             
+
 
 #### **三、比较相关**    
 
