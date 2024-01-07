@@ -116,7 +116,7 @@ rebase
 |git help -a|查看所有帮助|
 |git config --list <br> git config user.name 'your name' <br> git config user.email 'your email'|配置项查看，有三个选项：- -local / - -global / - -system  <br> 设置用户名 默认 - - local <br> 设置用户邮箱|
 |git status|查看仓库状态可以指定简略查看，-s|
-|git log|查看提交记录。-p显示内容。-n 2/ - -oneline / - - graph / - - author=xxxx|
+|git log <br> git log -p|查看提交记录。-p显示内容。-n 2/ - -oneline / - - graph / - - author=xxxx|
 |git show commit <br> git show commit file |查看提交内容 <br> 查看具体文件的提交内容 |
 |git remote -v <br> git remote show origin |显示远程仓库信息 <br> 显示origin的详细信息|
 
@@ -169,7 +169,7 @@ git rebase temp
 |git checkout -b name | 创建并切换分支 |
 |git branch -d name <br> git branch -D name| 删除本地分支 <br> -D 强制删除|
 |git push origin - - delete name | 删除远程分支 |
-|git checkout hash | 分离头指针 <br> git switch -c new-branch-name 在分离头指针状态下创建一个新的分支来保存我们的提交 |
+|git checkout hash | 分离头指针 <br> git switch -c new-branch-name 在分离头指针状态下创建一个新的分支来保存我们的提交 <br> 分离头指针状态下使用 git checkout branchName 切换为分支状态|
 
 
 #### **五、贮藏相关**  
