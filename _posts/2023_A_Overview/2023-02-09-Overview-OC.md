@@ -11,7 +11,7 @@ tag: Overview
 
 ## 目录
 
-
+- [速记](#content0)  
 - [对象的本质](#content1)  
 - [kvc/kvo](#content2)  
 - [Category](#content3)   
@@ -20,6 +20,31 @@ tag: Overview
 - [多线程](#content6)  
 - [Runloop](#content7)  
 
+
+<!-- ************************************************ -->
+## <a id="content0">速记</a>
+
+#### **一、基础**  
+
+**1、对象本质**    
+实例对象、类对象、元类对象    
+关系图(isa、super 指针)      
+
+**2、kvc/kvo**   
+
+kvc:先找方法，再找变量，都找不到报错    
+kvo:派生类kvo_person,实例对象isa指向kvo_person, kvo_person的super指向Person类对象，kvo_person内重写setAge方法，  
+
+**3、Category**       
++load方法、+initialize方法、关联对象(全局hash表)     
+
+**4、block**       
+block的定义和使用          
+block的数据结构(impl+desc+捕获变量)和调用原理         
+block的变量(全局变量、静态局部变量、自动变量)捕获原理(age/person)      
+block的类型(globalBlock, stackBlock, mallocBlock; copy/dispose)     
+_ _block的原理           
+循环引用         
 
 
 
