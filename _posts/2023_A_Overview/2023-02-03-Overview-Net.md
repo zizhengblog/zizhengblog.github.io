@@ -43,14 +43,15 @@ tag: Overview
 **1、户端和服务端工作原理**    
 https://128.0.0.1:443/weixin   
 https://128.0.0.1:443/qq    
-协议 + ip地址 + 端口 + 项目     
+协议 + ip地址 + 端口 + 项目      
+同一个端口可以部署多个项目     
 
 **2、两个设备：**      
 
-交换机：     
+交换机：隔绝冲突域          
 会记录每个端口的mac地址、二层网络设备 
 
-路由器：    
+路由器： 隔绝广播域        
 网关、路由表(下一跳，静态路由和动态路由)、三层网络设备   
 
 **3、两个地址：**   
@@ -66,8 +67,8 @@ NAT技术：在最后一个连接公网的路由器处进行公网转换
 
 **4、两个协议**   
 
-icmp协议(ping的时候使用的协议)          
-arp协议(arp广播用来获取mac地址)      
+网络层icmp协议(ping的时候使用的协议)                   
+网络层arp协议(arp广播用来获取mac地址)         
 
 
 **5、ping的时候数据是如何传递的**     
@@ -173,14 +174,15 @@ ACK = 1, SYN = 0 seq = 1 ack = 1 第三次握手  我知道你同意了
 
 URL为什么要编码：只支持ASCII码，中文和特殊字符比如空格需要编码，query参数    
 
-请求行、请求头、请求体； 方法 + url  + 版本    
-响应行、响应头、响应体； 版本 + 状态码 + 状态说明      
+请求行(方法 + url  + 版本)、请求头、请求体；     
+响应行(版本 + 状态码 + 状态说明)、响应头、响应体；       
 
 请求方法：    
 get, post, put, delete, head, option      
 
 请求头字段：    
-content-type, accept, cookie, origin, host, user-agent, reference   
+content-type, accept, cookie, origin, host, user-agent, reference    
+application/x-www-form-urlencoded 和 multipart/form-data       
 
 响应头字段：    
 content-type, set-cookie, access-control-allow-origin, location   
@@ -189,7 +191,8 @@ content-type, set-cookie, access-control-allow-origin, location
 200, 302, 304, 401, 403, 404, 502, 503   
 
 **2、cookie和同源策略**
-
+cookie:针对的是浏览器，通过set-cookie返回sessionId,存储在内存和磁盘内，请求时通过cookie字段携带       
+同源：协议+域名+端口 都相同才是同源       
 
 **3、网络安全**      
 
