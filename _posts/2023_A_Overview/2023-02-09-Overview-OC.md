@@ -132,6 +132,18 @@ void _NSSetIntValueAndNotify(){
 #### 关联对象：
 全局的hash表
 
+```objc
+#import <objc/runtime.h>
+- (void)setWeight:(int)weight{
+    objc_setAssociatedObject(self, @selector(weight), @(weight), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (int)weight{
+  // _cmd == @selector(weight)
+  return [objc_getAssociatedObject(self, _cmd) intValue];
+}
+```
+
 
 
 <!-- ************************************************ -->
