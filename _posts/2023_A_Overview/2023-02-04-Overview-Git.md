@@ -29,14 +29,14 @@ tag: Overview
 
 
 <!-- ************************************************ -->
-## <a id="content01">速记</a>
+## <a id="content0">速记</a>
 
 #### **一、查看相关指令**   
 
 |git命令|说明|
 |:----|:----|
 |git help -a|查看所有帮助|
-|git config --list <br> git config user.name 'your name' <br> git config user.email 'your email'|配置项查看，有三个选项：- -local / - -global / - -system  <br> 设置用户名 默认 - - local <br> 设置用户邮箱|
+|git config - -list <br> git config user.name 'your name' <br> git config user.email 'your email'|配置项查看，有三个选项：- -local / - -global / - -system  <br> 设置用户名 默认 - - local <br> 设置用户邮箱|
 |git status|查看仓库状态可以指定简略查看，-s|
 |git log <br> git log -p|查看提交记录。-p显示内容。-n 2/ - -oneline / - - graph / - - author=xxxx|
 |git show commit <br> git show commit file |查看提交内容 <br> 查看具体文件的提交内容 |
@@ -54,6 +54,7 @@ tag: Overview
 |git merge origin develop | 将指定分支合并到当前分支 |
 |git pull origin develop| 相当于 git fetch origin develop 和 git merge origin develop|
 |git rebase origin develop| 变基：重放到目标分支 |
+|git revert commit| 撤销某一次提交 |
 
 **merge** 
 ```shell
@@ -77,7 +78,7 @@ git rebase temp
 |git diff |工作区的更改 |
 |git diff - - staged |git diff - -staged 暂存区的更改 |
 |git diff head | 工作区+暂存区的更改 |
-|git diff hash1 hash1 <br> git diff hash1 hash1 - - index.html | 两次提交的不同 <br> 还可以指定特定的文件 - -index.html|
+|git diff hash1 hash2 <br> git diff hash1 hash2 - - index.html | 两次提交的不同 <br> 还可以指定特定的文件 - -index.html|
 
 
 #### **四、分支相关**  
@@ -98,10 +99,12 @@ git rebase temp
 
 |git命令|说明|
 |:----|:----|
-|git stash - -list| 查看贮藏 |
-|git stash show -p 1| 查看索引为1的贮藏的具体内容 |
+|git stash list| 查看贮藏 |
 |git stash push -m "我的贮藏"| 贮藏当前内容,并清空暂存区,工作区 |
-|git stash apply - - index 1| 应用某一次贮藏 |
+|git stash show -p stash@{0}| 查看索引为0的贮藏的具体内容 |
+|git stash apply stash@{0}  | 应用索引为0的贮藏 |
+|git stash drop stash@{0}   | 删除索引为0的贮藏 |
+
 
 
 
@@ -421,8 +424,9 @@ git reset HEAD --hard
 # 查看下stash列表
 git stash list
 
-# 查看索引为1的贮藏的具体内容
-git stash show -p 1
+# 查看索引为0的贮藏的具体内容
+git stash show -p stash@{0}
+
 ```
 
 **2、添加和使用贮藏**      
@@ -432,7 +436,7 @@ git stash push -m "忽略文件"
 
 
 # 应用某一次贮藏
-git stash apply --index 1
+git stash apply stash@{0}
 ```
 
 #### **二、忽略文件.gitignore**      
