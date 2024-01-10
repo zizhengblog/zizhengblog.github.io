@@ -46,6 +46,59 @@ block的类型(globalBlock, stackBlock, mallocBlock; copy/dispose)
 _ _block的原理           
 循环引用         
 
+#### **二、runtime**   
+
+**1、类对象的结构：isa、super、cache、bits**      
+
+isa：   
+是否优化、是否有关联对象、是否有弱引用、是否有引用计数表、引用计数 
+
+super:     
+指向父类    
+
+cache:        
+散列表，buket_t(key, _imp)           
+
+bits:       
+class_rw_t(方法列表，属性列表，协议列表)                
+这些列表都是二维数组：method_list_t  -  method_t      
+
+**2、消息机制**   
+
+runtime主要指的是消息机制，有三个阶段：消息发送、动态方法解析、消息转发      
+
+消息发送是在查找方法实现：当前类cache查找，方法列表查找，父类cache查找，父类方法列表查找      
+
+动态方法解析是给类一个机会自己动态生成对应的方法       
+调用resoleveInstanceMethod方法，在方法内给类添加方法实现，打标记，重走消息发送         
+
+消息转发是当前类没有处理能力看看其它的类能不能处理              
+forwardingTarget方法，返回一个能处理消息的实例对象         
+methodSignature返回一个方法签名，如果返回空报doesntRecognizeSelector方法        
+forwardInvocation 内可以进行一些自定义处理，比如进行一些提示      
+
+
+**3、runtime的应用**   
+修改 textField 的占位文字、字典转模型、自动归解档 （本质都是遍历属性列表，配合kvc完成）    
+
+方法交换，解决数组越界崩溃问题    
+
+消息转发，解决方法找不到的崩溃问题     
+
+**4、其它**     
+@synthesize 和 @dynamic       
+super调用的原理      
+isMemberOfClass 和 isKindOfClass      
+cls分析     
+
+
+
+
+
+
+
+
+
 
 
 
