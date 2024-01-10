@@ -92,7 +92,19 @@ isMemberOfClass 和 isKindOfClass
 cls分析     
 
 
+#### **三、多线程**   
 
+**1、进程与线程**   
+
+**2、gcd**   
+
+串行队列，并行队列、同步任务、异步任务(死锁情况分析)   
+
+线程组的两种用法：dispatch_group_async、dispatch_group_enter/dispatch_group_leave           
+
+栅栏函数：  
+dispatch_barrier_sync(queue, ^{ });    
+dispatch_barrier_async(queue, ^{ });     
 
 
 
