@@ -95,20 +95,77 @@ cls分析
 #### **三、多线程**   
 
 **1、进程与线程**   
+进程资源分配的基本单位        
+线程任务调度的基本单位    
 
 **2、gcd**   
 
 串行队列，并行队列、同步任务、异步任务(死锁情况分析)   
 
-线程组的两种用法：dispatch_group_async、dispatch_group_enter/dispatch_group_leave           
+线程组的两种用法：
+dispatch_group_async     
+dispatch_group_enter/dispatch_group_leave              
 
 栅栏函数：  
 dispatch_barrier_sync(queue, ^{ });    
 dispatch_barrier_async(queue, ^{ });     
 
+semaphore    
+初始为0：可以设置依赖关系   
+初始为1：可以设置串行，索的作用    
+
+其它     
+dispatch_once    
+dispatch_after   
+
+**3、perform**   
+主线程：都依赖runloop        
+子线程：依赖runloop的情况waitUntilDone:NO 和 afterDelay:      
 
 
+**4、看看经典面试题**     
 
+
+**5、NSOperation**         
+对GCD的封装，异步并发队列        
+最大并发数，依赖关系        
+
+
+#### **四、runloop**   
+
+**1、基础**  
+
+什么是runloop,runloop的作用    
+
+运行在特定的mode下(defaultMode/trackingMode/commonMode)        
+每个mode包含若干：source0/source1/observer/timer 
+
+运行逻辑：运行顺序、如何唤醒、退出条件    
+
+**2、相关**   
+
+source1:基于port的线程间通讯，系统事件捕获，比如触摸事件    
+timer:NSTimer/afterDelay
+gcd:回主线程     
+source0:触摸事件、perform、通知(kvo)   
+
+observer:    
+runloop状态监听     
+beforeWaiting:(UI刷新、手势回调、autoreleasepool)     
+
+**3、重要**   
+
+触摸事件是如何传递和响应的？        
+屏幕 - springboard - source1 - source0 - handleEventQueue - UIWindow - SubView     
+
+UI刷新     
+layoutSubViews调用时机          
+setNeedsLayout 和 layoutIfNeeded 
+
+drawRect调用时机    
+setNeedsDisplay     
+
+cpu负责计算、GPU负责渲染、垂直同步信号   
 
 
 
@@ -1099,6 +1156,22 @@ NSLog(@"drawMoney-process = %ld",process);//它只表示成功发送信号的次
      肯定会 >= 100
      2022-08-15 16:01:48.269255+0800 XYApp[25881:5838957] self.num = 102
      2022-10-11 11:40:28.179999+0800 XYTestModule_Example[57853:4429651] time = 555
+     */
+}
+
+
+- (IBAction)lg_test4:(id)sender {
+    self.num = 0;
+    for (int i = 0; i < 100; i ++) {
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            self.num ++;
+        });
+    }
+    NSLog(@"self.num = %d",self.num);
+    
+    /**
+     肯定会<=100
+     2022-08-15 16:03:43.624062+0800 XYApp[25881:5838957] self.num = 79
      */
 }
 ```
