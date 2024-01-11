@@ -1267,8 +1267,19 @@ performSelector:withObject:afterDelay:(可以观察调用栈：__CFRunLoopDoTime
 
 
 **source0**  
-触摸事件(事件是如何分发给source0的？)    
-performSelector:onThread:(哪些是依赖runloop的？)        
+触摸事件(事件是如何分发给source0的？) 
+```objc
+点击屏幕 - springboard进程捕获点击事件 - 通过端口传给当前进程 -
+source1检测到事件唤醒runloop，调用source1的回调 - 在处理source1的回调中触发source0 -
+source0再触发_UIApplicationHandleEventQueue() - UIWindow - SubView - SubView
+```   
+performSelector:onThread:(哪些是依赖runloop的？)  
+```objc
+// 下面perform开头的方法都会依赖运行循环。在没有开启运行循环的线程里是没发执行的。
+[self performSelector:@selector(test1) onThread:currentThread withObject:nil waitUntilDone:NO];
+[self performSelector:@selector(test1) withObject:nil afterDelay:0];
+```
+
 通知(通知也是source0处理的，可以观察调用栈)   
 
 
@@ -1281,9 +1292,48 @@ AutoReleasePool(BeforeWaiting)
 <span style="color:red;font-weight:bold">不管是source1还是source0都是通过回调来处理事件的</span>
 
 
+#### **四、UI刷新**   
 
 
+**1、布局**    
+layoutSubviews的调用时机           
+自身被添加到父view上          
+自身大小改变         
+添加或移除子view        
+子view大小改变       
 
+setNeedsLayout：打标记，该方法立即返回，不会立即调用layoutSubviews，下一个运行循环刷新        
+layoutIfNeeded：有刷新标记时就立即调用layoutSubviews，然后该方法才会返回。     
+
+**2、绘制**   
+drawRect的调用时机      
+首次显示    
+生使视图可见部分失效的事件      
+
+setNeedsDisplay：打标记在下一个绘制周期进行重绘 
+
+```objc
+layout_and_display_if_needed
+    layout_if_needed
+        -[CALayer layoutSublayers]
+            -[UIView layoutSubviews]
+        
+    -[CALayer display]
+        -[UIView(CALayerDelegate) drawLayer:inContext:]
+            -[UIView drawRect:]
+```
+
+**3、渲染原理**    
+
+**CPU(计算)**     
+视图的创建、布局计算、图片解码、文本绘制等
+
+**GPU(渲染)**     
+则在物理层上完成了对图像的渲染(顶点着色器、片元着色器等)     
+数据提交到帧缓冲区    
+   
+**垂直同步信号**     
+Frame Buffer、视频控制器等相关部件，将图像显示在屏幕上      
 
 
 
