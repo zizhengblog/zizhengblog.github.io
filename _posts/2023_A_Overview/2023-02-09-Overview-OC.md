@@ -19,6 +19,8 @@ tag: Overview
 - [Runtime](#content5)  
 - [多线程](#content6)  
 - [Runloop](#content7)  
+- [Autorelease](#content8)  
+
 
 
 <!-- ************************************************ -->
@@ -166,6 +168,9 @@ drawRect调用时机
 setNeedsDisplay     
 
 cpu负责计算、GPU负责渲染、垂直同步信号   
+
+
+
 
 
 
@@ -1334,6 +1339,91 @@ layout_and_display_if_needed
    
 **垂直同步信号**     
 Frame Buffer、视频控制器等相关部件，将图像显示在屏幕上      
+
+
+
+<!-- ************************************************ -->
+## <a id="content8">Autorelease</a>
+
+一种内存自动回收机制，放入自动释放池的对象，在离开作用域的时候不会立即释放，而是在合适的时机释放     
+
+#### **一、自动释放池的本质**    
+
+**1、一个重要的对象**   
+
+<img src="/images/objectC/objc9.png">
+
+<img src="/images/objectC/objc10.png">
+
+**2、两个重要的方法**    
+
+每当调用objc_autoreleasePoolPush即AutoreleasePoolPage::push()方法时，会将POOL_BOUNDARY放到<span style="color:red;font-weight:bold;">当前page的栈顶</span>，并且返回这个边界对象。
+
+而在调用objc_autoreleasePoolPop即AutoreleasePoolPage::pop()方法时，又会将边界对象以参数传入，这样自动释放池就会向释放池中对象发送release消息，直至找到第一个边界对象为止。
+
+
+**3、自动释放池查看**    
+
+```objc
+2021-09-20 21:54:23.661658+0800 KCObjcBuild[16800:319949] objc:<NSObject: 0x101a58ab0>
+2021-09-20 21:54:23.663090+0800 KCObjcBuild[16800:319949] objc2:<NSObject: 0x1006282b0>
+objc[16800]: ##############
+objc[16800]: AUTORELEASE POOLS for thread 0x1000ebe00
+objc[16800]: 4 releases pending.
+objc[16800]: [0x102016000]  ................  PAGE  (hot) (cold)
+objc[16800]: [0x102016038]  ################  POOL 0x102016038
+objc[16800]: [0x102016040]       0x101a58ab0  NSObject
+objc[16800]: [0x102016048]  ################  POOL 0x102016048
+objc[16800]: [0x102016050]       0x1006282b0  NSObject
+objc[16800]: ##############
+
+// 0x102016038 减去 0x102016000 的大小正好是56个字节    
+// 第一个哨兵对象：0x102016038边界对象    
+// 第二个哨兵对象：0x102016048边界对象
+```
+
+#### **二、自动释放池的释放**    
+
+**1、系统释放**   
+
+自动释放池和runloop的关系    
+进入runloop时：执行push操作      
+将要休眠时：先执行pop操作，然后执行push操作     
+退出时：执行pop操作     
+
+**2、手动释放**    
+花括号前半：执行push操作   
+花括号后半：执行pop操作      
+手动释放的应用：比如for循环里的img对象，防止内存暴涨      
+
+
+#### **三、autorelease对象**    
+
+使用alloc/new/copy/mutableCopy生成的对象都不是Autorelease     
+非alloc/new/copy/mutableCopy生成的对象都是Autorelease    
+
+为什么方法的返回值在离开作用域的时候没有被释放？     
+```objc
++ (id)array {
+    id obj = [[NSMutableArray alloc] init];//创建对象
+    [obj retain];
+    [obj autorelease];//延迟释放对象（谁创建谁释放）
+    return obj;
+}
+
+NSMutableArray* array = [NSMutableArray array];
+[array retain];
+
+// 所以引用计数为2 
+```
+
+自动释放池应用：for循环里的img对象，防止内存暴涨    
+
+
+
+
+
+
 
 
 
