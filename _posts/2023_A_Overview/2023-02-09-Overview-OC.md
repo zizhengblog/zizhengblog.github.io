@@ -20,6 +20,8 @@ tag: Overview
 - [多线程](#content6)  
 - [Runloop](#content7)  
 - [Autorelease](#content8)  
+- [WebView](#content9)  
+
 
 
 
@@ -1421,7 +1423,68 @@ NSMutableArray* array = [NSMutableArray array];
 
 
 
+<!-- ************************************************ -->
+## <a id="content9">WebView</a>
 
+#### **一、介绍**   
+
+wkwebview 简化的浏览器，用来加载并显示web页面(本地，网络)
+
+前进后退操作    
+
+获取并追加useragent      
+
+监听加载进度，实现进度条显示        
+
+
+#### **二、两个协议**    
+
+**1、WKNavigationDelegate**       
+
+请求发送前(可在此决定是否跳转)        
+页面开始加载          
+收到响应后(也可在此决定是否跳转)          
+内容开始返回     
+页面加载完成/加载失败     
+
+**2、WKUIDelegate**     
+
+页面关闭    `window.close()`
+创建新窗口  `<a target="_blank"></a>`  
+alert     
+confirm     
+promt    
+
+#### **三、通讯**   
+
+**1、原生调用js** 
+
+self.wkWebView 的 evaluateJavaScript:jsFunc 方法调用
+
+
+**2、js调用原生**   
+config添加messageHandler     
+js调用添加的messageHandler     
+messageHandler的协议方法内处理调用逻辑    
+
+js通过隐藏的iframe和自定义scheme的方式调用     
+在WKNavigationDelegate代理方法内拦截并处理调用逻辑     
+
+#### **四、webkit**  
+
+webCore:负责解析html css并渲染页面       
+JavaScriptCore:js引擎，解析js代码    
+
+#### **五、JavaScriptCore**   
+
+封装在wkwebview中的JavaScriptCore    
+
+很有必要了解的概念只有4个：JSVM，JSContext，JSValue，JSExport。
+
+JSVM：js的多线程有关     
+JSContext：js执行环境   
+JSValue：oc中的js包裹类型，有对应关系表    
+JSExport：将oc对象暴露给js环境，继承关系对应js的原型链继承      
 
 
 
