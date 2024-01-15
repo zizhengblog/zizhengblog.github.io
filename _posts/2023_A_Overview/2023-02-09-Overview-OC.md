@@ -100,7 +100,9 @@ cls分析
 
 **1、进程与线程**   
 进程资源分配的基本单位        
-线程任务调度的基本单位    
+线程任务调度的基本单位     
+1、提高执行效率，提高资源利用率     
+2、线程本身也会占用资源，是程序变的复杂           
 
 **2、gcd**   
 
@@ -140,6 +142,8 @@ dispatch_after
 **1、基础**  
 
 什么是runloop,runloop的作用    
+处理事件的运行循环，用来不停的处理输入事件(输入源和定时源)          
+让线程在有工作的时候忙于工作，没工作的时候休眠         
 
 运行在特定的mode下(defaultMode/trackingMode/commonMode)        
 每个mode包含若干：source0/source1/observer/timer 
@@ -149,8 +153,8 @@ dispatch_after
 **2、相关**   
 
 source1:基于port的线程间通讯，系统事件捕获，比如触摸事件    
-timer:NSTimer/afterDelay
-gcd:回主线程     
+timer:NSTimer/afterDelay     
+gcd:回主线程        
 source0:触摸事件、perform、通知(kvo)   
 
 observer:    
