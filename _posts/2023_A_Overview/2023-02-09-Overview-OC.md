@@ -54,7 +54,7 @@ _ _block的原理
 
 **1、类对象的结构：isa、super、cache、bits**      
 
-isa：   
+isa(这里说的是实例对象的isa)：   
 是否优化、是否有关联对象、是否有弱引用、是否有引用计数表、引用计数 
 
 super:     
@@ -164,16 +164,34 @@ beforeWaiting:(UI刷新、手势回调、autoreleasepool)
 **3、重要**   
 
 触摸事件是如何传递和响应的？        
-屏幕 - springboard - source1 - source0 - handleEventQueue - UIWindow - SubView     
+屏幕 - springboard - source1 - source0 - handleEventQueue - UIWindow - SubView  
+hitTest: 和 pointInside:方法          
 
 UI刷新     
-layoutSubViews调用时机          
+layoutSubViews调用时机(4个)          
 setNeedsLayout 和 layoutIfNeeded 
 
-drawRect调用时机    
+drawRect调用时机(2个)        
 setNeedsDisplay     
 
 cpu负责计算、GPU负责渲染、垂直同步信号   
+
+
+#### **五、自动释放池**    
+放入自动释放池的对象叫autorelease对象，在离开作用域的时候不会立即释放，而是在合适的时机释放     
+autoreleasePoolPage对象(双向链表)             
+next、parent、child三个指针        
+push方法和pop方法               
+
+释放：系统释放(runloop)和手动释放     
+
+autorelease对象
+
+#### **六、webview**    
+webview的两个协议：navigateDelegate/uiDelegate                   
+webview与原生的通讯:evaluateJavascript:/messagehandler 和 iframe         
+webkit:webcore和javascriptCore         
+javascriptCore:jsvm/jscontext/jsvalue/jsexport            
 
 
 
@@ -1453,8 +1471,8 @@ wkwebview 简化的浏览器，用来加载并显示web页面(本地，网络)
 
 **2、WKUIDelegate**     
 
-页面关闭    `window.close()`
-创建新窗口  `<a target="_blank"></a>`  
+页面关闭    `window.close()`     
+创建新窗口  `<a target="_blank"></a>`      
 alert     
 confirm     
 promt    
@@ -1467,8 +1485,14 @@ self.wkWebView 的 evaluateJavaScript:jsFunc 方法调用
 
 
 **2、js调用原生**   
-config添加messageHandler     
+config添加messageHandler    
+```objc
+[config.userContentController addScriptMessageHandler:(id<WKScriptMessageHandler>)[XYProxy proxyWithTarget:self] name:@"getMessage"];
+```
 js调用添加的messageHandler     
+```js
+window.webkit.messageHandlers.getMessage.postMessage(jsonStr)
+```   
 messageHandler的协议方法内处理调用逻辑    
 
 js通过隐藏的iframe和自定义scheme的方式调用     
@@ -1486,9 +1510,9 @@ JavaScriptCore:js引擎，解析js代码
 很有必要了解的概念只有4个：JSVM，JSContext，JSValue，JSExport。
 
 JSVM：js的多线程有关     
-JSContext：js执行环境   
+JSContext：js执行环境,从环境中获取变量，方法，向环境中写入变量和方法        
 JSValue：oc中的js包裹类型，有对应关系表    
-JSExport：将oc对象暴露给js环境，继承关系对应js的原型链继承      
+JSExport：将oc对象暴露给js环境(js环境中存在了一个这样的对象)，继承关系对应js的原型链继承           
 
 
 
