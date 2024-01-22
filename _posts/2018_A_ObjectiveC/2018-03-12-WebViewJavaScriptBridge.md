@@ -95,7 +95,6 @@ function changeColor() {
 **1、JS如何代码书写** 
 
 ```js
-<script>
 function setupWebViewJavascriptBridge(callback) {
     
     if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
@@ -165,7 +164,6 @@ function generateRandomColor() {
 
     return hexColor;
 }
-</script>
 ```
 
 **2、OC如何调用**  
