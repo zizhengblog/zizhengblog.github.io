@@ -7,6 +7,7 @@ tag: Objective-C
 
 - [参考：一篇文章了解JsBridge之IOS篇](https://juejin.cn/post/6844903567992553480?from=search-suggest)
 - [参考：WebViewJavaScriptBridge 基本使用](https://www.jianshu.com/p/d12ec047ce52)
+- [参考：iOS之WebViewJavascriptBridge浅析](https://juejin.cn/post/7168824876059328548)
 - [重要：深入剖析 WebViewJavascriptBridge](https://lision.me/webview_javascript_bridge/)     
 
 
@@ -184,8 +185,19 @@ function generateRandomColor() {
 <!-- ************************************************ -->
 ## <a id="content3">三方库 WebViewJavascriptBridge 原理分析</a>
 
-- [参考：iOS之WebViewJavascriptBridge浅析](https://juejin.cn/post/7168824876059328548)
+#### **一、框架结构**   
 
+|层级|	源文件|
+|:----|:----|
+|接口层|	WebViewJavascriptBridge && WKWebViewJavascriptBridge|
+|实现层|	WebViewJavascriptBridgeBase|
+|JS层|	WebViewJavascriptBridge_JS|
+
+
+WebViewJavascriptBridge && WKWebViewJavascriptBridge 作为接口层主要负责提供方便的接口，隐藏实现细节         
+WebViewJavascriptBridgeBase 实现细节都是通过该层去做的           
+WebViewJavascriptBridge_JS 作为 JS 层存储了一段JS代码，在需要的时候注入到WebView中，最终实现 Native 与 JS 的交互。            
+ 
 
 在js的`changeColor`方法中，其实是调用了`WebViewJavascriptBridge.callHandler`方法，那么`WebViewJavascriptBridge`对象是在什么地方创建的呢？    
 在js代码中并没有找到相关代码，在OC代码中我们找到了相关的代码     
