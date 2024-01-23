@@ -2,11 +2,11 @@
 #!/bin/bash
 
 # 指定目录
-directory="/Users/lxy/LXYFile/ResourceInGithub/JiangHuHiKe/_posts/2023_A_Overview"
+directory="/Users/lixiaoyi/LXYFile/ResourceInGithub/JiangHuHiKe.github.io/_posts/2018_A_ObjectiveC"
 
 
 
-start_date="2023-02-01"
+start_date="2018-02-01"
 current_date=$(date -jf "%Y-%m-%d" "$start_date" "+%Y-%m-%d")
 
 # end_date=$(date "+%Y-%m-%d")
