@@ -169,6 +169,7 @@ js层是一段`;(function(){})()`包裹的js代码，转为字符串后，在合
 <!-- ************************************************ -->
 ## <a id="content2">js调用原生的核心逻辑</a>
 
+#### **一、js 端的初始化操作**    
 
 在使用这个框架时web端需要拷贝一段js代码，这段代码如下：
 
@@ -223,7 +224,7 @@ host可以是：`__BRIDGE_LOADED__` 和 `__wvjb_queue_message__`
 #define kBridgeLoaded      @"__bridge_loaded__"
 ```          
 
-<span style="color:red;font-weight:bold;">原生端通过拦截iframe加载的url，并通过判断不同的scheme和host来进行不同的操作</span>      
+原生端通过<span style="color:red;font-weight:bold;">拦截iframe加载的url，</span>并通过判断不同的scheme 和 host来进行不同的操作          
 
 ```objc
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
@@ -287,6 +288,242 @@ host可以是：`__BRIDGE_LOADED__` 和 `__wvjb_queue_message__`
     }
 }
 ```
+
+该步骤的主要作用就是向js环境中注入一段js代码来初始化js环境，到此为止，js端的相关环境已经准备完成了。          
+
+#### **二、调用原生端**   
+
+执行下面代码来调用原生端的colorClick方法     
+```js
+// 调用oc方法colorClick
+function changeColor() {
+    WebViewJavascriptBridge.callHandler(
+        'colorClick',       // 方法名
+        {color:'green'},    // 传递的参数
+        function(data) {    // 通过回调获取返回值
+            document.getElementById("returnValue").innerHTML = data;
+        }
+    )
+}
+```
+
+我们看看callHandler的实现   
+```js
+// 调用 iOS handler，参数校验之后调用 _doSend 函数
+function callHandler(handlerName, data, responseCallback) {
+	if (arguments.length == 2 && typeof data == 'function') {
+		responseCallback = data;
+		data = null;
+	}
+	_doSend({ handlerName:handlerName, data:data }, responseCallback);
+}
+
+// 如有回调，则设置 message['callbackId'] 与 responseCallbacks[callbackId]
+// 将 msg 加入 sendMessageQueue 数组，设置 messagingIframe.src
+function _doSend(message, responseCallback) {
+    if (responseCallback) {
+        var callbackId = 'cb_'+(uniqueId++)+'_'+new Date().getTime();
+        responseCallbacks[callbackId] = responseCallback;
+        message['callbackId'] = callbackId;
+    }
+    sendMessageQueue.push(message);
+    messagingIframe.src = CUSTOM_PROTOCOL_SCHEME + '://' + QUEUE_HAS_MESSAGE;
+}
+	
+// scheme 使用 https 之后通过 host 做匹配
+var CUSTOM_PROTOCOL_SCHEME = 'https';
+var QUEUE_HAS_MESSAGE = '__wvjb_queue_message__';
+```
+<span style="color:red;">这里将message放入了sendMessageQueue，将responseCallback放入了responseCallbacks</span>      
+
+原生端拦截到`https://__wvjb_queue_message__`会执行下面的方法  
+
+```objc
+- (void)WKFlushMessageQueue {
+    [_webView evaluateJavaScript:[_base webViewJavascriptFetchQueyCommand] completionHandler:^(NSString* result, NSError* error) {
+        if (error != nil) {
+            NSLog(@"WebViewJavascriptBridge: WARNING: Error when trying to fetch data from WKWebView: %@", error);
+        }
+        [_base flushMessageQueue:result];
+    }];
+}
+```
+
+```objc
+- (NSString *)webViewJavascriptFetchQueyCommand {
+    return @"WebViewJavascriptBridge._fetchQueue();";
+}
+```
+
+```js
+function _fetchQueue() {
+    var messageQueueString = JSON.stringify(sendMessageQueue);
+    sendMessageQueue = [];
+    return messageQueueString;
+}
+```
+这是原生端处理js发送过来的消息的<span style="color:red;font-weight:bold;">核心代码</span>
+```objc
+- (void)flushMessageQueue:(NSString *)messageQueueString{
+    if (messageQueueString == nil || messageQueueString.length == 0) {
+        NSLog(@"WebViewJavascriptBridge: WARNING: ObjC got nil while fetching the message queue JSON from webview. This can happen if the WebViewJavascriptBridge JS is not currently present in the webview, e.g if the webview just loaded a new page.");
+        return;
+    }
+
+    // 将json数组字符串反序列化为数组
+    id messages = [self _deserializeMessageJSON:messageQueueString];
+
+    for (WVJBMessage* message in messages) {
+        if (![message isKindOfClass:[WVJBMessage class]]) {
+            NSLog(@"WebViewJavascriptBridge: WARNING: Invalid %@ received: %@", [message class], message);
+            continue;
+        }
+        [self _log:@"RCVD" json:message];
+        
+        NSString* responseId = message[@"responseId"];
+        if (responseId) {
+            WVJBResponseCallback responseCallback = _responseCallbacks[responseId];
+            responseCallback(message[@"responseData"]);
+            [self.responseCallbacks removeObjectForKey:responseId];
+        } else {
+
+            // 这里是处理js发送过来的消息
+
+            WVJBResponseCallback responseCallback = NULL;
+            NSString* callbackId = message[@"callbackId"];
+            if (callbackId) {
+                // 有返回值
+                responseCallback = ^(id responseData) {
+                    if (responseData == nil) {
+                        responseData = [NSNull null];
+                    }
+                    
+                    // msg 是返回给js端的方法调用返回值
+                    WVJBMessage* msg = @{ @"responseId":callbackId, @"responseData":responseData };
+                    [self _queueMessage:msg];
+                };
+            } else {
+                // 无返回值
+                responseCallback = ^(id ignoreResponseData) {
+                    // Do nothing
+                };
+            }
+            
+            // 取出原生端注册的handler,其实就是block
+            WVJBHandler handler = self.messageHandlers[message[@"handlerName"]];
+            
+            if (!handler) {
+                NSLog(@"WVJBNoHandlerException, No handler for message from JS: %@", message);
+                continue;
+            }
+            
+            // 执行block
+            handler(message[@"data"], responseCallback);
+        }
+    }
+}
+```
+#### **三、如何获取调用原生端方法的返回值**      
+
+我们在看看方法调用的返回值又是如何传递回给js端的？   
+
+下面是_queueMessage的方法实现     
+```objc
+- (void)_queueMessage:(WVJBMessage*)message {
+    if (self.startupMessageQueue) {
+        [self.startupMessageQueue addObject:message];
+    } else {
+        [self _dispatchMessage:message];
+    }
+}
+
+
+- (void)_dispatchMessage:(WVJBMessage*)message {
+    NSString *messageJSON = [self _serializeMessage:message pretty:NO];
+    [self _log:@"SEND" json:messageJSON];
+    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\'" withString:@"\\\'"];
+    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\n" withString:@"\\n"];
+    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\r" withString:@"\\r"];
+    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\f" withString:@"\\f"];
+    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\u2028" withString:@"\\u2028"];
+    messageJSON = [messageJSON stringByReplacingOccurrencesOfString:@"\u2029" withString:@"\\u2029"];
+    
+    // messageJSON 是将返回值转化为了json字符串
+    NSString* javascriptCommand = [NSString stringWithFormat:@"WebViewJavascriptBridge._handleMessageFromObjC('%@');", messageJSON];
+
+
+    // 通过调用js端的_handleMessageFromObjC()方法，把字符串传递给js端
+    if ([[NSThread currentThread] isMainThread]) {
+        [self _evaluateJavascript:javascriptCommand];
+
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self _evaluateJavascript:javascriptCommand];
+        });
+    }
+}
+```
+
+
+这里是js端的<span style="color:red;font-weight:bold;">核心代码</span>
+```js
+function _handleMessageFromObjC(messageJSON) {
+    _dispatchMessageFromObjC(messageJSON);
+}
+
+function _dispatchMessageFromObjC(messageJSON) {
+    if (dispatchMessagesWithTimeoutSafety) {
+        setTimeout(_doDispatchMessageFromObjC);
+    } else {
+            _doDispatchMessageFromObjC();
+    }
+    
+    function _doDispatchMessageFromObjC() {
+        var message = JSON.parse(messageJSON);
+        var messageHandler;
+        var responseCallback;
+
+        if (message.responseId) {
+
+            // 重要：这里是处理原生端发送过来返回值
+
+            // responseId也就是js端调用时的callbackId,通过这个id可以取出对应的匿名函数
+            responseCallback = responseCallbacks[message.responseId];
+            if (!responseCallback) {
+                return;
+            }
+
+            // 调用匿名函数，传递返回值
+            responseCallback(message.responseData);
+            delete responseCallbacks[message.responseId];
+
+        } else {
+            if (message.callbackId) {
+                var callbackResponseId = message.callbackId;
+                responseCallback = function(responseData) {
+                    _doSend({ handlerName:message.handlerName, responseId:callbackResponseId, responseData:responseData });
+                };
+            }
+            
+            var handler = messageHandlers[message.handlerName];
+            if (!handler) {
+                console.log("WebViewJavascriptBridge: WARNING: no handler for message from ObjC:", message);
+            } else {
+                handler(message.data, responseCallback);
+            }
+        }
+    }
+}
+```
+
+
+
+
+
+
+
 
 
 
