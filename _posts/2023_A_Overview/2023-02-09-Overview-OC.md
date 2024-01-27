@@ -11,20 +11,21 @@ tag: Overview
 
 ## 目录
 
-- [对象的本质](#content1)  
-- [kvc/kvo](#content2)  
-- [Category](#content3)   
-- [block](#content4)   
-- [Runtime](#content5)  
-- [多线程](#content6)  
-- [Runloop](#content7)  
-- [Autorelease](#content8)  
-- [WebView](#content9)  
+- [1.1对象的本质](#content1.1)  
+- [1.2kvc/kvo](#content1.2)  
+- [1.3Category](#content1.3)   
+- [1.4block](#content1.4)  
+- [1.5数据存储](#content1.5)  
+- [2.1Runtime](#content2.1)  
+- [2.2多线程](#content2.2)  
+- [2.3Runloop](#content2.3)  
+- [2.4Autorelease](#content2.4)  
+- [2.5WebView](#content2.5)  
 
 
 
 <!-- ************************************************ -->
-## <a id="content1">对象的本质</a>
+## <a id="content1.1">1.1对象的本质</a>
 三种类型的对象：实例对象、类对象、元类对象
 
 两个重要指针：isa指针、super指针
@@ -35,7 +36,7 @@ tag: Overview
 
 
 <!-- ************************************************ -->
-## <a id="content2">kvc/kvo</a>
+## <a id="content1.2">1.2kvc/kvo</a>
 
 #### kvc
 
@@ -116,7 +117,7 @@ void _NSSetIntValueAndNotify(){
 ```
 
 <!-- ************************************************ -->
-## <a id="content3">Category</a>
+## <a id="content1.3">1.3Category</a>
 
 #### +Load方法
 程序启动加载类的时候，<br>
@@ -146,7 +147,7 @@ void _NSSetIntValueAndNotify(){
 
 
 <!-- ************************************************ -->
-## <a id="content4">block</a>
+## <a id="content1.4">1.4block</a>
 
 ### 介绍
 
@@ -342,9 +343,21 @@ person.blk = {
 <img src="/images/memory/block9.png" alt="img">
 
 
+<!-- ************************************************ -->
+## <a id="content1.5">1.5数据存储</a>
+
 
 <!-- ************************************************ -->
-## <a id="content5">Runtime</a>
+## <a id="content1.6">1.6内存管理</a>
+
+
+<!-- ************************************************ -->
+## <a id="content1.7">1.7编码及加解密原理</a>
+
+
+
+<!-- ************************************************ -->
+## <a id="content2.1">2.1Runtime</a>
 
 ### class的结构
 <img src="/images/underlying/oc16.png" alt="img">
@@ -574,7 +587,7 @@ my name is <ViewController: 0x100704080>
 
 
 <!-- ************************************************ -->
-## <a id="content6">多线程</a>
+## <a id="content2.2">2.2多线程</a>
 
 #### **一、进程和线程**   
 **1、进程**    
@@ -1057,7 +1070,7 @@ NSBlockOperation * operation2 = [NSBlockOperation blockOperationWithBlock:^{
 
 
 <!-- ************************************************ -->
-## <a id="content7">Runloop</a>
+## <a id="content2.3">2.3Runloop</a>
 
 #### **一、runloop介绍**    
 
@@ -1190,7 +1203,7 @@ Frame Buffer、视频控制器等相关部件，将图像显示在屏幕上
 
 
 <!-- ************************************************ -->
-## <a id="content8">Autorelease</a>
+## <a id="content2.4">2.4Autorelease</a>
 
 一种内存自动回收机制，放入自动释放池的对象，在离开作用域的时候不会立即释放，而是在合适的时机释放     
 
@@ -1269,7 +1282,7 @@ NSMutableArray* array = [NSMutableArray array];
 
 
 <!-- ************************************************ -->
-## <a id="content9">WebView</a>
+## <a id="content2.5">2.5WebView</a>
 
 #### **一、介绍**   
 
