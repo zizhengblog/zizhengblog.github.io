@@ -15,8 +15,7 @@ tag: Objective-C
 - [介绍](#content1) 
 - [如何配置](#content2) 
 - [原理分析](#content3) 
-
-
+- [微信SDK集成](#content4) 
 
 
 
@@ -78,6 +77,9 @@ Universal Link是Apple在WWDC上提出的iOS9的新特性之一；
 检查是否包含应用Bundle ID，   可以参考微信的apple-app-site-association：   
 <a href="https://help.wechat.com/apple-app-site-association">https://help.wechat.com/apple-app-site-association</a>
 
+也可以参考这个
+<a href="https://xdf.fzzqft.com/redirectApp/">https://xdf.fzzqft.com/redirectApp/</a>
+
 
 
 <!-- ************************************************ -->
@@ -91,6 +93,18 @@ lxy：在xcode配置的applinks:mcrm.founder.com可以帮助找到文件，并�
 lxy：微信SDK，需要在微信开放平台填写app的universal link,在sdk初始化的时候universal link也需要作为参数传入，只有拿到universal link微信才能调起我们的app    
 
 
+
+<!-- ************************************************ -->
+## <a id="content4">微信SDK集成</a>
+
+微信SDK的分享，调起小程序，现在使用的是Universal links的方式，所以在使用微信SDK提供的功能之前，需要完成上面提到的各项配置    
+关于微信SDK的集成和初始化，微信官方有详细的文档说明，并根据SDK提供的接口可以进行自检      
+
+在集成时遇到始终无法自检通过且无法正常调起微信小程序，原因是缺少了下面的配置
+
+<img src="/images/objectC/objc20.jpeg" alt="img">
+
+ 
 
 
 
